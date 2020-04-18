@@ -1,712 +1,592 @@
 SET SQL_SAFE_UPDATES = 0;
-
+-- drop database inquilino_perfecto;
 create database inquilino_perfecto;
 use inquilino_perfecto;
 
 create table user (
-PK_user int primary key auto_increment,
+id_user int primary key auto_increment,
 first_name varchar(100) not null,
-last_name varchar(100) not null,
 birthday date not null,
-gender enum ('masc', 'fem', 'other') not null,
-occupation_field enum('arts_design', 'science', 'education', 'industry', 'law', 'state', 'consulting', 'customer_service', 'communication', 'finances', 'entertainment', 'real_state', 'health', 'sales', 'tourism' ,'logistics'),
-occupation enum ('student', 'working', 'both'),
-single boolean default true,
+gender varchar(20) not null,
+occupation_field varchar(100) not null,
+occupation_status enum('working', 'studying', 'both'),
+couple boolean default true,
 email varchar(100) not null,
 password varchar(15) not null,
-rating tinyint default null
+rating tinyint default null,
+ig_profile varchar(50),
+image_1 varchar(600) not null,
+image_2 varchar(600),
+image_3 varchar(600),
+image_4 varchar(600),
+image_5 varchar(600),
+creation_date datetime not null,
+last_update datetime
 );
-
-alter table user
-add column date_start datetime default "2019-06-15 09:34:21";
-
-alter table user
-add column date_last_update datetime default "2020-04-14 17:02:01";
-
-insert into user values (1, 'Sara', 'Mariño', '19900706', 'fem', 'health', 'working', true, 'sara.marinho@gmail.com', 'sarasara123');
-insert into user values (2, 'Pedro', 'Ramallo', '19890312', 'masc', 'industry', 'working', false, 'pedro.ramallo@gmail.com', 'pedropedro123');
-insert into user values (3, 'Brais', 'Moldes', '19871008', 'masc', 'consulting', 'working', true, 'brais.moldes@gmail.com', 'braisbrais123');
-insert into user values (4, 'Andrea', 'Fernandez', '19881101', 'fem', 'science', 'both', true, 'andrea.fernandez@gmail.com', 'andreaandrea123');
-insert into user values (5, 'Xabier', 'Cambeiro', '19911222', 'masc', 'arts_design', 'both', false, 'xabi.cambeiro@gmail.com', 'xabixabi123');
-insert into user values (6, 'Lara', 'Seoane', '19920207', 'fem', 'finances', 'working', false, 'lara.seoane@gmail.com', 'laralara123');
-insert into user values (7, 'Ruben', 'Arias', '19941203', 'masc', 'sales', 'both', true, 'ruben.arias@gmail.com', 'rubenruben123');
-insert into user values (8, 'Alex', 'Lopez', '19960830', 'fem', 'logistics', 'both', false, 'alex.lopez@gmail.com', 'alexalex123');
-insert into user values (9, 'Diego', 'Muros', '19901101', 'masc', 'law', 'both', false, 'diego.muros@gmail.com', 'diegodiego123');
-insert into user values (10, 'Mara', 'Carballo', '19920412', 'fem', 'tourism', 'working', true, 'mara.carballo@gmail.com', 'maramara123');
-insert into user values (11, 'Tomas', 'Hervas', '19960507', 'masc', 'communication', 'student', true, 'tomas.hervas@gmail.com', 'tomastomas123');
-insert into user values (12, 'Uxia', 'Rodriguez', '20000210', 'fem', 'education', 'student', false, 'uxia.rodriguez@gmail.com', 'uxiauxia123');
-insert into user values (13, 'Marcos', 'Blanco', '19990909', 'masc', 'education', 'student', false, 'marcos.blanco@gmail.com', 'marcosmarcos123');
-insert into user values (14, 'Carmen', 'Camaño', '19971202', 'fem', 'arts_design', 'both', true, 'carmen.camaño@gmail.com', 'carmencarmen123');
-insert into user values (15, 'Roi', 'Cal', '19900501', 'masc', 'arts_design', 'working', false, 'roi.cal@gmail.com', 'roiroi123');
-insert into user values (16, 'Ines', 'Barros', '19950611', 'fem', 'law', 'student', false, 'ines.barros@gmail.com', 'inesines123');
-insert into user values (17, 'Berto', 'Novo', '19890202', 'masc', 'education', 'working', true, 'berto.novo@gmail.com', 'bertoberto123');
-insert into user values (18, 'Alba', 'Iglesias', '19991005', 'fem', 'customer_service', 'both', false, 'alba.iglesias@gmail.com', 'albaalba123');
-insert into user values (19, 'David', 'Casas', '20001102', 'masc', 'finances', 'student', true, 'david.casas@gmail.com', 'daviddavid123');
-insert into user values (20, 'Antia', 'Mato', '20010122', 'fem', 'science', 'student', false, 'antia.mato@gmail.com', 'antiaantia123');
 
 create table personality (
-PK_personality int primary key auto_increment,
-name varchar(100) not null
+id_personality int primary key auto_increment,
+name varchar(100) not null,
+type enum ('feature', 'lifestyle')
 );
-
-insert into personality values (1, 'active');
-insert into personality values (2, 'calm');
-insert into personality values (3, 'thoughtful');
-insert into personality values (4, 'happy');
-insert into personality values (5, 'helpful');
-insert into personality values (6, 'creative');
-insert into personality values (7, 'easy going');
-insert into personality values (8, 'empathic');
-insert into personality values (9, 'enthusiastic');
-insert into personality values (10, 'kind');
-insert into personality values (11, 'funny');
-insert into personality values (12, 'honest');
-insert into personality values (13, 'optimistic');
-insert into personality values (14, 'organized');
-insert into personality values (15, 'passionate');
-insert into personality values (16, 'proactive');
-insert into personality values (17, 'sensible');
-insert into personality values (18, 'tolerant');
-insert into personality values (19, 'sociable');
-insert into personality values (20, 'sensitive');
 
 create table personality_user (
-FK_user_personality_user int not null,
-FK_personality_personality_user int not null,
-primary key (FK_user_personality_user, FK_personality_personality_user),
-foreign key(FK_user_personality_user) references user (PK_user),
-foreign key(FK_personality_personality_user) references personality (PK_personality)
+id_user int not null,
+id_personality int not null,
+primary key (id_user, id_personality),
+constraint FK_user_personality foreign key(id_user) references user (id_user),
+constraint FK_personality_user foreign key(id_personality) references personality (id_personality),
+creation_date datetime not null
 );
 
-alter table personality_user
-add column date_start datetime default "2019-06-15 09:34:21";
-
-insert into personality_user values (1, 1);
-insert into personality_user values (1, 3);
-insert into personality_user values (1, 8);
-insert into personality_user values (1, 10);
-insert into personality_user values (1, 12);
-
-insert into personality_user values (2, 2);
-insert into personality_user values (2, 5);
-insert into personality_user values (2, 6);
-insert into personality_user values (2, 7);
-insert into personality_user values (2, 8);
-
-insert into personality_user values (3, 1);
-insert into personality_user values (3, 2);
-insert into personality_user values (3, 3);
-insert into personality_user values (3, 7);
-insert into personality_user values (3, 9);
-
-insert into personality_user values (4, 13);
-insert into personality_user values (4, 17);
-insert into personality_user values (4, 18);
-insert into personality_user values (4, 19);
-insert into personality_user values (4, 20);
-
-insert into personality_user values (5, 10);
-insert into personality_user values (5, 11);
-insert into personality_user values (5, 14);
-insert into personality_user values (5, 15);
-insert into personality_user values (5, 4);
-
-insert into personality_user values (6, 15);
-insert into personality_user values (6, 2);
-insert into personality_user values (6, 3);
-insert into personality_user values (6, 12);
-insert into personality_user values (6, 19);
-
-insert into personality_user values (7, 9);
-insert into personality_user values (7, 6);
-insert into personality_user values (7, 11);
-insert into personality_user values (7, 20);
-insert into personality_user values (7, 12);
-
-insert into personality_user values (8, 10);
-insert into personality_user values (8, 18);
-insert into personality_user values (8, 11);
-insert into personality_user values (8, 7);
-insert into personality_user values (8, 17);
-
-insert into personality_user values (9, 1);
-insert into personality_user values (9, 5);
-insert into personality_user values (9, 15);
-insert into personality_user values (9, 10);
-insert into personality_user values (9, 20);
-
-insert into personality_user values (10, 10);
-insert into personality_user values (10, 2);
-insert into personality_user values (10, 3);
-insert into personality_user values (10, 13);
-insert into personality_user values (10, 17);
-
-insert into personality_user values (11, 1);
-insert into personality_user values (11, 3);
-insert into personality_user values (11, 8);
-insert into personality_user values (11, 10);
-insert into personality_user values (11, 12);
-
-insert into personality_user values (12, 2);
-insert into personality_user values (12, 5);
-insert into personality_user values (12, 6);
-insert into personality_user values (12, 7);
-insert into personality_user values (12, 8);
-
-insert into personality_user values (13, 1);
-insert into personality_user values (13, 2);
-insert into personality_user values (13, 3);
-insert into personality_user values (13, 7);
-insert into personality_user values (13, 9);
-
-insert into personality_user values (14, 13);
-insert into personality_user values (14, 17);
-insert into personality_user values (14, 18);
-insert into personality_user values (14, 19);
-insert into personality_user values (14, 20);
-
-insert into personality_user values (15, 10);
-insert into personality_user values (15, 11);
-insert into personality_user values (15, 14);
-insert into personality_user values (15, 15);
-insert into personality_user values (15, 4);
-
-insert into personality_user values (16, 15);
-insert into personality_user values (16, 2);
-insert into personality_user values (16, 3);
-insert into personality_user values (16, 12);
-insert into personality_user values (16, 19);
-
-insert into personality_user values (17, 9);
-insert into personality_user values (17, 6);
-insert into personality_user values (17, 11);
-insert into personality_user values ( 17, 20);
-insert into personality_user values (17, 12);
-
-insert into personality_user values (18, 10);
-insert into personality_user values (18, 18);
-insert into personality_user values (18, 11);
-insert into personality_user values (18, 7);
-insert into personality_user values (18, 17);
-
-insert into personality_user values (19, 1);
-insert into personality_user values (19, 5);
-insert into personality_user values (19, 15);
-insert into personality_user values (19, 10);
-insert into personality_user values (19, 20);
-
-insert into personality_user values (20, 10);
-insert into personality_user values (20, 2);
-insert into personality_user values (20, 3);
-insert into personality_user values (20, 13);
-insert into personality_user values (20, 17);
-
-create table lifestyle (
-PK_lifestyle int primary key auto_increment,
+create table hobbies (
+id_hobbies int primary key auto_increment,
 name varchar(100) not null
 );
 
-insert into lifestyle values (1, 'familiar');
-insert into lifestyle values (2, 'healthy');
-insert into lifestyle values (3, 'gamer');
-insert into lifestyle values (4, 'foodie');
-insert into lifestyle values (5, 'workaholic');
-insert into lifestyle values (6, 'early bird');
-insert into lifestyle values (7, 'adventurous');
-insert into lifestyle values (8, 'quiet');
-insert into lifestyle values (9, 'party animal');
-insert into lifestyle values (10, 'shopper');
-insert into lifestyle values (11, 'animal lover');
-insert into lifestyle values (12, 'lonely');
-insert into lifestyle values (13, 'nocturnal');
-insert into lifestyle values (14, 'practical');
-insert into lifestyle values (15, 'improviser');
-insert into lifestyle values (16, 'homelike');
-insert into lifestyle values (17, 'fashion addict');
-insert into lifestyle values (18, 'geek');
-insert into lifestyle values (19, 'hater');
-insert into lifestyle values (20, 'entrepreneur');
-
-create table lifestyle_user (
-FK_user_lifestyle_user int not null,
-FK_lifestyle_lifestyle_user int not null,
-primary key (FK_user_lifestyle_user, FK_lifestyle_lifestyle_user),
-foreign key(FK_user_lifestyle_user) references user (PK_user),
-foreign key(FK_lifestyle_lifestyle_user) references lifestyle (PK_lifestyle)
-);
-
-alter table lifestyle_user
-add column date_start datetime default "2019-06-15 09:34:21";
-
-insert into lifestyle_user values (1, 1);
-insert into lifestyle_user values (1, 3);
-insert into lifestyle_user values (1, 8);
-insert into lifestyle_user values (1, 10);
-insert into lifestyle_user values (1, 12);
-
-insert into lifestyle_user values (2, 2);
-insert into lifestyle_user values (2, 5);
-insert into lifestyle_user values (2, 6);
-insert into lifestyle_user values (2, 7);
-insert into lifestyle_user values (2, 8);
-
-insert into lifestyle_user values (3, 1);
-insert into lifestyle_user values (3, 2);
-insert into lifestyle_user values (3, 3);
-insert into lifestyle_user values (3, 7);
-insert into lifestyle_user values (3, 9);
-
-insert into lifestyle_user values (4, 13);
-insert into lifestyle_user values (4, 17);
-insert into lifestyle_user values (4, 18);
-insert into lifestyle_user values (4, 19);
-insert into lifestyle_user values (4, 20);
-
-insert into lifestyle_user values (5, 10);
-insert into lifestyle_user values (5, 11);
-insert into lifestyle_user values (5, 14);
-insert into lifestyle_user values (5, 15);
-insert into lifestyle_user values (5, 4);
-
-insert into lifestyle_user values (6, 15);
-insert into lifestyle_user values (6, 2);
-insert into lifestyle_user values (6, 3);
-insert into lifestyle_user values (6, 12);
-insert into lifestyle_user values (6, 19);
-
-insert into lifestyle_user values (7, 9);
-insert into lifestyle_user values (7, 6);
-insert into lifestyle_user values (7, 11);
-insert into lifestyle_user values (7, 20);
-insert into lifestyle_user values (7, 12);
-
-insert into lifestyle_user values (8, 10);
-insert into lifestyle_user values (8, 18);
-insert into lifestyle_user values (8, 11);
-insert into lifestyle_user values (8, 7);
-insert into lifestyle_user values (8, 17);
-
-insert into lifestyle_user values (9, 1);
-insert into lifestyle_user values (9, 5);
-insert into lifestyle_user values (9, 15);
-insert into lifestyle_user values (9, 10);
-insert into lifestyle_user values (9, 20);
-
-insert into lifestyle_user values (10, 10);
-insert into lifestyle_user values (10, 2);
-insert into lifestyle_user values (10, 3);
-insert into lifestyle_user values (10, 13);
-insert into lifestyle_user values (10, 17);
-
-insert into lifestyle_user values (11, 1);
-insert into lifestyle_user values (11, 3);
-insert into lifestyle_user values (11, 8);
-insert into lifestyle_user values (11, 10);
-insert into lifestyle_user values (11, 12);
-
-insert into lifestyle_user values (12, 2);
-insert into lifestyle_user values (12, 5);
-insert into lifestyle_user values (12, 6);
-insert into lifestyle_user values (12, 7);
-insert into lifestyle_user values (12, 8);
-
-insert into lifestyle_user values (13, 1);
-insert into lifestyle_user values (13, 2);
-insert into lifestyle_user values (13, 3);
-insert into lifestyle_user values (13, 7);
-insert into lifestyle_user values (13, 9);
-
-insert into lifestyle_user values (14, 13);
-insert into lifestyle_user values (14, 17);
-insert into lifestyle_user values (14, 18);
-insert into lifestyle_user values (14, 19);
-insert into lifestyle_user values (14, 20);
-
-insert into lifestyle_user values (15, 10);
-insert into lifestyle_user values (15, 11);
-insert into lifestyle_user values (15, 14);
-insert into lifestyle_user values (15, 15);
-insert into lifestyle_user values (15, 4);
-
-insert into lifestyle_user values (16, 15);
-insert into lifestyle_user values (16, 2);
-insert into lifestyle_user values (16, 3);
-insert into lifestyle_user values (16, 12);
-insert into lifestyle_user values (16, 19);
-
-insert into lifestyle_user values (17, 9);
-insert into lifestyle_user values (17, 6);
-insert into lifestyle_user values (17, 11);
-insert into lifestyle_user values (17, 20);
-insert into lifestyle_user values (17, 12);
-
-insert into lifestyle_user values (18, 10);
-insert into lifestyle_user values (18, 18);
-insert into lifestyle_user values (18, 11);
-insert into lifestyle_user values (18, 7);
-insert into lifestyle_user values (18, 17);
-
-insert into lifestyle_user values (19, 1);
-insert into lifestyle_user values (19, 5);
-insert into lifestyle_user values (19, 15);
-insert into lifestyle_user values (19, 10);
-insert into lifestyle_user values (19, 20);
-
-insert into lifestyle_user values (20, 10);
-insert into lifestyle_user values (20, 2);
-insert into lifestyle_user values (20, 3);
-insert into lifestyle_user values (20, 13);
-insert into lifestyle_user values (20, 17);
-
-create table highlights (
-PK_highlights int primary key auto_increment,
-name varchar(100) not null
-);
-
-insert into highlights values (1, 'cinema');
-insert into highlights values (2, 'music');
-insert into highlights values (3, 'photography');
-insert into highlights values (4, 'nature');
-insert into highlights values (5, 'sports');
-insert into highlights values (6, 'reading');
-insert into highlights values (7, 'cooking');
-insert into highlights values (8, 'series');
-insert into highlights values (9, 'videogames');
-insert into highlights values (10, 'fashion');
-insert into highlights values (11, 'art');
-insert into highlights values (12, 'technology');
-insert into highlights values (13, 'adventure');
-insert into highlights values (14, 'travel');
-insert into highlights values (15, 'crafts');
-
-create table highlights_user (
-FK_user_highlights_user int not null,
-FK_highlights_highlights_user int not null,
+create table hobbies_user (
+id_user int not null,
+id_hobbies int not null,
 description text not null,
-foreign key(FK_user_highlights_user) references user (PK_user),
-foreign key(FK_highlights_highlights_user) references highlights (PK_highlights)
+primary key(id_user, id_hobbies),
+constraint FK_user_hobbies foreign key (id_user) references user(id_user),
+constraint FK_hobbies_user foreign key (id_hobbies) references hobbies(id_hobbies),
+creation_date datetime not null
 );
-
-alter table highlights_user
-add column date_start datetime default "2019-06-15 09:34:21";
-
-insert into highlights_user values (1, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (1, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (1, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (1, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (2, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (2, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (2, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (2, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (2, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (3, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (3, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (3, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (3, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (3, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (4, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (4, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (4, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (4, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (5, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (5, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (5, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (5, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (5, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (6, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (6, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (6, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (6, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (6, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (7, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (7, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (7, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (7, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (7, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (8, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (8, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (8, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (8, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (8, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (9, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (9, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (9, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (9, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (9, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (10, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (10, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (10, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (10, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (10, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (11, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (11, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (11, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (11, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (11, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (12, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (12, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (12, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (12, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (12, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (13, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (13, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (13, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (13, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (13, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (14, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (14, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (14, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (14, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (14, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (15, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (15, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (15, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (15, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (15, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (16, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (16, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (16, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (16, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (16, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (17, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (17, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (17, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (17, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (17, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (18, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (18, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (18, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (18, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (18, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (19, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (19, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (19, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (19, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-insert into highlights_user values (20, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (20, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (20, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (20, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-insert into highlights_user values (20, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.');
-
-create table rules (
-PK_rules int primary key auto_increment,
-name varchar(100) not null
-);
-
-insert into rules values (1, 'pets');
-insert into rules values (2, 'smoking');
-insert into rules values (3, 'vegetarian');
-insert into rules values (4, 'allergies');
-insert into rules values (5, 'couples');
-
-create table rules_user (
-FK_user_rules_user int not null,
-FK_rules_rules_user int not null,
-primary key(FK_user_rules_user, FK_rules_rules_user),
-foreign key(FK_user_rules_user) references user (PK_user),
-foreign key(FK_rules_rules_user) references rules (PK_rules)
-);
-
-alter table rules_user
-add column date_start datetime default "2019-06-15 09:34:21";
-
-insert into rules_user values (1, 1);
-insert into rules_user values (1, 2);
-insert into rules_user values (1, 3);
-insert into rules_user values (1, 4);
-
-insert into rules_user values (2, 1);
-insert into rules_user values (2, 3);
-insert into rules_user values (2, 4);
-insert into rules_user values (2, 5);
-
-insert into rules_user values (3, 3);
-insert into rules_user values (3, 4);
-
-insert into rules_user values (4, 1);
-insert into rules_user values (4, 2);
-insert into rules_user values (4, 3);
-insert into rules_user values (4, 4);
-insert into rules_user values (4, 5);
-
-insert into rules_user values (5, 1);
-insert into rules_user values (5, 4);
-insert into rules_user values (5, 5);
-
-insert into rules_user values (6, 2);
-insert into rules_user values (6, 4);
-
-insert into rules_user values (7, 1);
-insert into rules_user values (7, 5);
-
-insert into rules_user values (8, 5);
-
-insert into rules_user values (9, 1);
-insert into rules_user values (9, 2);
-
-insert into rules_user values (10, 1);
-insert into rules_user values (10, 2);
-insert into rules_user values (10, 5);
-
-insert into rules_user values (11, 1);
-insert into rules_user values (11, 2);
-insert into rules_user values (11, 3);
-insert into rules_user values (11, 4);
-insert into rules_user values (11, 5);
-
-insert into rules_user values (12, 1);
-insert into rules_user values (12, 2);
-insert into rules_user values (12, 3);
-insert into rules_user values (12, 5);
-
-insert into rules_user values (13, 2);
-insert into rules_user values (13, 3);
-insert into rules_user values (13, 4);
-insert into rules_user values (13, 5);
-
-insert into rules_user values (14, 1);
-insert into rules_user values (14, 3);
-insert into rules_user values (14, 4);
-insert into rules_user values (14, 5);
-
-insert into rules_user values (15, 1);
-insert into rules_user values (15, 4);
-insert into rules_user values (15, 5);
-
-insert into rules_user values (16, 1);
-
-insert into rules_user values (17, 1);
-insert into rules_user values (17, 2);
-insert into rules_user values (17, 5);
-
-insert into rules_user values (18, 3);
-insert into rules_user values (18, 5);
-
-insert into rules_user values (19, 1);
-insert into rules_user values (19, 5);
-
-insert into rules_user values (20, 2);
-insert into rules_user values (20, 3);
-
-create table entry (
-PK_entry int primary key auto_increment,
-FK_user_entry int not null,
-foreign key (FK_user_entry) references user(PK_user),
-title text not null,
-description text not null
-);
-
-alter table entry
-add column date_start datetime default "2019-06-15 09:34:21";
-
-alter table entry
-add column date_last_update datetime default "2020-04-14 17:02:01";
-
-insert into entry values (1, 1, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.');
-insert into entry values (2, 2, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.');
-insert into entry values (3, 3, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.');
-insert into entry values (4, 4, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.');
-insert into entry values (5, 5, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.');
-
-create table sharing (
-FK_entry_sharing int not null,
-foreign key (FK_entry_sharing) references entry(PK_entry),
-preference_gender enum ('masc', 'fem', 'any') not null,
-occupation enum ('student', 'working', 'both'),
-min_age int check (rate between 18 and 50),
-max_age int check (rate between 18 and 50)
-);
-
-alter table sharing
-add column date_start datetime default "2019-06-15 09:34:21";
-
-alter table sharing
-add column date_last_update datetime default "2020-04-14 17:02:01";
-
-insert into sharing values (1, 'any', 'working', 20, 32);
-insert into sharing values (2, 'fem', 'both', 30, 40);
-insert into sharing values (3, 'masc', 'working', 20, 40);
-insert into sharing values (4, 'fem', 'student', 22, 28);
-insert into sharing values (5, 'any', 'working', 18, 50);
 
 create table room (
-PK_room int primary key auto_increment,
-FK_entry_room int not null,
-foreign key (FK_entry_room) references entry(PK_entry),
-type enum ('private', 'shared', 'entire_property') not null,
-size tinyint not null,
-bed_type enum ('individual', 'double', 'other', 'none' ),
+id_room int primary key auto_increment,
+id_user int not null,
+constraint FK_user_room foreign key (id_user) references user(id_user),
+title text not null,
+description text not null,
+address text not null,
+postal_code int not null,
+city varchar(100) not null,
+flatmates_masc int not null default 0,
+flatmates_fem int not null default 0,
+flat_size int not null,
+preference_gender varchar(20) not null,
+status varchar(15),
+min_age int check (rate between 18 and 50),
+max_age int check (rate between 18 and 50),
+room_type varchar(20) not null,
+room_size int not null,
+bed_type varchar(20),
 price int not null,
 bills_included boolean default false,
 deposit boolean default false,
 deposit_ammount int,
 availability_from date not null,
 availability_until date,
-min_stay tinyint not null,
-max_stay tinyint
+min_stay int not null,
+max_stay int,
+image_1 varchar(600) not null,
+image_2 varchar(600),
+image_3 varchar(600),
+image_4 varchar(600),
+image_5 varchar(600),
+hidden_entry boolean default false,
+views int,
+creation_date datetime not null,
+last_update datetime
 );
 
-alter table room
-add column date_start datetime default "2019-06-15 09:34:21";
-
-alter table room
-add column date_last_update datetime default "2020-04-14 17:02:01";
-
-insert into room values (1, 1, 'private', 12, 'double', 200, false, false, null, current_date(), null, 3, null);
-insert into room values (2, 2, 'private', 16, 'double', 300, true, true, 300, current_date(), null, 6, null);
-insert into room values (3, 3, 'private', 10, 'individual', 220, true, true, 440, current_date(), null, 12, null);
-insert into room values (4, 4, 'shared', 24, 'double', 200, true, true, 200, current_date(), 20220101, 6, null);
-insert into room values (5, 5, 'private', 14, 'double', 240, false, false, null, date_sub(current_date(), interval 3 month), null, 6, null);
-
-create table flat(
-FK_entry_flat int not null,
-foreign key (FK_entry_flat) references entry(PK_entry),
-address text not null,
-postal_code int not null,
-city varchar(100) not null,
-flatmates_masc int not null default 0,
-flatmates_fem int not null default 0,
-size int not null
-);
-
-alter table flat
-add column date_start datetime default "2019-06-15 09:34:21";
-
-alter table flat
-add column date_last_update datetime default "2020-04-14 17:02:01";
-
-insert into flat values (1, 'Santiago de la Iglesia, 8 1D', 15004, 'A Coruña', 0, 0, 80);
-insert into flat values (2, 'Avenida Finisterre 19, 4', 15004, 'A Coruña', 1, 0, 90);
-insert into flat values (3, 'San Andres 36, 3', 15003, 'A Coruña', 0, 1, 70);
-insert into flat values (4, 'Zalaeta 27, 5 Izq', 15002, 'A Coruña', 1, 1, 90);
-insert into flat values (5, 'Angeles 2, 1', 15001, 'A Coruña', 0, 0, 60);
-
-create table facilities(
-PK_facilities int primary key auto_increment,
+create table facilities (
+id_facilities int primary key auto_increment,
 name varchar(100) not null
 );
+
+create table facilities_room (
+id_room int not null,
+id_facilities int not null,
+primary key(id_room, id_facilities),
+constraint FK_room_facilities foreign key(id_room) references room (id_room),
+constraint FK_facilities_room foreign key(id_facilities) references facilities (id_facilities),
+creation_date datetime not null
+);
+
+create table rules (
+id_rules int primary key auto_increment,
+name varchar(100) not null
+);
+
+create table rules_user (
+id_user int not null,
+id_rules int not null,
+primary key(id_user, id_rules),
+constraint FK_user_rules foreign key(id_user) references user (id_user),
+constraint FK_rules_user foreign key(id_rules) references rules (id_rules),
+creation_date datetime not null
+);
+
+create table rules_room (
+id_room int not null,
+id_rules int not null,
+primary key(id_room, id_rules),
+constraint FK_room_rules foreign key(id_room) references room (id_room),
+constraint FK_rules_room foreign key(id_rules) references rules (id_rules),
+creation_date datetime not null
+);
+
+create table rating (
+id_rating int primary key auto_increment,
+id_user_sends int not null,
+id_user_gets int not null,
+rate int check (rate between 1 and 5),
+constraint FK_user_sends foreign key (id_user_sends) references user(id_user),
+constraint FK_user_gets foreign key (id_user_gets) references user(id_user),
+creation_date datetime not null
+);
+
+create table booking(
+id_booking int primary key auto_increment,
+id_user int not null,
+id_room int not null,
+constraint FK_user_booking foreign key (id_user) references user (id_user),
+constraint FK_room_booking foreign key (id_room) references room (id_room),
+status enum ('pending', 'cancelled', 'accepted'),
+creation_date datetime not null
+);
+
+insert into user values (1, 'Sara', '1990-07-06', 'femenine', 'Enfermera', 'working', true, 'sara.marinho@gmail.com', 'sarasara123', null, '@sara', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (2, 'Pedro', '1989-03-12', 'masculine', 'Ingeniero', 'working', false, 'pedro.ramallo@gmail.com', 'pedropedro123', null, '@pedro', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (3, 'Brais', '1987-10-08', 'masculine', 'Consultor', 'working', true, 'brais.moldes@gmail.com', 'braisbrais123', null, '@brais', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (4, 'Andrea', '1988-11-01', 'femenine', 'Investigadora', 'both', true, 'andrea.fernandez@gmail.com', 'andreaandrea123',null, '@andrea', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (5, 'Xabier', '1991-12-22', 'masculine', 'Diseñador grafico', 'working', false, 'xabi.cambeiro@gmail.com', 'xabixabi123', null, '@xabier', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (6, 'Lara', '1992-02-07', 'femenine', 'Finanzas', 'both', false, 'lara.seoane@gmail.com', 'laralara123', null, '@lara', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (7, 'Ruben', '1994-12-03', 'masculine', 'Departamento de ventas', 'studying', true, 'ruben.arias@gmail.com', 'rubenruben123', null, '@ruben', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (8, 'Alex', '1996-08-30', 'femenine', 'Logistica', 'studying', false, 'alex.lopez@gmail.com', 'alexalex123', null, '@alex', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (9, 'Diego', '1990-11-01', 'masculine', 'Abogado', 'studying', false, 'diego.muros@gmail.com', 'diegodiego123', null, '@diego', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (10, 'Mara', '1992-04-12', 'femenine', 'Turismo', 'working', true, 'mara.carballo@gmail.com', 'maramara123', null, '@mara', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (11, 'Tomas', '1996-05-07', 'masculine', 'Departamento de comunicacion', 'studying', true, 'tomas.hervas@gmail.com', 'tomastomas123', null, '@tomas', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (12, 'Uxia', '2000-02-10', 'femenine', 'Educacion', 'both', false, 'uxia.rodriguez@gmail.com', 'uxiauxia123', null, '@uxia', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (13, 'Marcos', '1999-09-09', 'masculine', 'Educacion', 'studying', false, 'marcos.blanco@gmail.com', 'marcosmarcos123', null, '@marcos', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (14, 'Carmen', '1997-12-02', 'femenine', 'Fotografa', 'working', true, 'carmen.camaño@gmail.com', 'carmencarmen123', null, '@carmen', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (15, 'Roi', '1990-05-01', 'masculine', 'Artista 3D', 'both', false, 'roi.cal@gmail.com', 'roiroi123', null, '@roi', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (16, 'Ines', '1995-06-11', 'femenine', 'Abodaga', 'studying', false, 'ines.barros@gmail.com', 'inesines123', null, '@ines', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (17, 'Berto', '1989-02-02', 'masculine', 'Educacion', 'working', true, 'berto.novo@gmail.com', 'bertoberto123', null, '@berto', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (18, 'Alba', '1999-10-05', 'femenine', 'Servicio tecnico', 'both', false, 'alba.iglesias@gmail.com', 'albaalba123', null, '@alba', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (19, 'David', '2000-11-02', 'masculine', 'Finanzas', 'studying', true, 'david.casas@gmail.com', 'daviddavid123', null, '@david', 'https://unsplash.com/photos/NDCy2-9JhUs', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into user values (20, 'Antia', '2001-01-22', 'femenine', 'Investigadora', 'working', false, 'antia.mato@gmail.com', 'antiaantia123', null, '@antia', 'https://unsplash.com/photos/mEZ3PoFGs_k', null, null, null, null, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+
+insert into personality values (1, 'active','feature');
+insert into personality values (2, 'calm','feature');
+insert into personality values (3, 'thoughtful','feature');
+insert into personality values (4, 'happy','feature');
+insert into personality values (5, 'helpful','feature');
+insert into personality values (6, 'creative','feature');
+insert into personality values (7, 'easy going','feature');
+insert into personality values (8, 'empathic','feature');
+insert into personality values (9, 'enthusiastic','feature');
+insert into personality values (10, 'kind','feature');
+insert into personality values (11, 'funny','feature');
+insert into personality values (12, 'honest','feature');
+insert into personality values (13, 'optimistic','feature');
+insert into personality values (14, 'organized','feature');
+insert into personality values (15, 'passionate','feature');
+insert into personality values (16, 'proactive','feature');
+insert into personality values (17, 'sensible','feature');
+insert into personality values (18, 'tolerant','feature');
+insert into personality values (19, 'sociable','feature');
+insert into personality values (20, 'sensitive','feature');
+insert into personality values (21, 'familiar', 'lifestyle');
+insert into personality values (22, 'healthy', 'lifestyle');
+insert into personality values (23, 'gamer', 'lifestyle');
+insert into personality values (24, 'foodie', 'lifestyle');
+insert into personality values (25, 'workaholic', 'lifestyle');
+insert into personality values (26, 'early bird', 'lifestyle');
+insert into personality values (27, 'adventurous', 'lifestyle');
+insert into personality values (28, 'quiet', 'lifestyle');
+insert into personality values (29, 'party animal', 'lifestyle');
+insert into personality values (30, 'shopper', 'lifestyle');
+insert into personality values (31, 'animal lover', 'lifestyle');
+insert into personality values (32, 'lonely', 'lifestyle');
+insert into personality values (33, 'nocturnal', 'lifestyle');
+insert into personality values (34, 'practical', 'lifestyle');
+insert into personality values (35, 'improviser', 'lifestyle');
+insert into personality values (36, 'homelike', 'lifestyle');
+insert into personality values (37, 'fashion addict', 'lifestyle');
+insert into personality values (38, 'geek', 'lifestyle');
+insert into personality values (39, 'hater', 'lifestyle');
+insert into personality values (40, 'entrepreneur', 'lifestyle');
+
+insert into personality_user values (1, 1, '2020-01-02 11-22-22');
+insert into personality_user values (1, 3, '2020-01-02 11-22-22');
+insert into personality_user values (1, 8, '2020-01-02 11-22-22');
+insert into personality_user values (1, 10, '2020-01-02 11-22-22');
+insert into personality_user values (1, 12, '2020-01-02 11-22-22');
+insert into personality_user values (1, 21, '2020-01-02 11-22-22');
+insert into personality_user values (1, 23, '2020-01-02 11-22-22');
+insert into personality_user values (1, 28, '2020-01-02 11-22-22');
+insert into personality_user values (1, 30, '2020-01-02 11-22-22');
+insert into personality_user values (1, 32, '2020-01-02 11-22-22');
+
+insert into personality_user values (2, 2, '2020-01-02 11-22-22');
+insert into personality_user values (2, 5, '2020-01-02 11-22-22');
+insert into personality_user values (2, 6, '2020-01-02 11-22-22');
+insert into personality_user values (2, 7, '2020-01-02 11-22-22');
+insert into personality_user values (2, 8, '2020-01-02 11-22-22');
+insert into personality_user values (2, 22, '2020-01-02 11-22-22');
+insert into personality_user values (2, 25, '2020-01-02 11-22-22');
+insert into personality_user values (2, 26, '2020-01-02 11-22-22');
+insert into personality_user values (2, 27, '2020-01-02 11-22-22');
+insert into personality_user values (2, 28, '2020-01-02 11-22-22');
+
+insert into personality_user values (3, 1, '2020-01-02 11-22-22');
+insert into personality_user values (3, 2, '2020-01-02 11-22-22');
+insert into personality_user values (3, 3, '2020-01-02 11-22-22');
+insert into personality_user values (3, 7, '2020-01-02 11-22-22');
+insert into personality_user values (3, 9, '2020-01-02 11-22-22');
+insert into personality_user values (3, 21, '2020-01-02 11-22-22');
+insert into personality_user values (3, 22, '2020-01-02 11-22-22');
+insert into personality_user values (3, 23, '2020-01-02 11-22-22');
+insert into personality_user values (3, 27, '2020-01-02 11-22-22');
+insert into personality_user values (3, 29, '2020-01-02 11-22-22');
+
+insert into personality_user values (4, 13, '2020-01-02 11-22-22');
+insert into personality_user values (4, 17, '2020-01-02 11-22-22');
+insert into personality_user values (4, 18, '2020-01-02 11-22-22');
+insert into personality_user values (4, 19, '2020-01-02 11-22-22');
+insert into personality_user values (4, 20, '2020-01-02 11-22-22');
+insert into personality_user values (4, 33, '2020-01-02 11-22-22');
+insert into personality_user values (4, 37, '2020-01-02 11-22-22');
+insert into personality_user values (4, 38, '2020-01-02 11-22-22');
+insert into personality_user values (4, 39, '2020-01-02 11-22-22');
+insert into personality_user values (4, 40, '2020-01-02 11-22-22');
+
+insert into personality_user values (5, 10, '2020-01-02 11-22-22');
+insert into personality_user values (5, 11, '2020-01-02 11-22-22');
+insert into personality_user values (5, 14, '2020-01-02 11-22-22');
+insert into personality_user values (5, 15, '2020-01-02 11-22-22');
+insert into personality_user values (5, 4, '2020-01-02 11-22-22');
+insert into personality_user values (5, 30, '2020-01-02 11-22-22');
+insert into personality_user values (5, 31, '2020-01-02 11-22-22');
+insert into personality_user values (5, 34, '2020-01-02 11-22-22');
+insert into personality_user values (5, 35, '2020-01-02 11-22-22');
+insert into personality_user values (5, 24, '2020-01-02 11-22-22');
+
+insert into personality_user values (6, 15, '2020-01-02 11-22-22');
+insert into personality_user values (6, 2, '2020-01-02 11-22-22');
+insert into personality_user values (6, 3, '2020-01-02 11-22-22');
+insert into personality_user values (6, 12, '2020-01-02 11-22-22');
+insert into personality_user values (6, 19, '2020-01-02 11-22-22');
+insert into personality_user values (6, 35, '2020-01-02 11-22-22');
+insert into personality_user values (6, 22, '2020-01-02 11-22-22');
+insert into personality_user values (6, 23, '2020-01-02 11-22-22');
+insert into personality_user values (6, 32, '2020-01-02 11-22-22');
+insert into personality_user values (6, 39, '2020-01-02 11-22-22');
+
+insert into personality_user values (7, 9, '2020-01-02 11-22-22');
+insert into personality_user values (7, 6, '2020-01-02 11-22-22');
+insert into personality_user values (7, 11, '2020-01-02 11-22-22');
+insert into personality_user values (7, 20, '2020-01-02 11-22-22');
+insert into personality_user values (7, 12, '2020-01-02 11-22-22');
+insert into personality_user values (7, 29, '2020-01-02 11-22-22');
+insert into personality_user values (7, 26, '2020-01-02 11-22-22');
+insert into personality_user values (7, 31, '2020-01-02 11-22-22');
+insert into personality_user values (7, 40, '2020-01-02 11-22-22');
+insert into personality_user values (7, 32, '2020-01-02 11-22-22');
+
+insert into personality_user values (8, 10, '2020-01-02 11-22-22');
+insert into personality_user values (8, 18, '2020-01-02 11-22-22');
+insert into personality_user values (8, 11, '2020-01-02 11-22-22');
+insert into personality_user values (8, 7, '2020-01-02 11-22-22');
+insert into personality_user values (8, 17, '2020-01-02 11-22-22');
+insert into personality_user values (8, 30, '2020-01-02 11-22-22');
+insert into personality_user values (8, 38, '2020-01-02 11-22-22');
+insert into personality_user values (8, 31, '2020-01-02 11-22-22');
+insert into personality_user values (8, 27, '2020-01-02 11-22-22');
+insert into personality_user values (8, 37, '2020-01-02 11-22-22');
+
+insert into personality_user values (9, 1, '2020-01-02 11-22-22');
+insert into personality_user values (9, 5, '2020-01-02 11-22-22');
+insert into personality_user values (9, 15, '2020-01-02 11-22-22');
+insert into personality_user values (9, 10, '2020-01-02 11-22-22');
+insert into personality_user values (9, 20, '2020-01-02 11-22-22');
+insert into personality_user values (9, 21, '2020-01-02 11-22-22');
+insert into personality_user values (9, 25, '2020-01-02 11-22-22');
+insert into personality_user values (9, 35, '2020-01-02 11-22-22');
+insert into personality_user values (9, 30, '2020-01-02 11-22-22');
+insert into personality_user values (9, 40, '2020-01-02 11-22-22');
+
+insert into personality_user values (10, 10, '2020-01-02 11-22-22');
+insert into personality_user values (10, 2, '2020-01-02 11-22-22');
+insert into personality_user values (10, 3, '2020-01-02 11-22-22');
+insert into personality_user values (10, 13, '2020-01-02 11-22-22');
+insert into personality_user values (10, 17, '2020-01-02 11-22-22');
+insert into personality_user values (10, 30, '2020-01-02 11-22-22');
+insert into personality_user values (10, 22, '2020-01-02 11-22-22');
+insert into personality_user values (10, 23, '2020-01-02 11-22-22');
+insert into personality_user values (10, 33, '2020-01-02 11-22-22');
+insert into personality_user values (10, 37, '2020-01-02 11-22-22');
+
+insert into personality_user values (11, 1, '2020-01-02 11-22-22');
+insert into personality_user values (11, 3, '2020-01-02 11-22-22');
+insert into personality_user values (11, 8, '2020-01-02 11-22-22');
+insert into personality_user values (11, 10, '2020-01-02 11-22-22');
+insert into personality_user values (11, 12, '2020-01-02 11-22-22');
+insert into personality_user values (11, 21, '2020-01-02 11-22-22');
+insert into personality_user values (11, 23, '2020-01-02 11-22-22');
+insert into personality_user values (11, 28, '2020-01-02 11-22-22');
+insert into personality_user values (11, 30, '2020-01-02 11-22-22');
+insert into personality_user values (11, 32, '2020-01-02 11-22-22');
+
+insert into personality_user values (12, 2, '2020-01-02 11-22-22');
+insert into personality_user values (12, 5, '2020-01-02 11-22-22');
+insert into personality_user values (12, 6, '2020-01-02 11-22-22');
+insert into personality_user values (12, 7, '2020-01-02 11-22-22');
+insert into personality_user values (12, 8, '2020-01-02 11-22-22');
+insert into personality_user values (12, 22, '2020-01-02 11-22-22');
+insert into personality_user values (12, 25, '2020-01-02 11-22-22');
+insert into personality_user values (12, 26, '2020-01-02 11-22-22');
+insert into personality_user values (12, 27, '2020-01-02 11-22-22');
+insert into personality_user values (12, 28, '2020-01-02 11-22-22');
+
+insert into personality_user values (13, 1, '2020-01-02 11-22-22');
+insert into personality_user values (13, 2, '2020-01-02 11-22-22');
+insert into personality_user values (13, 3, '2020-01-02 11-22-22');
+insert into personality_user values (13, 7, '2020-01-02 11-22-22');
+insert into personality_user values (13, 9, '2020-01-02 11-22-22');
+insert into personality_user values (13, 21, '2020-01-02 11-22-22');
+insert into personality_user values (13, 22, '2020-01-02 11-22-22');
+insert into personality_user values (13, 23, '2020-01-02 11-22-22');
+insert into personality_user values (13, 27, '2020-01-02 11-22-22');
+insert into personality_user values (13, 29, '2020-01-02 11-22-22');
+
+insert into personality_user values (14, 13, '2020-01-02 11-22-22');
+insert into personality_user values (14, 17, '2020-01-02 11-22-22');
+insert into personality_user values (14, 18, '2020-01-02 11-22-22');
+insert into personality_user values (14, 19, '2020-01-02 11-22-22');
+insert into personality_user values (14, 20, '2020-01-02 11-22-22');
+insert into personality_user values (14, 33, '2020-01-02 11-22-22');
+insert into personality_user values (14, 37, '2020-01-02 11-22-22');
+insert into personality_user values (14, 38, '2020-01-02 11-22-22');
+insert into personality_user values (14, 39, '2020-01-02 11-22-22');
+insert into personality_user values (14, 40, '2020-01-02 11-22-22');
+
+insert into personality_user values (15, 10, '2020-01-02 11-22-22');
+insert into personality_user values (15, 11, '2020-01-02 11-22-22');
+insert into personality_user values (15, 14, '2020-01-02 11-22-22');
+insert into personality_user values (15, 15, '2020-01-02 11-22-22');
+insert into personality_user values (15, 4, '2020-01-02 11-22-22');
+insert into personality_user values (15, 30, '2020-01-02 11-22-22');
+insert into personality_user values (15, 31, '2020-01-02 11-22-22');
+insert into personality_user values (15, 34, '2020-01-02 11-22-22');
+insert into personality_user values (15, 35, '2020-01-02 11-22-22');
+insert into personality_user values (15, 24, '2020-01-02 11-22-22');
+
+insert into personality_user values (16, 15, '2020-01-02 11-22-22');
+insert into personality_user values (16, 2, '2020-01-02 11-22-22');
+insert into personality_user values (16, 3, '2020-01-02 11-22-22');
+insert into personality_user values (16, 12, '2020-01-02 11-22-22');
+insert into personality_user values (16, 19, '2020-01-02 11-22-22');
+insert into personality_user values (16, 35, '2020-01-02 11-22-22');
+insert into personality_user values (16, 22, '2020-01-02 11-22-22');
+insert into personality_user values (16, 23, '2020-01-02 11-22-22');
+insert into personality_user values (16, 32, '2020-01-02 11-22-22');
+insert into personality_user values (16, 39, '2020-01-02 11-22-22');
+
+insert into personality_user values (17, 9, '2020-01-02 11-22-22');
+insert into personality_user values (17, 6, '2020-01-02 11-22-22');
+insert into personality_user values (17, 11, '2020-01-02 11-22-22');
+insert into personality_user values ( 17, 20, '2020-01-02 11-22-22');
+insert into personality_user values (17, 12, '2020-01-02 11-22-22');
+insert into personality_user values (17, 29, '2020-01-02 11-22-22');
+insert into personality_user values (17, 26, '2020-01-02 11-22-22');
+insert into personality_user values (17, 31, '2020-01-02 11-22-22');
+insert into personality_user values ( 17, 40, '2020-01-02 11-22-22');
+insert into personality_user values (17, 32, '2020-01-02 11-22-22');
+
+insert into personality_user values (18, 10, '2020-01-02 11-22-22');
+insert into personality_user values (18, 18, '2020-01-02 11-22-22');
+insert into personality_user values (18, 11, '2020-01-02 11-22-22');
+insert into personality_user values (18, 7, '2020-01-02 11-22-22');
+insert into personality_user values (18, 17, '2020-01-02 11-22-22');
+insert into personality_user values (18, 30, '2020-01-02 11-22-22');
+insert into personality_user values (18, 38, '2020-01-02 11-22-22');
+insert into personality_user values (18, 31, '2020-01-02 11-22-22');
+insert into personality_user values (18, 27, '2020-01-02 11-22-22');
+insert into personality_user values (18, 37, '2020-01-02 11-22-22');
+
+insert into personality_user values (19, 1, '2020-01-02 11-22-22');
+insert into personality_user values (19, 5, '2020-01-02 11-22-22');
+insert into personality_user values (19, 15, '2020-01-02 11-22-22');
+insert into personality_user values (19, 10, '2020-01-02 11-22-22');
+insert into personality_user values (19, 20, '2020-01-02 11-22-22');
+insert into personality_user values (19, 21, '2020-01-02 11-22-22');
+insert into personality_user values (19, 25, '2020-01-02 11-22-22');
+insert into personality_user values (19, 35, '2020-01-02 11-22-22');
+insert into personality_user values (19, 30, '2020-01-02 11-22-22');
+insert into personality_user values (19, 40, '2020-01-02 11-22-22');
+
+insert into personality_user values (20, 10, '2020-01-02 11-22-22');
+insert into personality_user values (20, 2, '2020-01-02 11-22-22');
+insert into personality_user values (20, 3, '2020-01-02 11-22-22');
+insert into personality_user values (20, 13, '2020-01-02 11-22-22');
+insert into personality_user values (20, 17, '2020-01-02 11-22-22');
+insert into personality_user values (20, 30, '2020-01-02 11-22-22');
+insert into personality_user values (20, 22, '2020-01-02 11-22-22');
+insert into personality_user values (20, 23, '2020-01-02 11-22-22');
+insert into personality_user values (20, 33, '2020-01-02 11-22-22');
+insert into personality_user values (20, 37, '2020-01-02 11-22-22');
+
+insert into hobbies values (1, 'cinema');
+insert into hobbies values (2, 'music');
+insert into hobbies values (3, 'photography');
+insert into hobbies values (4, 'nature');
+insert into hobbies values (5, 'sports');
+insert into hobbies values (6, 'reading');
+insert into hobbies values (7, 'cooking');
+insert into hobbies values (8, 'series');
+insert into hobbies values (9, 'videogames');
+insert into hobbies values (10, 'fashion');
+insert into hobbies values (11, 'art');
+insert into hobbies values (12, 'technology');
+insert into hobbies values (13, 'adventure');
+insert into hobbies values (14, 'travel');
+insert into hobbies values (15, 'crafts');
+
+insert into hobbies_user values (1, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (1, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (1, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (1, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (1, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (2, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (2, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (2, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (2, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (2, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (3, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (3, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (3, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (3, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (3, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (4, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (4, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (4, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (4, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (4, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (5, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (5, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (5, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (5, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (5, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (6, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (6, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (6, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (6, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (6, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (7, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (7, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (7, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (7, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (7, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (8, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (8, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (8, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (8, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (8, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (9, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (9, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (9, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (9, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (9, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (10, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (10, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (10, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (10, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (10, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (11, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (11, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (11, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (11, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (11, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (12, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (12, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (12, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (12, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (12, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (13, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (13, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (13, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (13, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (13, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (14, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (14, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (14, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (14, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (14, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (15, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (15, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (15, 9, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (15, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (15, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (16, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (16, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (16, 13, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (16, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (16, 15, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (17, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (17, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (17, 4, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (17, 12, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (17, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (18, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (18, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (18, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (18, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (18, 14, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (19, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (19, 5, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (19, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (19, 8, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (19, 11, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into hobbies_user values (20, 1, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (20, 2, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (20, 3, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (20, 6, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+insert into hobbies_user values (20, 7, 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. Curabitur aliquet posuere turpis in ultrices.', '2020-01-02 11-22-22');
+
+insert into room values (1, 1, 
+'¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.',
+'Santiago de la Iglesia, 8 1D', 15004, 'A Coruña', 0, 0, 80, 'any', 'working', 20, 32, 'private', 12, 'double', 200, false, false, null, current_date(), null, 3, null,
+'https://unsplash.com/photos/DhFHtkECn7Q', null, null, null, null, false, 22, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into room values (2, 2, 
+'¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.',
+'Avenida Finisterre 19, 4', 15004, 'A Coruña', 1, 0, 90, 'femenine', 'any', 30, 40, 'private', 16, 'double', 300, true, true, 300, current_date(), null, 6, null,
+'https://unsplash.com/photos/DhFHtkECn7Q', null, null, null, null, false, 35, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into room values (3, 3, 
+'¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.',
+'San Andres 36, 3', 15003, 'A Coruña', 0, 1, 70, 'masculine', 'working', 20, 40, 'private', 10, 'individual', 220, true, true, 440, current_date(), null, 12, null,
+'https://unsplash.com/photos/DhFHtkECn7Q', null, null, null, null, false, 44, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into room values (4, 4, 
+'¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.',
+'Zalaeta 27, 5 Izq', 15002, 'A Coruña', 1, 1, 90, 'femenine', 'student', 22, 28, 'shared', 24, 'double', 200, true, true, 200, current_date(), 20220101, 6, null,
+'https://unsplash.com/photos/DhFHtkECn7Q', null, null, null, null, false, 12, '2020-01-02 11-22-22','2020-01-04 12-42-23');
+insert into room values (5, 5, 
+'¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae.',
+'Angeles 2, 1', 15001, 'A Coruña', 0, 0, 60, 'any', 'working', 18, 50,  'private', 14, 'double', 240, false, false, null, date_sub(current_date(), interval 3 month), null, 6, null,
+'https://unsplash.com/photos/DhFHtkECn7Q', null, null, null, null, false, 9, '2020-01-02 11-22-22','2020-01-04 12-42-23');
 
 insert into facilities values (1, 'TV');
 insert into facilities values (2, 'Wifi');
@@ -727,143 +607,214 @@ insert into facilities values (16, 'accessible');
 insert into facilities values (17, 'garden');
 insert into facilities values (18, 'terrace');
 
-create table facilities_entry(
-FK_entry_facilities_entry int not null,
-FK_facilities_facilities_entry int not null,
-foreign key(FK_entry_facilities_entry) references entry (PK_entry),
-foreign key(FK_facilities_facilities_entry) references facilities (PK_facilities)
-);
+insert into facilities_room values (1, 1, '2020-01-02 11-22-22');
+insert into facilities_room values (1, 2, '2020-01-02 11-22-22');
+insert into facilities_room values (1, 6, '2020-01-02 11-22-22');
+insert into facilities_room values (1, 10, '2020-01-02 11-22-22');
+insert into facilities_room values (1, 12, '2020-01-02 11-22-22');
+insert into facilities_room values (1, 14, '2020-01-02 11-22-22');
 
-alter table facilities_entry
-add column date_start datetime default "2019-06-15 09:34:21";
+insert into facilities_room values (2, 1, '2020-01-02 11-22-22');
+insert into facilities_room values (2, 2, '2020-01-02 11-22-22');
+insert into facilities_room values (2, 7, '2020-01-02 11-22-22');
+insert into facilities_room values (2, 8, '2020-01-02 11-22-22');
+insert into facilities_room values (2, 13, '2020-01-02 11-22-22');
+insert into facilities_room values (2, 14, '2020-01-02 11-22-22');
 
-insert into facilities_entry values (1, 1);
-insert into facilities_entry values (1, 2);
-insert into facilities_entry values (1, 6);
-insert into facilities_entry values (1, 10);
-insert into facilities_entry values (1, 12);
-insert into facilities_entry values (1, 14);
+insert into facilities_room values (3, 1, '2020-01-02 11-22-22');
+insert into facilities_room values (3, 2, '2020-01-02 11-22-22');
+insert into facilities_room values (3, 6, '2020-01-02 11-22-22');
+insert into facilities_room values (3, 7, '2020-01-02 11-22-22');
+insert into facilities_room values (3, 8, '2020-01-02 11-22-22');
+insert into facilities_room values (3, 10, '2020-01-02 11-22-22');
 
-insert into facilities_entry values (2, 1);
-insert into facilities_entry values (2, 2);
-insert into facilities_entry values (2, 7);
-insert into facilities_entry values (2, 8);
-insert into facilities_entry values (2, 13);
-insert into facilities_entry values (2, 14);
+insert into facilities_room values (4, 1, '2020-01-02 11-22-22');
+insert into facilities_room values (4, 2, '2020-01-02 11-22-22');
+insert into facilities_room values (4, 5, '2020-01-02 11-22-22');
+insert into facilities_room values (4, 6, '2020-01-02 11-22-22');
+insert into facilities_room values (4, 7, '2020-01-02 11-22-22');
+insert into facilities_room values (4, 10, '2020-01-02 11-22-22');
 
-insert into facilities_entry values (3, 1);
-insert into facilities_entry values (3, 2);
-insert into facilities_entry values (3, 6);
-insert into facilities_entry values (3, 7);
-insert into facilities_entry values (3, 8);
-insert into facilities_entry values (3, 10);
+insert into facilities_room values (5, 1, '2020-01-02 11-22-22');
+insert into facilities_room values ( 5, 2, '2020-01-02 11-22-22');
+insert into facilities_room values (5, 3, '2020-01-02 11-22-22');
+insert into facilities_room values (5, 4, '2020-01-02 11-22-22');
+insert into facilities_room values (5, 12, '2020-01-02 11-22-22');
+insert into facilities_room values (5, 18, '2020-01-02 11-22-22');
 
-insert into facilities_entry values (4, 1);
-insert into facilities_entry values (4, 2);
-insert into facilities_entry values (4, 5);
-insert into facilities_entry values (4, 6);
-insert into facilities_entry values (4, 7);
-insert into facilities_entry values (4, 10);
+insert into rules values (1, 'pets');
+insert into rules values (2, 'smoking');
+insert into rules values (3, 'vegetarian');
+insert into rules values (4, 'allergies');
+insert into rules values (5, 'couples');
 
-insert into facilities_entry values (5, 1);
-insert into facilities_entry values ( 5, 2);
-insert into facilities_entry values (5, 3);
-insert into facilities_entry values (5, 4);
-insert into facilities_entry values (5, 12);
-insert into facilities_entry values (5, 18);
+insert into rules_user values (1, 1, '2020-01-02 11-22-22');
+insert into rules_user values (1, 2, '2020-01-02 11-22-22');
+insert into rules_user values (1, 3, '2020-01-02 11-22-22');
+insert into rules_user values (1, 4, '2020-01-02 11-22-22');
 
-create table rules_entry (
-FK_entry_rules_entry int not null,
-FK_rules_rules_entry int not null,
-primary key(FK_entry_rules_entry, FK_rules_rules_entry),
-foreign key(FK_entry_rules_entry) references entry (PK_entry),
-foreign key(FK_rules_rules_entry) references rules (PK_rules)
-);
+insert into rules_user values (2, 1, '2020-01-02 11-22-22');
+insert into rules_user values (2, 3, '2020-01-02 11-22-22');
+insert into rules_user values (2, 4, '2020-01-02 11-22-22');
+insert into rules_user values (2, 5, '2020-01-02 11-22-22');
 
-alter table rules_entry
-add column date_start datetime default "2019-06-15 09:34:21";
+insert into rules_user values (3, 3, '2020-01-02 11-22-22');
+insert into rules_user values (3, 4, '2020-01-02 11-22-22');
 
-insert into rules_entry values (1, 1);
-insert into rules_entry values (1, 2);
-insert into rules_entry values (1, 3);
-insert into rules_entry values (1, 4);
-insert into rules_entry values (1, 5);
+insert into rules_user values (4, 1, '2020-01-02 11-22-22');
+insert into rules_user values (4, 2, '2020-01-02 11-22-22');
+insert into rules_user values (4, 3, '2020-01-02 11-22-22');
+insert into rules_user values (4, 4, '2020-01-02 11-22-22');
+insert into rules_user values (4, 5, '2020-01-02 11-22-22');
 
-insert into rules_entry values (2, 1);
-insert into rules_entry values (2, 2);
-insert into rules_entry values (2, 3);
-insert into rules_entry values (2, 4);
-insert into rules_entry values (2, 5);
+insert into rules_user values (5, 1, '2020-01-02 11-22-22');
+insert into rules_user values (5, 4, '2020-01-02 11-22-22');
+insert into rules_user values (5, 5, '2020-01-02 11-22-22');
 
-insert into rules_entry values (3, 1);
-insert into rules_entry values (3, 2);
-insert into rules_entry values (3, 3);
-insert into rules_entry values (3, 4);
-insert into rules_entry values (3, 5);
+insert into rules_user values (6, 2, '2020-01-02 11-22-22');
+insert into rules_user values (6, 4, '2020-01-02 11-22-22');
 
-insert into rules_entry values (4, 1);
-insert into rules_entry values (4, 2);
-insert into rules_entry values (4, 3);
-insert into rules_entry values (4, 4);
-insert into rules_entry values (4, 5);
+insert into rules_user values (7, 1, '2020-01-02 11-22-22');
+insert into rules_user values (7, 5, '2020-01-02 11-22-22');
 
-insert into rules_entry values (5, 1);
-insert into rules_entry values (5, 2);
-insert into rules_entry values (5, 3);
-insert into rules_entry values (5, 4);
-insert into rules_entry values (5, 5);
+insert into rules_user values (8, 5, '2020-01-02 11-22-22');
 
-create table rating (
-PK_rating int primary key auto_increment,
-FK_user_sent_rating int not null,
-FK_user_received_rating int not null,
-rate int check (rate between 1 and 5),
-foreign key (FK_user_sent_rating) references user(PK_user),
-foreign key (FK_user_received_rating) references user(PK_user)
-);
+insert into rules_user values (9, 1, '2020-01-02 11-22-22');
+insert into rules_user values (9, 2, '2020-01-02 11-22-22');
 
-alter table rating
-add column date_start datetime default "2019-06-15 09:34:21";
+insert into rules_user values (10, 1, '2020-01-02 11-22-22');
+insert into rules_user values (10, 2, '2020-01-02 11-22-22');
+insert into rules_user values (10, 5, '2020-01-02 11-22-22');
 
-insert into rating values (1, 1, 6, 4);
-insert into rating values (2, 1, 12, 5);
-insert into rating values (3, 1, 20, 3);
-insert into rating values (4, 1, 7, 4);
-insert into rating values (5, 1, 8, 5);
+insert into rules_user values (11, 1, '2020-01-02 11-22-22');
+insert into rules_user values (11, 2, '2020-01-02 11-22-22');
+insert into rules_user values (11, 3, '2020-01-02 11-22-22');
+insert into rules_user values (11, 4, '2020-01-02 11-22-22');
+insert into rules_user values (11, 5, '2020-01-02 11-22-22');
 
-insert into rating values (6, 2, 9, 4);
-insert into rating values (7, 2, 10, 4);
-insert into rating values (8, 2, 11, 4);
-insert into rating values (9, 2, 13, 4);
-insert into rating values (10, 2, 14, 5);
+insert into rules_user values (12, 1, '2020-01-02 11-22-22');
+insert into rules_user values (12, 2, '2020-01-02 11-22-22');
+insert into rules_user values (12, 3, '2020-01-02 11-22-22');
+insert into rules_user values (12, 5, '2020-01-02 11-22-22');
 
-insert into rating values (11, 3, 15, 5);
-insert into rating values (12, 3, 16, 4);
-insert into rating values (13, 3, 17, 4);
-insert into rating values (14, 3, 18, 3);
-insert into rating values (15, 3, 19, 4);
+insert into rules_user values (13, 2, '2020-01-02 11-22-22');
+insert into rules_user values (13, 3, '2020-01-02 11-22-22');
+insert into rules_user values (13, 4, '2020-01-02 11-22-22');
+insert into rules_user values (13, 5, '2020-01-02 11-22-22');
 
-insert into rating values (16, 4, 9, 4);
-insert into rating values (17, 4, 17, 5);
-insert into rating values (18, 4, 12, 4);
-insert into rating values (19, 4, 6, 4);
-insert into rating values (20, 4, 5, 3);
+insert into rules_user values (14, 1, '2020-01-02 11-22-22');
+insert into rules_user values (14, 3, '2020-01-02 11-22-22');
+insert into rules_user values (14, 4, '2020-01-02 11-22-22');
+insert into rules_user values (14, 5, '2020-01-02 11-22-22');
 
-insert into rating values (21, 5, 19, 3);
-insert into rating values (22, 5, 13, 4);
-insert into rating values (23, 5, 16, 5);
-insert into rating values (24, 5, 8, 4);
-insert into rating values (25, 5, 10, 4);
+insert into rules_user values (15, 1, '2020-01-02 11-22-22');
+insert into rules_user values (15, 4, '2020-01-02 11-22-22');
+insert into rules_user values (15, 5, '2020-01-02 11-22-22');
 
-create table booking(
-PK_booking int primary key auto_increment,
-FK_user_booking int not null,
-foreign key (FK_user_booking) references user (PK_user),
-FK_entry_booking int not null,
-foreign key (FK_entry_booking) references entry (PK_entry),
-status enum ('pending', 'cancelled', 'accepted'),
-booking_date datetime not null
-);
+insert into rules_user values (16, 1, '2020-01-02 11-22-22');
+
+insert into rules_user values (17, 1, '2020-01-02 11-22-22');
+insert into rules_user values (17, 2, '2020-01-02 11-22-22');
+insert into rules_user values (17, 5, '2020-01-02 11-22-22');
+
+insert into rules_user values (18, 3, '2020-01-02 11-22-22');
+insert into rules_user values (18, 5, '2020-01-02 11-22-22');
+
+insert into rules_user values (19, 1, '2020-01-02 11-22-22');
+insert into rules_user values (19, 5, '2020-01-02 11-22-22');
+
+insert into rules_user values (20, 2, '2020-01-02 11-22-22');
+insert into rules_user values (20, 3, '2020-01-02 11-22-22');
+
+insert into rules_room values (1, 1, '2020-01-02 11-22-22');
+insert into rules_room values (1, 2, '2020-01-02 11-22-22');
+insert into rules_room values (1, 3, '2020-01-02 11-22-22');
+insert into rules_room values (1, 4, '2020-01-02 11-22-22');
+insert into rules_room values (1, 5, '2020-01-02 11-22-22');
+
+insert into rules_room values (2, 1, '2020-01-02 11-22-22');
+insert into rules_room values (2, 2, '2020-01-02 11-22-22');
+insert into rules_room values (2, 3, '2020-01-02 11-22-22');
+insert into rules_room values (2, 4, '2020-01-02 11-22-22');
+insert into rules_room values (2, 5, '2020-01-02 11-22-22');
+
+insert into rules_room values (3, 1, '2020-01-02 11-22-22');
+insert into rules_room values (3, 2, '2020-01-02 11-22-22');
+insert into rules_room values (3, 3, '2020-01-02 11-22-22');
+insert into rules_room values (3, 4, '2020-01-02 11-22-22');
+insert into rules_room values (3, 5, '2020-01-02 11-22-22');
+
+insert into rules_room values (4, 1, '2020-01-02 11-22-22');
+insert into rules_room values (4, 2, '2020-01-02 11-22-22');
+insert into rules_room values (4, 3, '2020-01-02 11-22-22');
+insert into rules_room values (4, 4, '2020-01-02 11-22-22');
+insert into rules_room values (4, 5, '2020-01-02 11-22-22');
+
+insert into rules_room values (5, 1, '2020-01-02 11-22-22');
+insert into rules_room values (5, 2, '2020-01-02 11-22-22');
+insert into rules_room values (5, 3, '2020-01-02 11-22-22');
+insert into rules_room values (5, 4, '2020-01-02 11-22-22');
+insert into rules_room values (5, 5, '2020-01-02 11-22-22');
+
+insert into rating values (1, 1, 6, 4, '2020-01-02 11-22-22');
+insert into rating values (2, 1, 12, 5, '2020-01-02 11-22-22');
+insert into rating values (3, 1, 20, 3, '2020-01-02 11-22-22');
+insert into rating values (4, 1, 7, 4, '2020-01-02 11-22-22');
+insert into rating values (5, 1, 8, 5, '2020-01-02 11-22-22');
+
+insert into rating values (6, 2, 9, 4, '2020-01-02 11-22-22');
+insert into rating values (7, 2, 10, 4, '2020-01-02 11-22-22');
+insert into rating values (8, 2, 11, 4, '2020-01-02 11-22-22');
+insert into rating values (9, 2, 13, 4, '2020-01-02 11-22-22');
+insert into rating values (10, 2, 14, 5, '2020-01-02 11-22-22');
+
+insert into rating values (11, 3, 15, 5, '2020-01-02 11-22-22');
+insert into rating values (12, 3, 16, 4, '2020-01-02 11-22-22');
+insert into rating values (13, 3, 17, 4, '2020-01-02 11-22-22');
+insert into rating values (14, 3, 18, 3, '2020-01-02 11-22-22');
+insert into rating values (15, 3, 19, 4, '2020-01-02 11-22-22');
+
+insert into rating values (16, 4, 9, 4, '2020-01-02 11-22-22');
+insert into rating values (17, 4, 17, 5, '2020-01-02 11-22-22');
+insert into rating values (18, 4, 12, 4, '2020-01-02 11-22-22');
+insert into rating values (19, 4, 6, 4, '2020-01-02 11-22-22');
+insert into rating values (20, 4, 5, 3, '2020-01-02 11-22-22');
+
+insert into rating values (21, 5, 19, 3, '2020-01-02 11-22-22');
+insert into rating values (22, 5, 13, 4, '2020-01-02 11-22-22');
+insert into rating values (23, 5, 16, 5, '2020-01-02 11-22-22');
+insert into rating values (24, 5, 8, 4, '2020-01-02 11-22-22');
+insert into rating values (25, 5, 10, 4, '2020-01-02 11-22-22');
+
+insert into rating values (26, 6, 1, 4, '2020-01-02 11-22-22');
+insert into rating values (27, 12, 1, 5, '2020-01-02 11-22-22');
+insert into rating values (28, 20, 1, 3, '2020-01-02 11-22-22');
+insert into rating values (29, 7, 1, 4, '2020-01-02 11-22-22');
+insert into rating values (30, 8, 1, 5, '2020-01-02 11-22-22');
+
+insert into rating values (31, 9, 2, 4, '2020-01-02 11-22-22');
+insert into rating values (32, 10, 2, 4, '2020-01-02 11-22-22');
+insert into rating values (33, 11, 2, 4, '2020-01-02 11-22-22');
+insert into rating values (34, 13, 2, 4, '2020-01-02 11-22-22');
+insert into rating values (35, 14, 2, 5, '2020-01-02 11-22-22');
+
+insert into rating values (36, 15, 3, 5, '2020-01-02 11-22-22');
+insert into rating values (37, 16, 3, 4, '2020-01-02 11-22-22');
+insert into rating values (38, 17, 3, 4, '2020-01-02 11-22-22');
+insert into rating values (39, 18, 3, 3, '2020-01-02 11-22-22');
+insert into rating values (40, 19, 3, 4, '2020-01-02 11-22-22');
+
+insert into rating values (41, 9, 4, 4, '2020-01-02 11-22-22');
+insert into rating values (42, 17, 4, 5, '2020-01-02 11-22-22');
+insert into rating values (43, 12, 4, 4, '2020-01-02 11-22-22');
+insert into rating values (44, 6, 4, 4, '2020-01-02 11-22-22');
+insert into rating values (45, 5, 4, 3, '2020-01-02 11-22-22');
+
+insert into rating values (46, 19, 5, 3, '2020-01-02 11-22-22');
+insert into rating values (47, 13, 5, 4, '2020-01-02 11-22-22');
+insert into rating values (48, 16, 5, 5, '2020-01-02 11-22-22');
+insert into rating values (49, 8, 5, 4, '2020-01-02 11-22-22');
+insert into rating values (50, 10, 5, 4, '2020-01-02 11-22-22');
 
 insert into booking values (1, 6, 5, 'pending', "2020-04-14 17:02:01");
 
@@ -912,28 +863,3 @@ insert into booking values (34, 10, 5, 'accepted', "2020-03-10 22:45:01");
 insert into booking values (35, 13, 5, 'accepted', "2020-01-10 22:45:01");
 insert into booking values (36, 16, 5, 'accepted', "2019-11-19 02:25:21");
 insert into booking values (37, 19, 5, 'accepted', "2020-03-10 22:45:01");
-
-create table image (
-PK_image int primary key auto_increment,
-name text not null
-);
-
-create table image_user (
-FK_image_image_user int not null,
-foreign key (FK_image_image_user) references image (PK_image),
-FK_user_image_user int not null,
-foreign key (FK_user_image_user) references user (PK_user)
-);
-
-alter table image_user
-add column date_start datetime default "2019-06-15 09:34:21";
-
-create table image_entry(
-FK_image_image_entry int not null,
-foreign key (FK_image_image_entry) references image (PK_image),
-FK_entry_image_entry int not null,
-foreign key (FK_entry_image_entry) references entry (PK_entry)
-);
-
-alter table image_entry
-add column date_start datetime default "2019-06-15 09:34:21";
