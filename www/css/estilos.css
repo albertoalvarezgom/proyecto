@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2:wght@400;500&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#menu {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  font-family: "Baloo Bhaina 2", sans-serif;
+  margin: 1rem;
+}
+
+#menu li {
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+  margin: auto 0;
+}
+
+#menu li > a {
+  padding: 0.2rem 1rem 0 1rem;
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+#menu li > a:hover {
+  border-bottom: 4px solid #ffd55a;
+}
+
+#logo {
+  flex-grow: 1;
+}
+
+#logo a {
+  font-size: 2rem;
+  color: black;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+#blocks ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+}
+
+#blocks ul li {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+  text-align: center;
+}
+
+.block h2 {
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: black;
+  font-size: 2rem;
+  font-weight: 400;
+  font-kerning: inherit;
+  margin-bottom: 2rem;
+  /* letter-spacing: 0.01em; */
+}
+
+.block {
+  margin: 3rem 2rem;
+  width: 500px;
+}
+
+.block img {
+  max-width: 70%;
+}
+
+.block a {
+  text-decoration: none;
+}
+
+#block1 {
+  background-color: #293250;
+}
+
+#block1 h2 {
+  color: #6dd47e;
+}
+
+#block2 {
+  background-color: #6dd47e;
+}
+
+#block2 h2 {
+  color: #293250;
+}
+
+.mainButton {
+  background-color: rgba(255, 255, 255, 0);
+  text-align: center;
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: white;
+  padding: 0.2rem 1rem 0rem 1rem;
+  border: 1px solid white;
+  font-size: 1rem;
+  margin: 1rem 0 2rem 0;
+}
+
+.mainButton:hover {
+  color: #293250;
+  background-color: #ffd55a;
+  border: 1px solid #ffd55a;
+}
+
+p {
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: black;
+  font-size: 1rem;
+  padding: 0rem 5rem;
+  font-weight: 400;
+  text-align: center;
+  margin: 2rem 0rem;
+}

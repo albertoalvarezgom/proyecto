@@ -1,0 +1,24 @@
+{
+  "name": "inquilinoperfecto",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "browser-sync start --server www --files www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/albertoalvarezgom/inquilinoperfecto.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/albertoalvarezgom/inquilinoperfecto/issues"
+  },
+  "homepage": "https://github.com/albertoalvarezgom/inquilinoperfecto#readme",
+  "devDependencies": {
+    "browser-sync": "^2.26.7"
+  }
+}
