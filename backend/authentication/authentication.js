@@ -1,21 +1,75 @@
-require("dotenv").config();
-const jwt = require("jsonwebtoken");
+require('dotenv').config();
+const jwt = require('jsonwebtoken');
+const chalk = require('chalk');
 
-function userAuthenticated(request, response, next) {
+const { generateError } = require('../helpers/helpers.js');
+const { getConnection } = require('../db/db.js');
+
+async function userAuthenticated(request, response, next) {
+  let connection;
+
   try {
-    // Get authorization header
     const { authorization } = request.headers;
 
-    // Check if token is valid
-    const decoded = jwt.verify(authorization, process.env.SECRET);
+    if (!authorization) {
+      throw generateError(
+        'La cabecera de autorización es necesaria para realizar esta acción',
+        400
+      );
+    }
 
-    // Add token payload to request
+    const authorizationParts = authorization.split(' ');
+
+    let token;
+
+    if (authorizationParts.length === 1) {
+      token = authorization;
+    } else if (authorizationParts[0] === 'Bearer') {
+      token = authorizationParts[1];
+    } else {
+      throw generateError('Algo falló en la lectura del token', 400);
+    }
+
+    let decoded;
+
+    try {
+      decoded = jwt.verify(authorization, process.env.SECRET);
+    } catch (error) {
+      throw generateError('Hay un problema con la forma del token', 400);
+    }
+
+    //Comprobar la fecha de creación del token (iat)
+
+    const { id, iat } = decoded;
+
+    connection = await getConnection();
+
+    const [
+      result
+    ] = await connection.query(
+      'select role, last_password_update from user where id_user=?',
+      [id]
+    );
+
+    if (!result.length) {
+      throw generateError(`El usuario con id ${id} no existe en la BBDD`, 404);
+    }
+
+    const [user] = result;
+
+    //Comprobar que la fecha de última actualización de la contraseña es menor que la de creación del token
+
+    if (new Date(iat * 1000) < new Date(user.last_password_update)) {
+      throw generateError(
+        'Has cambiado de contraseña. Haz login de nuevo',
+        400
+      );
+    }
+
     request.auth = decoded;
-
-    // Continue
     next();
   } catch (error) {
-    const authError = new Error("Invalid authorization token");
+    const authError = new Error('El token de autenticación no es válido');
     authError.httpCode = 401;
     next(authError);
   }
@@ -23,19 +77,19 @@ function userAuthenticated(request, response, next) {
 
 function userIsAdmin(request, response, next) {
   // Check if the user is admin in req.auth (see before) and send error if not
-  if (!request.auth || request.auth.role !== "admin") {
+
+  if (!request.auth && request.auth.role !== 'admin') {
     const error = new Error(
-      "You do not have admin privileges to access this resource"
+      'Acción reservda a usuarios con privilegios de administrador'
     );
     error.httpCode = 401;
     return next(error);
   }
 
-  // Continue to the next middleware
   next();
 }
 
 module.exports = {
   userAuthenticated,
-  userIsAdmin,
+  userIsAdmin
 };

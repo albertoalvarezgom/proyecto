@@ -14,16 +14,17 @@ const {
 
 const { showHome } = require('./controllers/home/homeControllers.js');
 
-const {
-  newUser,
-  validateUser,
-  loginUser,
-  updatePasswordUser,
-  getUsers,
-  viewUser,
-  editUser,
-  deleteUser
-} = require('./controllers/user/userControllers.js');
+// USER CONTROLLERS
+const { newUser } = require('./controllers/user/newUser.js');
+const { validateUser } = require('./controllers/user/validateUser.js');
+const { loginUser } = require('./controllers/user/loginUser.js');
+const { editPassword } = require('./controllers/user/editPassword.js');
+const { getUsers } = require('./controllers/user/getUsers.js');
+const { viewUser } = require('./controllers/user/viewUser.js');
+const { editUser } = require('./controllers/user/editUser.js');
+const { deleteUser } = require('./controllers/user/deleteUser.js');
+const { hideUser } = require('./controllers/user/hideUser.js');
+const { showUser } = require('./controllers/user/showUser.js');
 
 const {
   getRooms,
@@ -33,12 +34,13 @@ const {
   deleteRoom
 } = require('./controllers/room/roomControllers.js');
 
-const {
-  voteUser,
-  voteRoom,
-  getVotes,
-  editVote
-} = require('./controllers/vote/voteControllers.js');
+const { voteUser } = require('./controllers/vote/voteUser.js');
+const { voteRoom } = require('./controllers/vote/voteRoom.js');
+const { getUserVotes } = require('./controllers/vote/getUserVotes.js');
+const { getRoomVotes } = require('./controllers/vote/getRoomVotes.js');
+const { editUserVote } = require('./controllers/vote/editUserVote.js');
+const { editRoomVote } = require('./controllers/vote/editRoomVote.js');
+const { deleteVote } = require('./controllers/vote/deleteVote.js');
 
 const {
   newBooking,
@@ -71,30 +73,33 @@ app.get('/', showHome);
 //Mirar el orden de las rutas
 
 // RUTAS DE USUARIOS
-app.post('/user', newUser);
-app.get('/user/validate', validateUser);
-//Crear ruta solo para admin para validar usuarios si hay algún problema con el email
-app.post('/user/login', loginUser);
-app.post('/user/:id/password', userAuthenticated, updatePasswordUser);
-app.get('/user/', getUsers);
-app.get('/user/:id', viewUser);
-app.put('/user/:id', userAuthenticated, editUser);
-app.delete('/user/:id', userAuthenticated, userIsAdmin, deleteUser);
+app.post('/user', newUser); //Hecho
+app.get('/user/validate', validateUser); //Hecho
+app.post('/user/login', loginUser); //Hecho
+app.put('/user/:id/password', userAuthenticated, editPassword); //Hecho
+app.get('/user', userAuthenticated, getUsers); //Completar query
+app.get('/user/:id', userAuthenticated, viewUser); //Hecho
+app.put('/user/:id', userAuthenticated, editUser); //Hecho
+app.delete('/user/:id', userAuthenticated, userIsAdmin, deleteUser); //Hecho
+app.put('/user/hide/:id', userAuthenticated, hideUser); //Hecho
+app.put('/user/show/:id', userAuthenticated, showUser); //Hecho
 
 // RUTAS DE PISOS
+app.post('/room', userAuthenticated, newRoom); //Cuando se publica una habitación, el usuario pasa a ser owner
+app.put('/room/:id', userAuthenticated, editRoom);
 app.get('/room', getRooms);
 app.get('/room/:id', viewRoom);
-app.post('/room', userAuthenticated, newRoom);
-app.put('/room/:id', userAuthenticated, editRoom);
 app.delete('/room/:id', userAuthenticated, deleteRoom);
 
 // RUTAS DE VOTO
-app.post('/user/:id/vote', userAuthenticated, voteUser);
-app.get('/user/:id/vote', getVotes);
-app.put('/user/:id/vote', userAuthenticated, editVote);
-app.post('/room/:id/vote', userAuthenticated, voteRoom);
-app.get('/room/:id/vote', getVotes);
-app.put('/room/:id/vote', userAuthenticated, editVote);
+app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho
+app.get('/user/:id/vote', getUserVotes); //Hecho
+app.put('/user/:id/vote', userAuthenticated, editUserVote); //Hecho
+app.post('/room/:id/vote', userAuthenticated, voteRoom); //Hecho
+app.get('/room/:id/vote', getRoomVotes); //Hecho
+app.put('/room/:id/vote', userAuthenticated, editRoomVote); //Hecho
+app.delete('/room/:id/vote/:id', userAuthenticated, userIsAdmin, deleteVote); //Hecho
+app.delete('/user/:id/vote/:id', userAuthenticated, userIsAdmin, deleteVote); //Hecho
 
 // RUTAS DE RESERVA
 app.post('/room/:id/booking', userAuthenticated, newBooking);
