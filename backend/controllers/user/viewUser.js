@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
@@ -13,10 +13,10 @@ async function viewUser(request, response, next) {
 
     connection = await getConnection();
 
-    const [
-      user
-    ] = await connection.query(
-      'select id_user, first_name, birthday, image_1, image_2, image_3, image_4, image_5, email, creation_date, gender, ig_profile, views from user where id_user=?',
+    const [user] = await connection.query(
+      `SELECT user.id_user, user.first_name, user.birthday, user.image_1, user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, user.gender, user.ig_profile, user.views, 
+      (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
+      FROM user WHERE user.id_user=?`,
       [id]
     );
 
@@ -58,7 +58,8 @@ async function viewUser(request, response, next) {
       memberSince: dbUser.creation_date,
       gender: dbUser.gender,
       views: dbUser.views,
-      igProfile: dbUser.ig_profile
+      igProfile: dbUser.ig_profile,
+      rating: dbUser.rating
     };
 
     if (

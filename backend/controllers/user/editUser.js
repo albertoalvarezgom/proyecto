@@ -1,6 +1,5 @@
 require('dotenv').config();
 
-const chalk = require('chalk');
 const { getConnection } = require('../../db/db.js');
 const {
   generateError,
@@ -46,84 +45,38 @@ async function editUser(request, response, next) {
       );
     }
 
-    let savedFileName1;
+    const [user] = current;
 
-    if (request.files && request.files.image_1) {
-      try {
-        savedFileName1 = await processAndSavePhoto(request.files.image_1);
+    const currentImages = [
+      user.image_1,
+      user.image_2,
+      user.image_3,
+      user.image_4,
+      user.image_5
+    ];
 
-        if (current[0].image_1) {
-          await deletePhoto(current[0].image_1);
+    const newImages = [
+      request.files.image_1,
+      request.files.image_2,
+      request.files.image_3,
+      request.files.image_4,
+      request.files.image_5
+    ];
+
+    const imagestoDB = [];
+
+    if (request.files) {
+      let savedFileName;
+
+      for (let i = 0; i < newImages.length; i++) {
+        savedFileName = await processAndSavePhoto(newImages[i]);
+
+        if (currentImages[i]) {
+          await deletePhoto(currentImages[i]);
         }
-      } catch (error) {
-        throw generateError('Error procesando imagen subida', 400);
+
+        imagestoDB.push(savedFileName);
       }
-    } else {
-      savedFileName1 = current.image_1;
-    }
-
-    let savedFileName2;
-
-    if (request.files && request.files.image_2) {
-      try {
-        savedFileName2 = await processAndSavePhoto(request.files.image_2);
-
-        if (current && current[0].image_2) {
-          await deletePhoto(current[0].image_2);
-        }
-      } catch (error) {
-        throw generateError('Error procesando imagen subida', 400);
-      }
-    } else {
-      savedFileName2 = current.image_2;
-    }
-
-    let savedFileName3;
-
-    if (request.files && request.files.image_3) {
-      try {
-        savedFileName3 = await processAndSavePhoto(request.files.image_3);
-
-        if (current && current[0].image_3) {
-          await deletePhoto(current[0].image_3);
-        }
-      } catch (error) {
-        throw generateError('Error procesando imagen subida', 400);
-      }
-    } else {
-      savedFileName3 = current.image_3;
-    }
-
-    let savedFileName4;
-
-    if (request.files && request.files.image_4) {
-      try {
-        savedFileName4 = await processAndSavePhoto(request.files.image_4);
-
-        if (current && current[0].image_4) {
-          await deletePhoto(current[0].image_4);
-        }
-      } catch (error) {
-        throw generateError('Error procesando imagen subida', 400);
-      }
-    } else {
-      savedFileName4 = current.image_4;
-    }
-
-    let savedFileName5;
-
-    if (request.files && request.files.image_5) {
-      try {
-        savedFileName5 = await processAndSavePhoto(request.files.image_5);
-
-        if (current && current[0].image_5) {
-          await deletePhoto(current[0].image_5);
-        }
-      } catch (error) {
-        throw generateError('Error procesando imagen subida', 400);
-      }
-    } else {
-      savedFileName5 = current.image_5;
     }
 
     await connection.query(
@@ -134,11 +87,11 @@ async function editUser(request, response, next) {
         email,
         occupationField,
         occupationStatus,
-        savedFileName1,
-        savedFileName2,
-        savedFileName3,
-        savedFileName4,
-        savedFileName5,
+        imagestoDB[0],
+        imagestoDB[1],
+        imagestoDB[2],
+        imagestoDB[3],
+        imagestoDB[4],
         id
       ]
     );

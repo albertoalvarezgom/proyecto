@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 const fileUpload = require('express-fileupload');
+const path = require('path');
 
 const {
   userAuthenticated,
@@ -25,6 +26,7 @@ const { editUser } = require('./controllers/user/editUser.js');
 const { deleteUser } = require('./controllers/user/deleteUser.js');
 const { hideUser } = require('./controllers/user/hideUser.js');
 const { showUser } = require('./controllers/user/showUser.js');
+const { restorePassword } = require('./controllers/user/restorePassword.js');
 
 const {
   getRooms,
@@ -66,6 +68,7 @@ app.use(morgan('dev'));
 app.use(cors());
 app.use(bodyParser.json());
 app.use(fileUpload());
+app.use(express.static(path.join(__dirname, 'static')));
 
 // HOME
 app.get('/', showHome);
@@ -77,12 +80,13 @@ app.post('/user', newUser); //Hecho
 app.get('/user/validate', validateUser); //Hecho
 app.post('/user/login', loginUser); //Hecho
 app.put('/user/:id/password', userAuthenticated, editPassword); //Hecho
-app.get('/user', userAuthenticated, getUsers); //Completar query
+app.get('/user', userAuthenticated, getUsers); //Hecho
 app.get('/user/:id', userAuthenticated, viewUser); //Hecho
 app.put('/user/:id', userAuthenticated, editUser); //Hecho
 app.delete('/user/:id', userAuthenticated, userIsAdmin, deleteUser); //Hecho
-app.put('/user/hide/:id', userAuthenticated, hideUser); //Hecho
-app.put('/user/show/:id', userAuthenticated, showUser); //Hecho
+app.put('/user/:id/hide', userAuthenticated, hideUser); //Hecho
+app.put('/user/:id/show', userAuthenticated, showUser); //Hecho
+app.put('/user/:id/restore', userAuthenticated, restorePassword); //Hecho
 
 // RUTAS DE PISOS
 app.post('/room', userAuthenticated, newRoom); //Cuando se publica una habitación, el usuario pasa a ser owner
@@ -92,7 +96,7 @@ app.get('/room/:id', viewRoom);
 app.delete('/room/:id', userAuthenticated, deleteRoom);
 
 // RUTAS DE VOTO
-app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho
+app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho --> Mirar payload de viewUser. Solo puede votar el usuario que tenga reserva en común
 app.get('/user/:id/vote', getUserVotes); //Hecho
 app.put('/user/:id/vote', userAuthenticated, editUserVote); //Hecho
 app.post('/room/:id/vote', userAuthenticated, voteRoom); //Hecho

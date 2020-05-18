@@ -83,7 +83,9 @@ const getUsersSchema = joi.object().keys({
   sort: string,
   sortOrder: sortOrder,
   occupationStatus: string,
-  personality: string
+  personality: string,
+  hobby: string,
+  rule: string
 });
 
 const editUserSchema = joi.object().keys({
@@ -97,10 +99,13 @@ const editUserSchema = joi.object().keys({
   occupationStatus: occupationStatus
 });
 
+const emailSchema = joi.object().keys({ email: email });
+
 module.exports = {
   newUserSchema,
   loginSchema,
   changePasswordSchema,
   getUsersSchema,
-  editUserSchema
+  editUserSchema,
+  emailSchema
 };

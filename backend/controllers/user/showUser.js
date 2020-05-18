@@ -27,7 +27,7 @@ async function showUser(request, response, next) {
 
     if (user[0].id_user !== request.auth.id || request.auth.role !== 'admin') {
       throw generateError(
-        'No tienes permisos para ocultar esta cuenta de usuario',
+        'No tienes permisos para hacer visible esta cuenta de usuario',
         401
       );
     }

@@ -75,11 +75,29 @@ async function sendEmail({ email, title, content }) {
   await sgMail.send(message);
 }
 
+async function restoreEmail({ email, title, content }) {
+  sgMail.setApiKey(process.env.SENDGRID_KEY);
+
+  const message = {
+    to: email,
+    from: 'albertoalvarezgom@gmail.com',
+    subject: title,
+    text: content,
+    html: `<div>
+      <h1>Inicia sesión de nuevo con esta nueva contraseña</h1>
+      <p>${content}</p>  
+    </div>`
+  };
+
+  await sgMail.send(message);
+}
+
 module.exports = {
   deletePhoto,
   formatDateToDB,
   generateError,
   processAndSavePhoto,
   randomString,
-  sendEmail
+  sendEmail,
+  restoreEmail
 };
