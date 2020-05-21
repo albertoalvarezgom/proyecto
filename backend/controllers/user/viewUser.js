@@ -9,9 +9,22 @@ async function viewUser(request, response, next) {
   let connection;
   try {
     const { id } = request.params;
-    const { authorization } = request.headers;
 
     connection = await getConnection();
+
+    const [
+      hiddenUser
+    ] = await connection.query(
+      `SELECT id_user FROM user WHERE hidden=1 AND id_user=?`,
+      [request.auth.id]
+    );
+
+    if (hiddenUser.length) {
+      throw generateError(
+        'Un usuario oculto no puede realizar búsqedas. Haz tu cuenta visible e inténtalo de nuevo',
+        401
+      );
+    }
 
     const [user] = await connection.query(
       `SELECT user.id_user, user.first_name, user.birthday, user.image_1, user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, user.gender, user.ig_profile, user.views, 
@@ -27,9 +40,6 @@ async function viewUser(request, response, next) {
     }
 
     const [dbUser] = user;
-
-    const decoded = jwt.verify(authorization, process.env.SECRET);
-    request.auth = decoded;
 
     const [
       bookingMatchA

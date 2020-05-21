@@ -13,8 +13,6 @@ const {
   userIsAdmin
 } = require('./authentication/authentication.js');
 
-const { showHome } = require('./controllers/home/homeControllers.js');
-
 // USER CONTROLLERS
 const { newUser } = require('./controllers/user/newUser.js');
 const { validateUser } = require('./controllers/user/validateUser.js');
@@ -28,14 +26,14 @@ const { hideUser } = require('./controllers/user/hideUser.js');
 const { showUser } = require('./controllers/user/showUser.js');
 const { restorePassword } = require('./controllers/user/restorePassword.js');
 
-const {
-  getRooms,
-  viewRoom,
-  newRoom,
-  editRoom,
-  deleteRoom
-} = require('./controllers/room/roomControllers.js');
+// ROOM CONTROLLERS
+const { newRoom } = require('./controllers/room/newRoom.js');
+const { editRoom } = require('./controllers/room/editRoom.js');
+const { getRooms } = require('./controllers/room/getRooms.js');
+const { deleteRoom } = require('./controllers/room/deleteRoom.js');
+const { viewRoom } = require('./controllers/room/viewRoom.js');
 
+// VOTE CONTROLLERS
 const { voteUser } = require('./controllers/vote/voteUser.js');
 const { voteRoom } = require('./controllers/vote/voteRoom.js');
 const { getUserVotes } = require('./controllers/vote/getUserVotes.js');
@@ -71,9 +69,7 @@ app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'static')));
 
 // HOME
-app.get('/', showHome);
-
-//Mirar el orden de las rutas
+// app.get('/', showHome);
 
 // RUTAS DE USUARIOS
 app.post('/user', newUser); //Hecho
@@ -88,15 +84,15 @@ app.put('/user/:id/hide', userAuthenticated, hideUser); //Hecho
 app.put('/user/:id/show', userAuthenticated, showUser); //Hecho
 app.put('/user/:id/restore', userAuthenticated, restorePassword); //Hecho
 
-// RUTAS DE PISOS
-app.post('/room', userAuthenticated, newRoom); //Cuando se publica una habitación, el usuario pasa a ser owner
-app.put('/room/:id', userAuthenticated, editRoom);
-app.get('/room', getRooms);
-app.get('/room/:id', viewRoom);
-app.delete('/room/:id', userAuthenticated, deleteRoom);
+// RUTAS DE HABITACIONES
+app.post('/room', userAuthenticated, newRoom); //Hecho
+app.put('/room/:id/edit', userAuthenticated, editRoom); //Hecho
+app.get('/room', userAuthenticated, getRooms); //Hecho
+app.get('/room/:id', userAuthenticated, viewRoom); //Hecho
+app.delete('/room/:id', userAuthenticated, deleteRoom); //Hecho
 
 // RUTAS DE VOTO
-app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho --> Mirar payload de viewUser. Solo puede votar el usuario que tenga reserva en común
+app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho
 app.get('/user/:id/vote', getUserVotes); //Hecho
 app.put('/user/:id/vote', userAuthenticated, editUserVote); //Hecho
 app.post('/room/:id/vote', userAuthenticated, voteRoom); //Hecho

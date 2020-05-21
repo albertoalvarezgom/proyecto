@@ -13,7 +13,6 @@ const imageUploadPath = path.join(__dirname, process.env.UPLOADS_DIR);
 
 //Borrar imágenes
 async function deletePhoto(imagePath) {
-  // console.log(chalk.yellow.inverse(path.join(imageUploadPath, imagePath)));
   await fs.unlink(path.resolve(imageUploadPath, imagePath), (error) => {
     if (error) {
       console.log(chalk.red(error));

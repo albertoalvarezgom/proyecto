@@ -13,8 +13,9 @@ const password = joi
   .max(20)
   .required()
   .error(
-    new Error(
-      'La contraseña debe tener entre 6 y 20 caracteres y estar formada por caracteres alfanuméricos'
+    generateError(
+      'La contraseña debe tener entre 6 y 20 caracteres y estar formada por caracteres alfanuméricos',
+      400
     )
   );
 
@@ -22,21 +23,29 @@ const string = joi
   .string()
   .max(100)
   .error(
-    new Error('La campo relleneado debe tener un máximo de 100 caracteres')
+    generateError(
+      'La campo relleneado debe tener un máximo de 100 caracteres',
+      400
+    )
   );
-
 const sortOrder = joi
   .string()
   .valid('asc', 'desc', 'ASC', 'DESC')
   .error(
-    new Error('La órdenes de orden válidas en SQL son sólo "asc" o "desc"')
+    generateError(
+      'La órdenes de orden válidas en SQL son sólo "asc" o "desc"',
+      400
+    )
   );
 
 const occupationStatus = joi
   .string()
   .valid('working', 'studying', 'both', 'none')
   .error(
-    new Error('La opción de estado de ocupación introducida no es válida')
+    generateError(
+      'La opción de estado de ocupación introducida no es válida',
+      400
+    )
   );
 
 const name = joi
@@ -44,7 +53,9 @@ const name = joi
   .min(2)
   .max(50)
   .required()
-  .error(new Error('El nombre tiene que tener como máximo 50 caracteres'));
+  .error(
+    generateError('El nombre tiene que tener como máximo 50 caracteres', 400)
+  );
 
 const newUserSchema = joi.object().keys({
   name: name,
@@ -52,7 +63,7 @@ const newUserSchema = joi.object().keys({
     .date()
     .format('YYYY-MM-DD')
     .required()
-    .error(new Error('El formato de fecha introducido no es válido')),
+    .error(generateError('El formato de fecha introducido no es válido', 400)),
   email: email,
   password: password,
   city: string
@@ -73,13 +84,16 @@ const getUsersSchema = joi.object().keys({
   gender: joi
     .valid('masculine', 'femenine', 'other')
     .error(
-      new Error(
-        'El género introducido no está entre los establecidos como válidos'
+      generateError(
+        'El género introducido no está entre los establecidos como válidos',
+        400
       )
     ),
   couple: joi
     .boolean()
-    .error(new Error('Es un campo booleano. Opciones válidas true o false')),
+    .error(
+      generateError('Es un campo booleano. Opciones válidas true o false', 400)
+    ),
   sort: string,
   sortOrder: sortOrder,
   occupationStatus: string,
@@ -93,7 +107,7 @@ const editUserSchema = joi.object().keys({
   birthday: joi
     .date()
     .required()
-    .error(new Error('El formato de fecha introducido no es válido')),
+    .error(generateError('El formato de fecha introducido no es válido', 400)),
   email: email,
   occupationField: string,
   occupationStatus: occupationStatus

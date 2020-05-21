@@ -1,8 +1,9 @@
 require('dotenv').config();
-// const chalk = require('chalk');
+const jwt = require('jsonwebtoken');
+const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
-
+const { generateError } = require('../../helpers/helpers.js');
 const { getUsersSchema } = require('../../validations/userValidation');
 
 async function getUsers(request, response, next) {
@@ -22,6 +23,20 @@ async function getUsers(request, response, next) {
 
     connection = await getConnection();
 
+    const [
+      hiddenUser
+    ] = await connection.query(
+      `SELECT id_user FROM user WHERE hidden=1 AND id_user=?`,
+      [request.auth.id]
+    );
+
+    if (hiddenUser.length) {
+      throw generateError(
+        'Un usuario oculto no puede realizar búsquedas. Haz tu cuenta visible e inténtalo de nuevo',
+        401
+      );
+    }
+
     let q = `SELECT user.id_user, user.first_name, user.birthday, user.image_1, 
       user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, 
       user.gender, user.views,
@@ -32,12 +47,12 @@ async function getUsers(request, response, next) {
       LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
       LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
       LEFT JOIN rule_user ON user.id_user = rule_user.id_user
-      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule`;
+      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule WHERE user.hidden=0`;
 
     const queryValues = [];
 
     if (gender && couple && occupationStatus && personality && hobby && rule) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(
         gender,
         couple,
@@ -48,145 +63,145 @@ async function getUsers(request, response, next) {
       );
     } //
     else if (gender && couple && occupationStatus && personality && hobby) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, occupationStatus, personality, hobby);
     } else if (gender && couple && occupationStatus && personality && rule) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, occupationStatus, personality, rule);
     } else if (gender && couple && personality && hobby && rule) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, personality, hobby, rule);
     } else if (gender && occupationStatus && personality && hobby && rule) {
-      q = `${q} WHERE user.gender=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, occupationStatus, personality, hobby, rule);
     } else if (couple && occupationStatus && personality && hobby && rule) {
-      q = `${q} WHERE user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(couple, occupationStatus, personality, hobby, rule);
     }
     //
     else if (gender && couple && occupationStatus && personality) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, occupationStatus, personality);
     } else if (gender && couple && occupationStatus && hobby) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND user.occupation_status=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, occupationStatus, hobby);
     } else if (gender && couple && occupationStatus && rule) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND user.occupation_status=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, occupationStatus, rule);
     } else if (gender && couple && personality && hobby) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, personality, hobby);
     } else if (gender && couple && personality && rule) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, personality, rule);
     } else if (occupationStatus && personality && hobby && rule) {
-      q = `${q} WHERE user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(occupationStatus, personality, hobby, rule);
     } else if (couple && occupationStatus && personality && hobby) {
-      q = `${q} WHERE user.couple =? user.occupation_status=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple =? user.occupation_status=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(couple, occupationStatus, personality, hobby);
     }
     //
     else if (gender && occupationStatus && couple) {
-      q = `${q} WHERE user.gender=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
       queryValues.push(gender, occupationStatus, couple);
     } else if (gender && couple && personality) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND personality.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND personality.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, personality);
     } else if (gender && couple && hobby) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, hobby);
     } else if (gender && couple && rule) {
-      q = `${q} WHERE user.gender=? AND user.couple=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, couple, rule);
     } else if (gender && occupationStatus && personality) {
-      q = `${q} WHERE user.gender=? AND user.occupation_status=? AND personality.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.occupation_status=? AND personality.name=? GROUP BY user.id_user`;
       queryValues.push(gender, occupationStatus, personality);
     } else if (gender && occupationStatus && hobby) {
-      q = `${q} WHERE user.gender=? AND user.occupation_status=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.occupation_status=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, occupationStatus, hobby);
     } else if (gender && occupationStatus && rule) {
-      q = `${q} WHERE user.gender=? AND user.occupation_status=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.occupation_status=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, occupationStatus, rule);
     } else if (gender && personality && hobby) {
-      q = `${q} WHERE user.gender=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, personality, hobby);
     } else if (gender && personality && rule) {
-      q = `${q} WHERE user.gender=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, personality, rule);
     } else if (gender && hobby && rule) {
-      q = `${q} WHERE user.gender=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, hobby, rule);
     } else if (personality && occupationStatus && couple) {
-      q = `${q} WHERE personlality.name=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
+      q = `${q} AND personlality.name=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
       queryValues.push(personality, occupationStatus, couple);
     } else if (hobby && occupationStatus && couple) {
-      q = `${q} WHERE hobby.name=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
+      q = `${q} AND hobby.name=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
       queryValues.push(hobby, occupationStatus, couple);
     } else if (rule && occupationStatus && couple) {
-      q = `${q} WHERE rule.name=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
+      q = `${q} AND rule.name=? AND user.occupation_status=? AND user.couple=? GROUP BY user.id_user`;
       queryValues.push(rule, occupationStatus, couple);
     } else if (couple && personality && hobby) {
-      q = `${q} WHERE user.couple=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(couple, personality, hobby);
     } else if (couple && personality && rule) {
-      q = `${q} WHERE user.couple=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(couple, personality, rule);
     } else if (couple && hobby && rule) {
-      q = `${q} WHERE user.couple=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(couple, hobby, rule);
     } else if (personality && hobby && rule) {
-      q = `${q} WHERE personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(personality, hobby, rule);
     } else if (occupationStatus && personality && hobby) {
-      q = `${q} WHERE user.occupation_status=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.occupation_status=? AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(occupationStatus, personality, hobby);
     }
     //
     else if (gender && couple) {
-      q = `${q} WHERE user.gender=? AND user.couple=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.couple=? GROUP BY user.id_user`;
       queryValues.push(gender, couple);
     } else if (gender && occupationStatus) {
-      q = `${q} WHERE user.gender=? AND user.occupation_status=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND user.occupation_status=? GROUP BY user.id_user`;
       queryValues.push(gender, occupationStatus);
     } else if (gender && personality) {
-      q = `${q} WHERE user.gender=? AND personality.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND personality.name=? GROUP BY user.id_user`;
       queryValues.push(gender, personality);
     } else if (gender && hobby) {
-      q = `${q} WHERE user.gender=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(gender, hobby);
     } else if (gender && rule) {
-      q = `${q} WHERE user.gender=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.gender=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(gender, rule);
     } else if (couple && occupationStatus) {
-      q = `${q} WHERE user.couple=? AND user.occupation_status=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND user.occupation_status=? GROUP BY user.id_user`;
       queryValues.push(couple, occupationStatus);
     } else if (couple && personality) {
-      q = `${q} WHERE user.couple=? AND personality.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND personality.name=? GROUP BY user.id_user`;
       queryValues.push(couple, personality);
     } else if (couple && hobby) {
-      q = `${q} WHERE user.couple=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(couple, hobby);
     } else if (couple && rule) {
-      q = `${q} WHERE user.couple=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.couple=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(couple, rule);
     } else if (occupationStatus && personality) {
-      q = `${q} WHERE user.occupation_status=? AND personality.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.occupation_status=? AND personality.name=? GROUP BY user.id_user`;
       queryValues.push(occupationStatus, personality);
     } else if (occupationStatus && hobby) {
-      q = `${q} WHERE user.occupation_status=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.occupation_status=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(occupationStatus, hobby);
     } else if (occupationStatus && rule) {
-      q = `${q} WHERE user.occupation_status=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND user.occupation_status=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(occupationStatus, rule);
     } else if (personality && hobby) {
-      q = `${q} WHERE personality.name=? AND hobby.name=? GROUP BY user.id_user`;
+      q = `${q} AND personality.name=? AND hobby.name=? GROUP BY user.id_user`;
       queryValues.push(personality, hobby);
     } else if (personality && rule) {
-      q = `${q} WHERE personality.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND personality.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(personality, rule);
     } else if (hobby && rule) {
-      q = `${q} WHERE hobby.name=? AND rule.name=? GROUP BY user.id_user`;
+      q = `${q} AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
       queryValues.push(hobby, rule);
     }
     //
@@ -199,7 +214,7 @@ async function getUsers(request, response, next) {
         hobby ||
         rule
       ) {
-        q = `${q} WHERE `;
+        q = `${q} AND `;
 
         if (gender) {
           q = `${q} user.gender=? GROUP BY user.id_user`;

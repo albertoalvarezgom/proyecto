@@ -40,6 +40,32 @@ async function voteRoom(request, response, next) {
       );
     }
 
+    const [
+      room
+    ] = await connection.query(`select id_user from room where id_room=?`, [
+      id
+    ]);
+
+    if (request.auth.id === room.id_user) {
+      throw generateError(
+        'Un propietario no puede valorar su propia habitación',
+        401
+      );
+    }
+
+    const [bookingMatch] = await connection.query(
+      `SELECT booking.id_booking from booking JOIN room on booking.id_user_owner=room.id_user 
+      WHERE booking.id_user=? AND booking.id_user_owner=room.id_user AND status="accepted AND room.id_room=?"`,
+      [request.auth.id, id]
+    );
+
+    if (!bookingMatch.length) {
+      throw generateError(
+        'No hay registro en nuestra BBDD de una reserva a esta habitación con tu id de usuario',
+        401
+      );
+    }
+
     await connection.query(
       `insert into rating (id_user_sends, id_room_gets, type, rate, comment, creation_date)
       values(?, ?, 'room', ?, ?, now())`,

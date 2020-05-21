@@ -55,6 +55,14 @@ async function editUser(request, response, next) {
       user.image_5
     ];
 
+    const checkCurrentImages = [];
+
+    for (const image of currentImages) {
+      if (image) {
+        checkCurrentImages.push(image);
+      }
+    }
+
     const newImages = [
       request.files.image_1,
       request.files.image_2,
@@ -63,19 +71,27 @@ async function editUser(request, response, next) {
       request.files.image_5
     ];
 
+    const checkNewImages = [];
+
+    for (const image of newImages) {
+      if (image) {
+        checkNewImages.push(image);
+      }
+    }
+
     const imagestoDB = [];
 
     if (request.files) {
       let savedFileName;
 
-      for (let i = 0; i < newImages.length; i++) {
-        savedFileName = await processAndSavePhoto(newImages[i]);
+      for (let i = 0; i < checkNewImages.length; i++) {
+        savedFileName = await processAndSavePhoto(checkNewImages[i]);
 
         if (currentImages[i]) {
-          await deletePhoto(currentImages[i]);
-        }
+          await deletePhoto(checkCurrentImages[i]);
 
-        imagestoDB.push(savedFileName);
+          imagestoDB.push(savedFileName);
+        }
       }
     }
 

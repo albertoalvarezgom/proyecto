@@ -40,11 +40,28 @@ async function voteUser(request, response, next) {
       );
     }
 
-    await connection.query(
-      `insert into rating (id_user_sends, id_user_gets, type, rate, comment, creation_date)
-      values(?, ?, 'user', ?, ?, now())`,
-      [request.auth.id, id, rating, comment]
+    const [
+      bookingMatchA
+    ] = await connection.query(
+      'select id_booking from booking where id_user=? and id_user_owner=? and status="accepted"',
+      [id, request.auth.id]
     );
+
+    const [
+      bookingMatchB
+    ] = await connection.query(
+      'select id_booking from booking where id_user=? and id_user_owner=? and status="accepted"',
+      [request.auth.id, id]
+    );
+
+    if (bookingMatchA.length || bookingMatchB.length) {
+      await connection.query(
+        `insert into rating (id_user_sends, id_user_gets, type, rate, comment, creation_date)
+      values(?, ?, 'user', ?, ?, now())`,
+        [request.auth.id, id, rating, comment]
+      );
+    }
+
     //
     //
     response.send({
