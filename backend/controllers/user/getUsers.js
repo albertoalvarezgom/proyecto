@@ -1,5 +1,5 @@
 require('dotenv').config();
-const jwt = require('jsonwebtoken');
+
 const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
@@ -37,9 +37,22 @@ async function getUsers(request, response, next) {
       );
     }
 
+    const [
+      type
+    ] = await connection.query('SELECT type FROM user WHERE id_user=?', [
+      request.auth.id
+    ]);
+
+    let userType;
+    if (type[0] === 'looking') {
+      userType = 'owner';
+    } else {
+      userType = 'looking';
+    }
+
     let q = `SELECT user.id_user, user.first_name, user.birthday, user.image_1, 
       user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, 
-      user.gender, user.views,
+      user.gender, user.views, user.type, personality.name AS personality, hobby.name AS hobby, hobby_user.description AS hobby_description, rule.name AS rule,
       (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
       FROM user
       LEFT JOIN personality_user ON user.id_user = personality_user.id_user
@@ -47,9 +60,17 @@ async function getUsers(request, response, next) {
       LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
       LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
       LEFT JOIN rule_user ON user.id_user = rule_user.id_user
-      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule WHERE user.hidden=0`;
+      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule 
+      WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=?) 
+      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?) 
+      AND user.hidden=0 AND user.type=? AND user.city=?`;
 
-    const queryValues = [];
+    const queryValues = [
+      request.auth.id,
+      request.auth.id,
+      userType,
+      request.auth.city
+    ];
 
     if (gender && couple && occupationStatus && personality && hobby && rule) {
       q = `${q} AND user.gender=? AND user.couple=? AND user.occupation_status=? AND personality.name=? AND hobby.name=? AND rule.name=? GROUP BY user.id_user`;
@@ -253,6 +274,30 @@ async function getUsers(request, response, next) {
     } else if (sort) {
       q = `${q} ORDER BY ${sort}`;
       queryValues.push(sort);
+    }
+
+    if (
+      !gender &&
+      !couple &&
+      !occupationStatus &&
+      !personality &&
+      !hobby &&
+      !rule
+    ) {
+      q = `SELECT user.id_user, user.first_name, user.birthday, user.image_1, 
+      user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, 
+      user.gender, user.views, user.type, personality.name AS personality, hobby.name AS hobby, hobby_user.description AS hobby_description, rule.name AS rule,
+      (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
+      FROM user
+      LEFT JOIN personality_user ON user.id_user = personality_user.id_user
+      LEFT JOIN personality ON personality.id_personality=personality_user.id_personality
+      LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
+      LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
+      LEFT JOIN rule_user ON user.id_user = rule_user.id_user
+      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule 
+      WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=?) 
+      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?) 
+      AND user.hidden=0 AND user.type=? AND user.city=? GROUP BY user.id_user`;
     }
 
     const [users] = await connection.query(q, queryValues);

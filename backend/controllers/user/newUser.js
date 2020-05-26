@@ -35,20 +35,25 @@ async function newUser(request, response, next) {
 
     try {
       await sendEmail({
-        email: email,
+        toEmail: email,
+        fromEmail: process.env.UPLOADS_DIR,
         title: 'Valida tu cuenta de usuario en Inquilino Perfecto',
-        content: `Para validar tu cuenta de usuario pega esta url en tu navegador: ${validationURL}`
+        html: `<div>
+      <h1>Valida tu email</h1>
+      <p>Para validar tu cuenta de usuario pega esta url en tu navegador: ${validationURL}</p>  
+    </div>`
       });
     } catch (error) {
       console.error(error.response.body);
-      throw new Error(
-        'Error en el envío de mail. Inténtalo de nuevo más tarde.'
+      throw generateError(
+        'Error en el envío de mail. Inténtalo de nuevo más tarde.',
+        500
       );
     }
 
     await connection.query(
       `
-      INSERT INTO user (first_name, birthday, email, password, city, creation_date, last_update, registrationCode)
+      INSERT INTO user (first_name, birthday, email, password, city, creation_date, last_update, registration_code)
       VALUES(?, ?, ?, ?, ?, NOW(), NOW(), ?)
     `,
       [name, birthday, email, dbPassword, city, registrationCode]

@@ -18,7 +18,7 @@ async function loginUser(request, response, next) {
     const [
       dbUser
     ] = await connection.query(
-      'select id_user, email, password, role from user where email=? and active=1',
+      'SELECT id_user, email, password, role, city FROM user WHERE email=? AND active=1',
       [email]
     );
 
@@ -37,7 +37,11 @@ async function loginUser(request, response, next) {
       throw generateError('La contraseña no es correcta', 401);
     }
 
-    const tokenPayload = { id: user.id_user, role: user.role };
+    const tokenPayload = {
+      id: user.id_user,
+      role: user.role,
+      city: user.city
+    };
     const token = jwt.sign(tokenPayload, process.env.SECRET, {
       expiresIn: '30d'
     });

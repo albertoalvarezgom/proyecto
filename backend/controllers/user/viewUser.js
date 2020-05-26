@@ -27,15 +27,30 @@ async function viewUser(request, response, next) {
     }
 
     const [user] = await connection.query(
-      `SELECT user.id_user, user.first_name, user.birthday, user.image_1, user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, user.gender, user.ig_profile, user.views, 
+      `SELECT user.id_user, user.first_name, user.birthday, user.image_1, 
+      user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, 
+      user.gender, user.views, personality.name, hobby.name, rule.name,
       (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
-      FROM user WHERE user.id_user=?`,
+      FROM user
+      LEFT JOIN personality_user ON user.id_user = personality_user.id_user
+      LEFT JOIN personality ON personality.id_personality=personality_user.id_personality
+      LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
+      LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
+      LEFT JOIN rule_user ON user.id_user = rule_user.id_user
+      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule WHERE user.hidden=0 AND user.id_user=?`,
       [id]
     );
 
     if (!user.length) {
       throw (
         (generateError(`El usuario con id ${id} no existe en la BBDD`), 404)
+      );
+    }
+
+    if (user[0].hidden === true) {
+      throw generateError(
+        `No se puede mostrar el usuario con id ${id}. Ahora mismo este perfil está oculto`,
+        404
       );
     }
 

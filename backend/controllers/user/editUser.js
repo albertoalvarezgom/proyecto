@@ -27,7 +27,7 @@ async function editUser(request, response, next) {
     const [
       current
     ] = await connection.query(
-      'select id_user, image_1, image_2, image_3, image_4, image_5 from user where id_user=?',
+      'select id_user, email, image_1, image_2, image_3, image_4, image_5 from user where id_user=?',
       [id]
     );
 
@@ -42,6 +42,12 @@ async function editUser(request, response, next) {
       throw generateError(
         'No tienes permiso para editar este perfil de usuario',
         401
+      );
+    }
+
+    if ((current[0].email = email)) {
+      throw generateError(
+        `El email ${email} ya está registrado en nuestra BBDD. Por favor inténtelo con otra dirección de correo diferente.`
       );
     }
 

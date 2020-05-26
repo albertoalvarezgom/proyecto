@@ -32,6 +32,13 @@ async function viewRoom(request, response, next) {
       [id]
     );
 
+    if (room[0].hidden === true) {
+      throw generateError(
+        `No se puede mostrar la habitación con id ${id}. Ahora mismo esta entrada está oculta`,
+        404
+      );
+    }
+
     if (!room.length) {
       throw (
         (generateError(`La habitación con id ${id} no existe en la BBDD`), 404)

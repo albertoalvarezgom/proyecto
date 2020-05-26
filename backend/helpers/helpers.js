@@ -57,18 +57,14 @@ function randomString(size = 20) {
 }
 
 //Envío de email
-async function sendEmail({ email, title, content }) {
+async function sendEmail({ toEmail, fromEmail, title, html }) {
   sgMail.setApiKey(process.env.SENDGRID_KEY);
 
   const message = {
-    to: email,
-    from: 'albertoalvarezgom@gmail.com',
+    to: toEmail,
+    from: fromEmail,
     subject: title,
-    text: content,
-    html: `<div>
-      <h1>Valida tu email</h1>
-      <p>${content}</p>  
-    </div>`
+    html: html
   };
 
   await sgMail.send(message);
