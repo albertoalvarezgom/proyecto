@@ -1,11 +1,12 @@
 use inquilino_perfecto;
+select * from user;
 
 -- 1. Registrar un usuario. 
 
 INSERT INTO user
-       (first_name, birthday, email, password, creation_date, last_update)
+       (first_name, birthday, email, password, creation_date, last_update, role)
 VALUES
-       ('Berto', '1989-08-26','berto@gmail.com', 'vaiavaiavaia', now(), now());
+       ('Berto', '1989-08-26','bertoalvarezgom@gmail.com', 'contraseñaadmin', now(), now(), 'admin');
 
 
 -- Mientras no complete el resto de campos del perfil, que salga un aviso de que el perfil no esta completo.
@@ -16,7 +17,7 @@ VALUES
 
 SELECT id_user,first_name, birthday, email, password, creation_date, role
 FROM user
-WHERE email = 'berto@gmail.com';
+WHERE email = 'albertoalvarezgom@gmail.com';
 
 -- 2b. Completar/editar el perfil de usuario. Requisito indispensable para acceder a funcionalidades reservadas a usuarios.
 
@@ -43,14 +44,13 @@ VALUES
 -- Si la tabla tiene ya informacion, hacemos UPDATE
         
 UPDATE personality_user
-SET id_user = 1, id_personality=2, creation_date='2020-01-02 11-22-22';
+SET id_user = 1, id_personality=2, creation_date=now();
 
 UPDATE hobby_user
 SET id_user =1, id_hobby=2, description = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce in pretium neque. 
 Nullam nibh libero, pulvinar vel porta vel, vehicula porttitor diam. Quisque sodales neque quis sem congue, vel vestibulum lorem condimentum. 
 Donec lacinia arcu sit amet ante porttitor eleifend. Suspendisse eu arcu vehicula, posuere ligula sed, vulputate sapien. Nulla id elementum lorem, imperdiet tincidunt sapien. 
-Curabitur aliquet posuere turpis in ultrices.', 
-creation_date ='2020-01-02 11-22-22', last_update = '2020-01-02 11-22-22';
+Curabitur aliquet posuere turpis in ultrices.', last_update = now();
 
 UPDATE rule_user
 SET id_user = 1, id_rule = 2, creation_date = '2020-01-02 11-22-22';
@@ -66,26 +66,24 @@ WHERE user.id_user = 1;
 -- 4. El usuario cambia la contraseña (se le pide la antigua y dos veces la nueva)
 
 UPDATE user
-SET password = 'pocabroma'
-WHERE email = 'berto@gmail.com' AND password = 'vaiavaiavaia';
+SET password = 'adminpass'
+WHERE email = 'albertoalvarezgom@gmail.com' AND password = 'admin';
 
 
 -- 5. Publicar una habitación
 
-INSERT INTO room
+INSERT INTO room(id_room, id_user, title, description, address, postal_code, city, flat_size, status, min_age, max_age, room_type, room_size, bed_type, price, availability_from, min_stay, image_1, creation_date, last_update)
 VALUES
-       (7, 21, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. 
+       (1, 1, '¡Busco compañero/a de piso en A Coruña!', 'Morbi eget dui gravida, auctor quam eget, varius lorem. Suspendisse hendrerit sem sit amet orci tempor lobortis quis sit amet enim. 
        Proin lobortis tristique risus, et lobortis lorem tempor in. Phasellus dignissim lacinia velit et dignissim. Donec nec pellentesque arcu. Maecenas malesuada sapien augue, ac lobortis nibh 
        vestibulum dignissim. Nam semper suscipit velit a sodales. Praesent gravida ex nec massa viverra, vel cursus nisl tempor. Ut maximus rutrum sodales. Vestibulum ante ipsum primis in faucibus 
-       orci luctus et ultrices posuere cubilia Curae.', 'Angeles 2, 1', 15001, 'A Coruña', 0, 0, 60, 'any', 'working', 18, 50, 'private', 14, 'double', 240, false, false, null, date_sub(current_date(),
-              interval
-3 month),null, 6, null, 'https://unsplash.com/photos/DhFHtkECn7Q', null, null, null, null, false, 9, '2020-01-02 11-22-22','2020-01-04 12-42-23', '2020-08-01 11-22-22', '2022-08-01 11-22-22');
+       orci luctus et ultrices posuere cubilia Curae.', 'Angeles 2, 1', 15001, 'A Coruña', 60, 'working', 19, 30, 'private', 14, 'double', 240, '2020-08-01', 6, 'https://unsplash.com/photos/DhFHtkECn7Q', now(), now());
 
 -- 6. Editar una publicación de habitación
 
 UPDATE room
 SET image_2='image2.jpg', image_3='image3.jpg', image_4='image4.jpg',image_5='image5.jpg', last_update=now()
-WHERE id_room = 7;
+WHERE id_room = 1;
 
 UPDATE facility_room
 SET id_room=7, id_facility=1, creation_date=now();
@@ -98,17 +96,17 @@ SET id_room=7, id_rule=1, creation_date=now();
 
 -- Búsqueda general (sin ningún tipo de filtrado más allá de la ciudad o el código postal)
 
-SELECT room.id_room, room.title, room.price, room.image_1, user.name, user.image_1, user.birthday
+SELECT room.id_room, room.title, room.price, room.image_1, user.first_name, user.image_1, user.birthday
 FROM room JOIN user ON user.id_user = room.id_user
 WHERE room.city
 LIKE '%Coruña%';
 
 --
 
-SELECT room.id_room, room.title, room.price, room.image_1, user.name, user.image_1, user.birthday
+SELECT room.id_room, room.title, room.price, room.image_1, user.first_name, user.image_1, user.birthday
 FROM room JOIN user
        ON user.id_user = room.id_user
-WHERE room.postal_code = 15004;
+WHERE room.postal_code = 15001;
 
 
 -- Búsqueda avanzada (filtrando la habitación)
@@ -121,21 +119,20 @@ LIKE '%Coruña%' AND room.price < 300 AND room.availability_from = '2020-08-01';
 
 -- Búsqueda avanzada (filtrando el usuario)
 
-SELECT room.id_room, room.title, room.price, room.image_1, user.name, user.image_1, user.birthday
+SELECT room.id_room, room.title, room.price, room.image_1, user.first_name, user.image_1, user.birthday
 FROM room JOIN user
        ON user.id_user = room.id_user
-WHERE user.gender = 'masculine' AND user.rating > 4
-;
+WHERE user.gender = 'masculine';
 
 -- 8. Solicitar una reserva: Guardamos la solicitud en la tabla de reservas y seleccionamos la información de la habitación asociada al propietario de la habitación
 
 INSERT INTO booking
 VALUES
-       (1, 1, 21, 'demand', 'pending', now(), null, null);
+       (1, 2, 3, 'demand', 'pending', now(), null, null);
 
 SELECT *
 FROM room LEFT JOIN user ON room.id_user = user.id_user
-WHERE user.id_user=21;
+WHERE user.id_user=1;
 
 -- 8b. Aceptar una reserva
 
@@ -150,15 +147,15 @@ SET status = 'cancelled' WHERE id_booking=1;
 -- 9. Valorar un usuario o una habitación
 
 INSERT INTO rating
-       (id_rating, id_user_sends, id_gets, type, rate, creation_date)
+       (id_rating, id_user_sends, id_user_gets, type, rate, comment, creation_date)
 VALUES
-       (101, 1, 21, 'user', 5, now());
+       (2, 1, 1, 'user', 5, 'Lorem ipsum bla bla bla tremendo compañero de piso',now());
 
 
 INSERT INTO rating
-       (id_rating, id_user_sends, id_gets, type, rate, creation_date)
+       (id_rating, id_user_sends, id_room_gets, type, rate, comment,creation_date)
 VALUES
-       (102, 1, 7, 'room', 5, now());
+       (3, 1, 1, 'room', 5, 'Lorem ipsum bla bla bla tremenda habitacion', now());
 
 -- 10. Listado completo de habitaciones o usuarios
 
@@ -166,7 +163,7 @@ SELECT id_room, title, price, address, postal_code, city, views, image_1, image_
 FROM room
 WHERE hidden= false;
 
-SELECT id_user, name, birthday, image_1, image_2, image_3, image_4, image_5, occupation_field, occupation_status, rating
+SELECT id_user, first_name, birthday, image_1, image_2, image_3, image_4, image_5, occupation_field, occupation_status
 FROM user
 WHERE hidden = false;
 
@@ -174,17 +171,27 @@ WHERE hidden = false;
 -- 11.Ocultar habitación
 
 UPDATE room
-SET hidden= true;
+SET hidden= true WHERE id_room = 1;
 
 -- 12. Ocultar usuario
 
 UPDATE user
-SET hidden = true;
+SET hidden = true WHERE id_user = 1;
 
 -- 13. Eliminar habitación
 
-DELETE FROM room WHERE id_room = 7;
+DELETE FROM room WHERE id_room = 1;
 
 -- 14. Eliminar usuario
 
-DELETE FROM user WHERE id_user =21;
+select * from user;
+DELETE FROM user WHERE id_user =1;
+
+-- 15. Enviar un mensaje
+INSERT into messages (id_booking, id_user, comment, creation_date) VALUES (1, 1, 'Tremenda reserva, no?', now());
+
+-- 16. Ver los mensajes
+SELECT comment, id_user, creation_date  FROM messages;
+
+-- 17. Borrar un mensaje
+DELETE FROM messages WHERE id_message=1;
