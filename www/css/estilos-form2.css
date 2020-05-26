@@ -1,0 +1,140 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Bhaina+2:wght@400;500&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#menu {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  font-family: "Baloo Bhaina 2", sans-serif;
+  margin: 1rem;
+}
+
+#menu li {
+  padding: 1rem;
+  color: white;
+  text-decoration: none;
+  margin: auto 0;
+}
+
+#menu li > a {
+  padding: 0.2rem 1rem 0 1rem;
+  color: black;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+#menu li > a:hover {
+  border-bottom: 4px solid #ffd55a;
+}
+
+#logo {
+  flex-grow: 1;
+}
+
+#logo a {
+  font-size: 2rem;
+  color: black;
+  text-decoration: none;
+  font-weight: 400;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#breadcrums {
+  display: flex;
+  list-style: none;
+  justify-content: center;
+}
+
+button:first-child {
+  background-color: #293250;
+}
+
+.formButton {
+  background-color: #6dd47e;
+  border: none;
+  padding: 0.2rem 1rem 0rem 1rem;
+  margin: 1rem 0 2rem 0;
+  width: 120px;
+  margin: 1rem;
+}
+
+.formButton a {
+  font-size: 1rem;
+  text-decoration: none;
+  text-align: center;
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: white;
+}
+
+.formButton:hover {
+  color: #293250;
+  background-color: #ffd55a;
+}
+
+p {
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: black;
+  font-size: 1rem;
+  padding: 0rem 2rem;
+  font-weight: 400;
+  text-align: center;
+  margin: 2rem 0rem;
+}
+
+form fieldset {
+  display: flex;
+  flex-direction: column;
+  border: none;
+  margin-bottom: 2rem;
+  border: 1px solid green;
+}
+
+form fieldset h2 {
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: black;
+  font-size: 1.5rem;
+  font-weight: 400;
+}
+
+.options {
+  display: flex;
+  list-style: none;
+}
+
+.options li {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid red;
+}
+
+.options li input {
+}
+
+form fieldset label {
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: black;
+  font-size: 1rem;
+  font-weight: 400;
+  border: 1px solid red;
+}
+
+form fieldset input {
+  font-family: "Baloo Bhaina 2", sans-serif;
+  color: black;
+  font-size: 1rem;
+  font-weight: 400;
+  width: 400px;
+  border: 1px solid green;
+}
