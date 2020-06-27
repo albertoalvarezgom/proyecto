@@ -8,12 +8,12 @@ const {
   processAndSavePhoto
 } = require('../../helpers/helpers.js');
 
-// const { newRoomSchema } = require('../../validations/roomValidation');
+const { roomSchema } = require('../../validations/roomValidation');
 
 async function newRoom(request, response, next) {
   let connection;
   try {
-    // await newRoomSchema.validateAsync(request.body);
+    await roomSchema.validateAsync(request.body);
     connection = await getConnection();
 
     const {

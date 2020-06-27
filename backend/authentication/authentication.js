@@ -33,7 +33,7 @@ async function userAuthenticated(request, response, next) {
     let decoded;
 
     try {
-      decoded = jwt.verify(authorization, process.env.SECRET);
+      decoded = jwt.verify(token, process.env.SECRET);
     } catch (error) {
       throw generateError('Hay un problema con la forma del token', 400);
     }
@@ -59,15 +59,21 @@ async function userAuthenticated(request, response, next) {
 
     //Comprobar que la fecha de última actualización de la contraseña es menor que la de creación del token
 
-    if (new Date(iat * 1000) < new Date(user.last_password_update)) {
+    if (user.last_password_update === null) {
+      request.auth = decoded;
+      next();
+    } else if (new Date(iat * 1000) < new Date(user.last_password_update)) {
       throw generateError(
         'Has cambiado de contraseña. Haz login de nuevo',
         400
       );
+    } else {
+      request.auth = decoded;
+      next();
     }
 
-    request.auth = decoded;
-    next();
+    // request.auth = decoded;
+    // next();
   } catch (error) {
     const authError = new Error('El token de autenticación no es válido');
     authError.httpCode = 401;
@@ -78,9 +84,9 @@ async function userAuthenticated(request, response, next) {
 function userIsAdmin(request, response, next) {
   // Check if the user is admin in req.auth (see before) and send error if not
 
-  if (!request.auth && request.auth.role !== 'admin') {
+  if (request.auth.role !== 'admin') {
     const error = new Error(
-      'Acción reservda a usuarios con privilegios de administrador'
+      'Acción reservada a usuarios con privilegios de administrador'
     );
     error.httpCode = 401;
     return next(error);

@@ -9,7 +9,7 @@ const { getUsersSchema } = require('../../validations/userValidation');
 async function getUsers(request, response, next) {
   let connection;
   try {
-    await getUsersSchema.validateAsync(request.body);
+    // await getUsersSchema.validateAsync(request.query);
     const {
       gender,
       couple,
@@ -19,7 +19,7 @@ async function getUsers(request, response, next) {
       personality,
       hobby,
       rule
-    } = request.body;
+    } = request.query;
 
     connection = await getConnection();
 
@@ -39,31 +39,29 @@ async function getUsers(request, response, next) {
 
     const [
       type
-    ] = await connection.query('SELECT type FROM user WHERE id_user=?', [
+    ] = await connection.query(`SELECT type FROM user WHERE id_user=?`, [
       request.auth.id
     ]);
 
     let userType;
-    if (type[0] === 'looking') {
+
+    if (type[0].type === 'looking') {
       userType = 'owner';
     } else {
       userType = 'looking';
     }
 
-    let q = `SELECT user.id_user, user.first_name, user.birthday, user.image_1, 
-      user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, 
-      user.gender, user.views, user.type, personality.name AS personality, hobby.name AS hobby, hobby_user.description AS hobby_description, rule.name AS rule,
-      (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
-      FROM user
-      LEFT JOIN personality_user ON user.id_user = personality_user.id_user
-      LEFT JOIN personality ON personality.id_personality=personality_user.id_personality
-      LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
-      LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
-      LEFT JOIN rule_user ON user.id_user = rule_user.id_user
-      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule 
-      WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=?) 
-      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?) 
-      AND user.hidden=0 AND user.type=? AND user.city=?`;
+    let q = `SELECT user.id_user
+    FROM user
+    LEFT JOIN personality_user ON user.id_user = personality_user.id_user
+    LEFT JOIN personality ON personality.id_personality = personality_user.id_personality
+    LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
+    LEFT JOIN hobby ON hobby.id_hobby = hobby_user.id_hobby
+    LEFT JOIN rule_user ON user.id_user = rule_user.id_user
+    LEFT JOIN rule ON rule.id_rule = rule_user.id_rule
+    WHERE user.id_user NOT IN(SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2 =?)
+    AND user.id_user NOT IN(SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1 =?)
+    AND user.hidden = 0 AND user.type =? AND user.city =?`;
 
     const queryValues = [
       request.auth.id,
@@ -284,11 +282,9 @@ async function getUsers(request, response, next) {
       !hobby &&
       !rule
     ) {
-      q = `SELECT user.id_user, user.first_name, user.birthday, user.image_1, 
-      user.image_2, user.image_3, user.image_4, user.image_5, user.email, user.creation_date, 
-      user.gender, user.views, user.type, personality.name AS personality, hobby.name AS hobby, hobby_user.description AS hobby_description, rule.name AS rule,
-      (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
+      q = `SELECT user.id_user
       FROM user
+      LEFT JOIN room ON room.id_user=user.id_user
       LEFT JOIN personality_user ON user.id_user = personality_user.id_user
       LEFT JOIN personality ON personality.id_personality=personality_user.id_personality
       LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
@@ -302,7 +298,69 @@ async function getUsers(request, response, next) {
 
     const [users] = await connection.query(q, queryValues);
 
-    response.send({ status: 'ok', data: users });
+    const userProfile = [];
+    const userPersonality = [];
+    const userRule = [];
+    const userHobby = [];
+    const userRoom = [];
+
+    for (let i = 0; i < users.length; i++) {
+      let [sqlUserQuery] = await connection.query(
+        `SELECT user.id_user, user.first_name, user.image_1,
+      user.image_2, user.image_3, user.image_4, user.image_5, user.creation_date,
+      user.gender, user.views, user.type,
+      (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating,
+      (SELECT YEAR(CURDATE()) - YEAR(birthday)) AS age
+      FROM user WHERE user.id_user=?`,
+        [users[i].id_user]
+      );
+      userProfile.push(sqlUserQuery);
+
+      let [
+        sqlPersonalityQuery
+      ] = await connection.query(
+        `SELECT personality.name FROM personality_user JOIN personality ON personality_user.id_personality=personality.id_personality WHERE personality_user.id_user=?`,
+        [users[i].id_user]
+      );
+      userPersonality.push(sqlPersonalityQuery);
+
+      let [
+        sqlRuleQuery
+      ] = await connection.query(
+        `SELECT rule.name FROM rule_user JOIN rule ON rule_user.id_rule=rule.id_rule WHERE rule_user.id_user=?`,
+        [users[i].id_user]
+      );
+      userRule.push(sqlRuleQuery);
+
+      let [
+        sqlHobbyQuery
+      ] = await connection.query(
+        `SELECT hobby.name, hobby_user.description FROM hobby_user JOIN hobby ON hobby_user.id_hobby=hobby.id_hobby WHERE hobby_user.id_user=?`,
+        [users[i].id_user]
+      );
+      userHobby.push(sqlHobbyQuery);
+
+      let [
+        sqlRoomQuery
+      ] = await connection.query(`SELECT * FROM room WHERE id_user=?`, [
+        users[i].id_user
+      ]);
+      userRoom.push(sqlRoomQuery);
+    }
+
+    const fullUser = [];
+
+    for (let i = 0; i < users.length; i++) {
+      fullUser.push({
+        perfil: userProfile[i],
+        personalidad: userPersonality[i],
+        hobbies: userHobby[i],
+        rules: userRule[i],
+        room: userRoom[i]
+      });
+    }
+
+    response.send({ status: 'ok', data: fullUser });
   } catch (error) {
     next(error);
   } finally {

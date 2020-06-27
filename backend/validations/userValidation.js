@@ -5,7 +5,8 @@ const email = joi
   .string()
   .email()
   .required()
-  .error(new Error('Email no válido'));
+  .error(generateError('Email no válido', 400));
+
 const password = joi
   .string()
   .min(6)
@@ -19,12 +20,18 @@ const password = joi
     )
   );
 
+const boolean = joi
+  .boolean()
+  .error(
+    generateError('Es un campo booleano. Opciones válidas true o false', 400)
+  );
+
 const string = joi
   .string()
   .max(100)
   .error(
     generateError(
-      'La campo relleneado debe tener un máximo de 100 caracteres',
+      'El campo relleneado debe tener un máximo de 100 caracteres',
       400
     )
   );
@@ -82,18 +89,14 @@ const loginSchema = joi.object().keys({ email: email, password: password });
 
 const getUsersSchema = joi.object().keys({
   gender: joi
-    .valid('masculine', 'femenine', 'other')
+    .valid('masculine', 'femenine', 'any')
     .error(
       generateError(
         'El género introducido no está entre los establecidos como válidos',
         400
       )
     ),
-  couple: joi
-    .boolean()
-    .error(
-      generateError('Es un campo booleano. Opciones válidas true o false', 400)
-    ),
+  couple: boolean,
   sort: string,
   sortOrder: sortOrder,
   occupationStatus: string,
@@ -115,11 +118,46 @@ const editUserSchema = joi.object().keys({
 
 const emailSchema = joi.object().keys({ email: email });
 
+const editUserPersonalitySchema = joi.object().keys({
+  personality1: string,
+  personality2: string,
+  personality3: string,
+  personality4: string,
+  personality5: string
+});
+
+const editUserHobbySchema = joi.object().keys({
+  hobby1: string,
+  description1: string,
+  hobby2: string,
+  description2: string,
+  hobby3: string,
+  description3: string,
+  hobby4: string,
+  description4: string,
+  hobby5: string,
+  description5: string
+});
+
+const editUserRuleSchema = joi.object().keys({
+  rule1: string,
+  status1: boolean,
+  rule2: string,
+  status2: boolean,
+  rule3: string,
+  status3: boolean,
+  rule4: string,
+  status4: boolean
+});
+
 module.exports = {
   newUserSchema,
   loginSchema,
   changePasswordSchema,
   getUsersSchema,
   editUserSchema,
-  emailSchema
+  emailSchema,
+  editUserPersonalitySchema,
+  editUserHobbySchema,
+  editUserRuleSchema
 };

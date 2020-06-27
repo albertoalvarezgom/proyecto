@@ -22,6 +22,16 @@ const { getUsers } = require('./controllers/user/getUsers.js');
 const { viewUser } = require('./controllers/user/viewUser.js');
 const { likeUser } = require('./controllers/user/likeUser.js');
 const { editUser } = require('./controllers/user/editUser.js');
+const {
+  getUserPersonality
+} = require('./controllers/user/getUserPersonality.js');
+const {
+  editUserPersonality
+} = require('./controllers/user/editUserPersonality.js');
+const { getUserHobby } = require('./controllers/user/getUserHobby.js');
+const { editUserHobby } = require('./controllers/user/editUserHobby.js');
+const { getUserRule } = require('./controllers/user/getUserRule.js');
+const { editUserRule } = require('./controllers/user/editUserRule.js');
 const { deleteUser } = require('./controllers/user/deleteUser.js');
 const { hideUser } = require('./controllers/user/hideUser.js');
 const { showUser } = require('./controllers/user/showUser.js');
@@ -30,17 +40,21 @@ const { restorePassword } = require('./controllers/user/restorePassword.js');
 // ROOM CONTROLLERS
 const { newRoom } = require('./controllers/room/newRoom.js');
 const { editRoom } = require('./controllers/room/editRoom.js');
-const { getRooms } = require('./controllers/room/getRooms.js');
+const {
+  editRoomFacilities
+} = require('./controllers/room/editRoomFacilities.js');
+// const { getRooms } = require('./controllers/room/getRooms.js');
 const { deleteRoom } = require('./controllers/room/deleteRoom.js');
 const { viewRoom } = require('./controllers/room/viewRoom.js');
 
 // VOTE CONTROLLERS
 const { voteUser } = require('./controllers/vote/voteUser.js');
-const { voteRoom } = require('./controllers/vote/voteRoom.js');
-const { getUserVotes } = require('./controllers/vote/getUserVotes.js');
-const { getRoomVotes } = require('./controllers/vote/getRoomVotes.js');
-const { editUserVote } = require('./controllers/vote/editUserVote.js');
-const { editRoomVote } = require('./controllers/vote/editRoomVote.js');
+// const { voteRoom } = require('./controllers/vote/voteRoom.js');
+const { getSubmitedVotes } = require('./controllers/vote/getSubmitedVotes.js');
+const { getReceivedVotes } = require('./controllers/vote/getReceivedVotes.js');
+// const { getRoomVotes } = require('./controllers/vote/getRoomVotes.js');
+// const { editUserVote } = require('./controllers/vote/editUserVote.js');
+// const { editRoomVote } = require('./controllers/vote/editRoomVote.js');
 const { deleteVote } = require('./controllers/vote/deleteVote.js');
 
 // MATCH CONTROLLERS
@@ -71,46 +85,57 @@ app.use(bodyParser.json());
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'static')));
 
-// HOME
-// app.get('/', showHome);
-
 // RUTAS DE USUARIOS
-app.post('/user', newUser); //Hecho
-app.get('/user/validate', validateUser); //Hecho
-app.post('/user/login', loginUser); //Hecho
-app.put('/user/:id/password', userAuthenticated, editPassword); //Hecho
-app.get('/user', userAuthenticated, getUsers); //Hecho
-app.put('/user/:id/like', userAuthenticated, likeUser); //Hecho
+app.post('/user', newUser); //HECHO EN FRONT
+app.get('/user/validate', validateUser); //HECHO EN FRONT
+app.post('/user/login', loginUser); //HECHO EN FRONT
+app.put('/user/:id/password', userAuthenticated, editPassword); //HECHO EN FRONT
+app.get('/user', userAuthenticated, getUsers); //HECHO EN FRONT
+app.put('/user/:id/like', userAuthenticated, likeUser); //HECHO EN FRONT
+app.put('/user/restore', restorePassword); //HECHO EN FRONT
+app.put('/user/:id', userAuthenticated, editUser); //HECHO EN FRONT
 app.get('/user/:id', userAuthenticated, viewUser); //Hecho
-app.put('/user/:id', userAuthenticated, editUser); //Hecho
+app.get('/user/:id/personality', userAuthenticated, getUserPersonality); //HECHO EN FRONT
+app.put('/user/:id/personality', userAuthenticated, editUserPersonality); //HECHO EN FRONT
+app.get('/user/:id/hobby', userAuthenticated, getUserHobby); //HECHO EN FRONT
+app.put('/user/:id/hobby', userAuthenticated, editUserHobby); //HECHO EN FRONT
+app.get('/user/:id/rule', userAuthenticated, getUserRule); //HECHO EN FRONT
+app.put('/user/:id/rule', userAuthenticated, editUserRule); //HECHO EN FRONT
 app.delete('/user/:id', userAuthenticated, userIsAdmin, deleteUser); //Hecho
 app.put('/user/:id/hide', userAuthenticated, hideUser); //Hecho
 app.put('/user/:id/show', userAuthenticated, showUser); //Hecho
-app.put('/user/:id/restore', userAuthenticated, restorePassword); //Hecho
 
 // RUTAS DE HABITACIONES
-app.post('/room', userAuthenticated, newRoom); //Hecho
-app.put('/room/:id/edit', userAuthenticated, editRoom); //Hecho
-app.get('/room', getRooms); //Hecho
-app.get('/room/:id', userAuthenticated, viewRoom); //Hecho
+app.post('/user/:id/room', userAuthenticated, newRoom); //Hecho
+app.put('/user/:iduser/room/:idroom/edit', userAuthenticated, editRoom); //Hecho
+app.put(
+  '/user/:iduser/room/:idroom/editfacilities',
+  userAuthenticated,
+  editRoomFacilities
+); //Hecho
+// app.get('/room', getRooms); //Hecho
+app.get('/user/:iduser/room/:idroom', userAuthenticated, viewRoom); //Hecho
 app.delete('/room/:id', userAuthenticated, deleteRoom); //Hecho
 
 // RUTAS DE VOTO
+//Al terminar una reserva, por mail mandamos a esta ruta
 app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho
-app.get('/user/:id/vote', getUserVotes); //Hecho
-app.put('/user/:id/vote', userAuthenticated, editUserVote); //Hecho
-app.post('/room/:id/vote', userAuthenticated, voteRoom); //Hecho
-app.get('/room/:id/vote', getRoomVotes); //Hecho
-app.put('/room/:id/vote', userAuthenticated, editRoomVote); //Hecho
+// Diferenciar entre valoraciones emitidas y recibidas
+app.get('/user/:id/submited-votes', getSubmitedVotes); //HECHO EN FRONT
+app.get('/user/:id/received-votes', getReceivedVotes); //HECHO EN FRONT
+// app.put('/user/:id/vote', userAuthenticated, editUserVote); //Hecho
+// app.post('/room/:id/vote', userAuthenticated, voteRoom); //Hecho
+// app.get('/room/:id/vote', getRoomVotes); //Hecho
+// app.put('/room/:id/vote', userAuthenticated, editRoomVote); //Hecho
 app.delete('/room/:id/vote/:id', userAuthenticated, userIsAdmin, deleteVote); //Hecho
 
 // RUTAS DE MATCHES
-app.get('/user/:id/matches', userAuthenticated, getMatches); //Hecho
-app.delete('/user/:id/matches/:id', userAuthenticated, cancelMatch); //Hecho
+app.get('/user/:id/matches', userAuthenticated, getMatches); //HECHO EN FRONT
+app.delete('/user/:id/matches/:id', userAuthenticated, cancelMatch); //HECHO EN FRONT
 
 // RUTAS DE MENSAJES
-app.get('/user/:id/matches/:id', userAuthenticated, getMessages); //Hecho
-app.post('/user/:id/matches/:id', userAuthenticated, sendMessage); //Hecho
+app.get('/user/:iduser/matches/:idmatch', userAuthenticated, getMessages); //HECHO EN FRONT
+app.post('/user/:iduser/matches/:idmatch', userAuthenticated, sendMessage); //HECHO EN FRONT
 app.delete(
   '/user/:id/matches/:id/message/:id',
   userAuthenticated,
@@ -119,8 +144,13 @@ app.delete(
 ); //Hecho
 
 // RUTAS DE RESERVA
-app.post('/user/:id/matches/:id/booking', userAuthenticated, requestBooking); //Hecho
+app.post(
+  '/user/:iduser/matches/:idmatch/booking',
+  userAuthenticated,
+  requestBooking
+); //Hecho
 app.get('/matches/:id/booking/accept', acceptBooking); //Hecho
+//Tiene sentido meter una decline booking?
 app.get('/user/:id/booking', userAuthenticated, getBookings); //Hecho
 app.get('/user/:iduser/booking/:idbooking', userAuthenticated, viewBooking); //Hecho
 // app.put('/room/:id/booking/:id', userAuthenticated, editBooking); //Mandar mail a la otra persona solicitando un cambio en la reserva (aclarar que esto se hace para que quede por escrito)

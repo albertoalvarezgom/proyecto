@@ -1,18 +1,19 @@
 const { getConnection } = require('../../db/db.js');
 
-async function getUserVotes(request, response, next) {
+async function getSubmitedVotes(request, response, next) {
   let connection;
   try {
     const { id } = request.params;
     connection = await getConnection();
 
     const [rating] = await connection.query(
-      `select rating.rate, rating.comment, rating.creation_date, 
+      `SELECT rating.rate, rating.comment, rating.creation_date, 
     user.first_name, user.image_1 
-    from rating left join user on user.id_user=rating.id_user_sends where rating.type='user' and rating.id_user_gets=?`,
+    FROM rating LEFT JOIN user ON user.id_user=rating.id_user_gets WHERE rating.id_user_sends=?`,
       [id]
     );
-    response.send({ status: 'ok', data: rating });
+
+    response.send({ status: 'ok', votes: rating });
   } catch (error) {
     next(error);
   } finally {
@@ -20,4 +21,4 @@ async function getUserVotes(request, response, next) {
   }
 }
 
-module.exports = { getUserVotes };
+module.exports = { getSubmitedVotes };

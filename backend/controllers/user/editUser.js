@@ -1,4 +1,5 @@
 require('dotenv').config();
+const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const {
@@ -7,19 +8,24 @@ const {
   deletePhoto
 } = require('../../helpers/helpers.js');
 
-const { editUserSchema } = require('../../validations/userValidation');
+// const { editUserSchema } = require('../../validations/userValidation');
 
 async function editUser(request, response, next) {
   let connection;
   try {
-    await editUserSchema.validateAsync(request.body);
+    // await editUserSchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       name,
       birthday,
+      userCity,
       email,
       occupationField,
-      occupationStatus
+      occupationStatus,
+      couple,
+      gender,
+      ig_profile,
+      type
     } = request.body;
 
     connection = await getConnection();
@@ -45,11 +51,11 @@ async function editUser(request, response, next) {
       );
     }
 
-    if ((current[0].email = email)) {
-      throw generateError(
-        `El email ${email} ya está registrado en nuestra BBDD. Por favor inténtelo con otra dirección de correo diferente.`
-      );
-    }
+    // if ((current[0].email = email)) {
+    //   throw generateError(
+    //     `El email ${email} ya está registrado en nuestra BBDD. Por favor inténtelo con otra dirección de correo diferente.`
+    //   );
+    // }
 
     const [user] = current;
 
@@ -69,51 +75,88 @@ async function editUser(request, response, next) {
       }
     }
 
-    const newImages = [
-      request.files.image_1,
-      request.files.image_2,
-      request.files.image_3,
-      request.files.image_4,
-      request.files.image_5
-    ];
-
-    const checkNewImages = [];
-
-    for (const image of newImages) {
-      if (image) {
-        checkNewImages.push(image);
-      }
-    }
-
     const imagestoDB = [];
 
     if (request.files) {
+      const newImages = [
+        request.files.image_1,
+        request.files.image_2,
+        request.files.image_3,
+        request.files.image_4,
+        request.files.image_5
+      ];
+
+      const checkNewImages = [];
+
+      for (const image of newImages) {
+        if (image) {
+          checkNewImages.push(image);
+        }
+      }
+
       let savedFileName;
 
       for (let i = 0; i < checkNewImages.length; i++) {
         savedFileName = await processAndSavePhoto(checkNewImages[i]);
-
         if (currentImages[i]) {
           await deletePhoto(checkCurrentImages[i]);
-
-          imagestoDB.push(savedFileName);
         }
+        imagestoDB.push(savedFileName);
       }
     }
 
+    console.log(chalk.inverse.yellow(type));
+
+    let formatCouple;
+    if (couple === 'No') {
+      formatCouple = 0;
+    } else {
+      formatCouple = 1;
+    }
+
+    let formatStatus;
+    if (occupationStatus === 'Trabajando') {
+      formatStatus = 'working';
+    } else if (occupationStatus === 'Estudiando') {
+      formatStatus = 'studying';
+    } else {
+      formatStatus = 'both';
+    }
+
+    let formatGender;
+    if (gender === 'Masculino') {
+      formatGender = 'masculine';
+    } else if (gender === 'Femenino') {
+      formatGender = 'femenine';
+    } else {
+      formatGender = 'other';
+    }
+
+    let formatType;
+    if (type === 'Buscando piso') {
+      formatType = 'looking';
+    } else {
+      formatType = 'owner';
+    }
     await connection.query(
-      'update user set first_name=?, birthday=?, email=?, occupation_field=?, occupation_status=?, image_1=?, image_2=?, image_3=?, image_4=?, image_5=? where id_user=?',
+      `UPDATE user SET first_name=?, birthday=?, city=?, email=?, occupation_field=?, occupation_status=?, couple=?,
+      image_1=?, image_2=?, image_3=?, image_4=?, image_5=?, gender=?, type=?, ig_profile=? WHERE id_user=?`,
       [
         name,
         birthday,
+        userCity,
         email,
         occupationField,
-        occupationStatus,
+        formatStatus,
+        formatCouple,
         imagestoDB[0],
         imagestoDB[1],
         imagestoDB[2],
         imagestoDB[3],
         imagestoDB[4],
+        formatGender,
+        formatType,
+        ig_profile,
         id
       ]
     );

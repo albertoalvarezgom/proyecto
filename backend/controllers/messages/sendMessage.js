@@ -1,10 +1,12 @@
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
+const chalk = require('chalk');
+
 async function sendMessage(request, response, next) {
   let connection;
   try {
-    const { id } = request.params;
+    const { idmatch } = request.params;
     const { comment } = request.body;
     connection = await getConnection();
 
@@ -12,18 +14,20 @@ async function sendMessage(request, response, next) {
       existingMatch
     ] = await connection.query(
       `SELECT id_match FROM user_match WHERE id_match=?`,
-      [id]
+      [idmatch]
     );
 
     if (!existingMatch.length) {
-      throw generateError(`No existe un match con el id ${id} en nuestra BBDD`);
+      throw generateError(
+        `No existe un match con el id ${idmatch} en nuestra BBDD`
+      );
     }
 
     const [userMatch] = await connection.query(
       `
     SELECT id_user1, id_user2 FROM user_match WHERE id_match=?
     `,
-      [id]
+      [idmatch]
     );
 
     if (
@@ -35,14 +39,14 @@ async function sendMessage(request, response, next) {
 
     await connection.query(
       `INSERT INTO messages (id_user, id_match, comment) VALUES (?,?,?)`,
-      [request.auth.id, id, comment]
+      [request.auth.id, idmatch, comment]
     );
 
     const [
       messages
     ] = await connection.query(
       `SELECT * FROM messages WHERE id_match=? ORDER BY creation_date DESC`,
-      [id]
+      [idmatch]
     );
 
     response.send({

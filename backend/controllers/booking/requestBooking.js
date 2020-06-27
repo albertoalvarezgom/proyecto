@@ -6,12 +6,17 @@ const {
   sendEmail
 } = require('../../helpers/helpers.js');
 
+const { bookingSchema } = require('../../validations/bookingValidation');
+
 async function requestBooking(request, response, next) {
   let connection;
 
   try {
-    const { id } = request.params;
+    const { idmatch } = request.params;
+
+    await bookingSchema.validateAsync(request.body);
     const { startDate, finishDate } = request.body;
+
     connection = await getConnection();
 
     //Comprobamos que el match sobre el que se está realizando la solicitud de reserva existe
@@ -19,11 +24,14 @@ async function requestBooking(request, response, next) {
       checkMatch
     ] = await connection.query(
       `SELECT id_user1, id_user2 FROM user_match WHERE id_match=?`,
-      [id]
+      [idmatch]
     );
 
     if (!checkMatch.length) {
-      throw generateError(`El match con id ${id} no existe en en la BBDD`, 404);
+      throw generateError(
+        `El match con id ${idmatch} no existe en en la BBDD`,
+        404
+      );
     }
 
     //Comprobamos que el usuario que realiza la solicitud es uno de los dos miembros del match
@@ -41,7 +49,7 @@ async function requestBooking(request, response, next) {
       existingBooking
     ] = await connection.query(
       `SELECT id_booking FROM booking WHERE status='pending' AND id_match=?`,
-      [id]
+      [idmatch]
     );
 
     if (existingBooking.length) {
@@ -61,30 +69,32 @@ async function requestBooking(request, response, next) {
 
     //Sacamos la dirección de mail de los dos usuarios del match
     const [
-      emailUser1
-    ] = await connection.query(`SELECT email FROM user WHERE id_user=?`, [
-      checkMatch[0].id_user1
-    ]);
+      user1
+    ] = await connection.query(
+      `SELECT id_user, email, type FROM user WHERE id_user=?`,
+      [checkMatch[0].id_user1]
+    );
 
     const [
-      emailUser2
-    ] = await connection.query(`SELECT email FROM user WHERE id_user=?`, [
-      checkMatch[0].id_user2
-    ]);
+      user2
+    ] = await connection.query(
+      `SELECT id_user, email, type FROM user WHERE id_user=?`,
+      [checkMatch[0].id_user2]
+    );
 
     //Generamos un código de confirmación de reserva
     const confirmationCode = randomString(40);
     //Contruimos la url de confirmación de reserva con el código anterior
-    const confirmationURL = `${process.env.PUBLIC_HOST}/matches/${id}/booking/accept?code=${confirmationCode}`;
+    const confirmationURL = `${process.env.PUBLIC_HOST}/matches/${idmatch}/booking/accept?code=${confirmationCode}`;
 
     //Como no sabemos cuál de los dos usuarios del match es el que solicita la reserva, comprobamos
     let toEmail;
     let fromEmail;
     if (request.auth.id === checkMatch[0].id_user1) {
-      toEmail = emailUser2[0].email;
+      toEmail = user2[0].email;
       fromEmail = user[0].email;
     } else {
-      toEmail = emailUser1[0].email;
+      toEmail = user1[0].email;
       fromEmail = user[0].email;
     }
 
@@ -95,8 +105,8 @@ async function requestBooking(request, response, next) {
         fromEmail: fromEmail,
         title: `¡${user[0].first_name} (id ${request.auth.id}) te ha enviado una solicitud de reserva!`,
         html: `<div>
-      <h1>Valida tu email</h1>
-      <p>Para validar tu cuenta de usuario pega esta url en tu navegador: ${confirmationURL}</p>  
+      <h1>Confirma tu reserva</h1>
+      <p>Puedes confirmar la solicitud de reserva a través de la siguiente URL: ${confirmationURL}</p>  
     </div>`
       });
     } catch (error) {
@@ -107,25 +117,35 @@ async function requestBooking(request, response, next) {
       );
     }
 
+    let idroom;
+
+    if (user1[0].type === 'owner') {
+      [
+        idroom
+      ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
+        user1[0].id_user
+      ]);
+    } else {
+      [
+        idroom
+      ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
+        user2[0].id_user
+      ]);
+    }
+
     //Metemos los valores de la reserva en la BBDD.
     //Por defecto, las nuevas reservas tienen status='pending' hasta que no son confirmadas
     await connection.query(
       `
-      INSERT INTO booking (id_user1, id_user2, confirmation_code, start_date, finish_date)
+      INSERT INTO booking (id_match, id_room, confirmation_code, start_date, finish_date)
       VALUES(?, ?, ?, ?, ?)
     `,
-      [
-        checkMatch[0].id_user1,
-        checkMatch[0].id_user2,
-        confirmationCode,
-        startDate,
-        finishDate
-      ]
+      [idmatch, idroom[0].id_room, confirmationCode, startDate, finishDate]
     );
 
     response.send({
       status: 'ok',
-      message: `La solicitud de reserva correspondiente al match con id ${id} fue enviada correctamente`
+      message: `La solicitud de reserva correspondiente al match con id ${idmatch} fue enviada correctamente`
     });
   } catch (error) {
     next(error);

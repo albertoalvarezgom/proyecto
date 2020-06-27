@@ -9,13 +9,13 @@ const {
   deletePhoto
 } = require('../../helpers/helpers.js');
 
-// const { newRoomSchema } = require('../../validations/roomValidation');
+const { roomSchema } = require('../../validations/roomValidation');
 
 async function editRoom(request, response, next) {
   let connection;
   try {
-    // await editRoomSchema.validateAsync(request.body);
-    const { id } = request.params;
+    await roomSchema.validateAsync(request.body);
+    const { idroom, iduser } = request.params;
 
     const {
       title,
@@ -48,18 +48,18 @@ async function editRoom(request, response, next) {
     const [
       room
     ] = await connection.query(
-      'select id_user, id_room, image_1, image_2, image_3, image_4, image_5 from room where id_room=?',
-      [id]
+      `SELECT image_1, image_2, image_3, image_4, image_5 FROM room WHERE id_room=?`,
+      [idroom]
     );
 
     if (!room.length) {
       throw generateError(
-        `La habitación con id ${id} no existe en la BBDD`,
+        `La habitación con id ${idroom} no existe en la BBDD`,
         404
       );
     }
 
-    if (room[0].id_user !== request.auth.id && request.auth.role !== 'admin') {
+    if (iduser !== request.auth.id && request.auth.role !== 'admin') {
       throw generateError('No tienes permiso para editar esta habitación', 401);
     }
 
@@ -112,9 +112,9 @@ async function editRoom(request, response, next) {
     }
 
     await connection.query(
-      `update room set title=?, description=?, address=?, postal_code=?, city=?, flatmates_masc=?, flatmates_fem=?, flat_size=?, preference_gender=?, status=?, min_age=?, max_age=?,
+      `UPDATE room SET title=?, description=?, address=?, postal_code=?, city=?, flatmates_masc=?, flatmates_fem=?, flat_size=?, preference_gender=?, status=?, min_age=?, max_age=?,
       room_type=?, room_size=?, bed_type=?, price=?, bills_included=?, deposit=?, deposit_ammount=?, availability_from=?, availability_until=?, min_stay=?, max_stay=?,
-      image_1=?, image_2=?, image_3=?, image_4=?, image_5=? where id_room=?`,
+      image_1=?, image_2=?, image_3=?, image_4=?, image_5=? WHERE id_room=?`,
       [
         title,
         description,
@@ -144,12 +144,12 @@ async function editRoom(request, response, next) {
         imagestoDB[2],
         imagestoDB[3],
         imagestoDB[4],
-        id
+        idroom
       ]
     );
     response.send({
       status: 'ok',
-      message: `Habitación con id ${id} actualizada correctamente`
+      message: `Habitación con id ${idroom} actualizada correctamente`
     });
   } catch (error) {
     next(error);

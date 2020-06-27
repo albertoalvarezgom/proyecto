@@ -7,7 +7,7 @@ const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 const { loginSchema } = require('../../validations/userValidation');
 
-async function loginUser(request, response, next) {
+async function loginUser(request, res, next) {
   let connection;
   try {
     const { email, password } = request.body;
@@ -18,7 +18,7 @@ async function loginUser(request, response, next) {
     const [
       dbUser
     ] = await connection.query(
-      'SELECT id_user, email, password, role, city FROM user WHERE email=? AND active=1',
+      'SELECT id_user, first_name, email, password, role, city FROM user WHERE email=? AND active=1',
       [email]
     );
 
@@ -40,15 +40,22 @@ async function loginUser(request, response, next) {
     const tokenPayload = {
       id: user.id_user,
       role: user.role,
-      city: user.city
+      city: user.city,
+      name: user.first_name
     };
     const token = jwt.sign(tokenPayload, process.env.SECRET, {
       expiresIn: '30d'
     });
 
-    response.send({
+    res.send({
       status: 'ok',
       message: 'Login Correcto. Bienvenido!',
+      user: {
+        id: user.id_user,
+        role: user.role,
+        city: user.city,
+        name: user.first_name
+      },
       data: token
     });
   } catch (error) {

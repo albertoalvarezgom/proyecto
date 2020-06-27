@@ -10,7 +10,7 @@ async function acceptBooking(request, response, next) {
     connection = await getConnection();
 
     const { code } = request.query;
-    const { id } = request.params;
+    const { idmatch } = request.params;
 
     const [
       existingBooking
@@ -40,7 +40,7 @@ async function acceptBooking(request, response, next) {
     const [
       booking
     ] = await connection.query(
-      `SELECT id_user1, id_user2 FROM booking WHERE confirmation_code=?`,
+      `SELECT user_match.id_user1, user_match.id_user2 FROM user_match JOIN booking ON booking.id_match=user_match.id_match WHERE booking.confirmation_code=?`,
       [code]
     );
 
@@ -152,9 +152,11 @@ async function acceptBooking(request, response, next) {
       );
     }
 
-    //Borramos match
-
-    await connection.query(`DELETE FROM user_match WHERE id_match=?`, [id]);
+    //Marcamos el match como completado con éxito para mostrarlo como archivado
+    await connection.query(
+      `UPDATE user_match SET status='booking' WHERE id_match=?`,
+      [idmatch]
+    );
 
     response.send({
       status: 'ok',

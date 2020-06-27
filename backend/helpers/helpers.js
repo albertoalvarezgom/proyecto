@@ -25,6 +25,11 @@ function formatDateToDB(date) {
   return format(date, 'yyyy-MM-dd HH:mm:ss');
 }
 
+//Formatear fecha a Vue
+function formatDateToFront(date) {
+  return format(date, 'yyyy-MM-dd');
+}
+
 //Formatear errores
 function generateError(message, code) {
   const error = new Error(message);
@@ -94,5 +99,6 @@ module.exports = {
   processAndSavePhoto,
   randomString,
   sendEmail,
-  restoreEmail
+  restoreEmail,
+  formatDateToFront
 };

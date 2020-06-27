@@ -36,11 +36,12 @@ async function newUser(request, response, next) {
     try {
       await sendEmail({
         toEmail: email,
-        fromEmail: process.env.UPLOADS_DIR,
-        title: 'Valida tu cuenta de usuario en Inquilino Perfecto',
+        fromEmail: process.env.DEFAULT_ADMIN_EMAIL,
+        title: '¡Bienvenido/a a roomie!',
         html: `<div>
       <h1>Valida tu email</h1>
-      <p>Para validar tu cuenta de usuario pega esta url en tu navegador: ${validationURL}</p>  
+      <p>Para validar tu cuenta de usuario pega esta url en tu navegador: ${validationURL}</p> 
+      <p>Una vez que hagas login, no olvides editar tu perfil de usuario. ¡Cuanto más completo más oportunidades tendrás de encontrar a tu roomie ideal!</p> 
     </div>`
       });
     } catch (error) {

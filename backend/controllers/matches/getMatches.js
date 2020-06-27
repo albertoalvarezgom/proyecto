@@ -19,11 +19,39 @@ async function getMatches(request, response, next) {
     const [
       matches
     ] = await connection.query(
-      `SELECT * FROM user_match WHERE id_user1=? OR (id_user2=? AND status='match')`,
+      `SELECT id_match, id_user1, id_user2 FROM user_match WHERE id_user1=? OR (id_user2=? AND status='match')`,
       [request.auth.id, request.auth.id]
     );
 
-    response.send({ status: 'ok', data: matches });
+    const matchesId = [];
+    for (let i = 0; i < matches.length; i++) {
+      if (matches[i].id_user1 !== request.auth.id) {
+        matchesId.push(matches[i].id_user1);
+      }
+      if (matches[i].id_user2 !== request.auth.id) {
+        matchesId.push(matches[i].id_user2);
+      }
+    }
+
+    const matchesArray = [];
+
+    for (let i = 0; i < matchesId.length; i++) {
+      let [
+        userData
+      ] = await connection.query(
+        `SELECT first_name, image_1 FROM user WHERE id_user=?`,
+        [matchesId[i]]
+      );
+      let [
+        statusData
+      ] = await connection.query(
+        `SELECT id_match, status FROM user_match WHERE id_user1=? OR (id_user2=? AND status='match')`,
+        [request.auth.id, request.auth.id]
+      );
+      matchesArray.push({ user: userData, match: statusData[i] });
+    }
+
+    response.send({ status: 'ok', data: matchesArray });
   } catch (error) {
     next(error);
   } finally {
