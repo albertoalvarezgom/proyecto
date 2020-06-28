@@ -73,7 +73,7 @@ async function likeUser(request, response, next) {
     const [
       existingLike
     ] = await connection.query(
-      `SELECT id_match FROM user_match WHERE id_user1=? AND id_user2=? AND status='pending'`,
+      `SELECT id_match FROM user_match WHERE id_user1=? AND id_user2=? AND status='enviado'`,
       [request.auth.id, id]
     );
 
@@ -88,7 +88,7 @@ async function likeUser(request, response, next) {
     const [
       checkMatch
     ] = await connection.query(
-      `SELECT id_match FROM user_match WHERE id_user1=? AND id_user2=? AND status='pending'`,
+      `SELECT id_match FROM user_match WHERE id_user1=? AND id_user2=? AND status='enviado'`,
       [id, request.auth.id]
     );
 
@@ -102,7 +102,7 @@ async function likeUser(request, response, next) {
     //Si no, creamos uno
     else {
       await connection.query(
-        `INSERT into user_match (id_user1, id_user2) VALUES (?,?)`,
+        `INSERT into user_match (id_user1, id_user2, status) VALUES (?,?, 'enviado')`,
         [request.auth.id, id]
       );
       message = `'Me gusta' enviado al usuario con id ${id}`;

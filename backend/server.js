@@ -41,6 +41,9 @@ const { restorePassword } = require('./controllers/user/restorePassword.js');
 const { newRoom } = require('./controllers/room/newRoom.js');
 const { editRoom } = require('./controllers/room/editRoom.js');
 const {
+  getRoomFacilities
+} = require('./controllers/room/getRoomFacilities.js');
+const {
   editRoomFacilities
 } = require('./controllers/room/editRoomFacilities.js');
 // const { getRooms } = require('./controllers/room/getRooms.js');
@@ -69,6 +72,7 @@ const { deleteMessage } = require('./controllers/messages/deleteMessage.js');
 // BOOKING CONTROLLERS
 const { requestBooking } = require('./controllers/booking/requestBooking.js');
 const { acceptBooking } = require('./controllers/booking/acceptBooking.js');
+const { cancelBooking } = require('./controllers/booking/cancelBooking.js');
 // const { editBooking } = require('./controllers/booking/editBooking.js');
 const { viewBooking } = require('./controllers/booking/viewBooking.js');
 const { deleteBooking } = require('./controllers/booking/deleteBooking.js');
@@ -94,7 +98,7 @@ app.get('/user', userAuthenticated, getUsers); //HECHO EN FRONT
 app.put('/user/:id/like', userAuthenticated, likeUser); //HECHO EN FRONT
 app.put('/user/restore', restorePassword); //HECHO EN FRONT
 app.put('/user/:id', userAuthenticated, editUser); //HECHO EN FRONT
-app.get('/user/:id', userAuthenticated, viewUser); //Hecho
+app.get('/user/:id', userAuthenticated, viewUser); //HECHO EN FRONT
 app.get('/user/:id/personality', userAuthenticated, getUserPersonality); //HECHO EN FRONT
 app.put('/user/:id/personality', userAuthenticated, editUserPersonality); //HECHO EN FRONT
 app.get('/user/:id/hobby', userAuthenticated, getUserHobby); //HECHO EN FRONT
@@ -106,20 +110,17 @@ app.put('/user/:id/hide', userAuthenticated, hideUser); //Hecho
 app.put('/user/:id/show', userAuthenticated, showUser); //Hecho
 
 // RUTAS DE HABITACIONES
-app.post('/user/:id/room', userAuthenticated, newRoom); //Hecho
-app.put('/user/:iduser/room/:idroom/edit', userAuthenticated, editRoom); //Hecho
-app.put(
-  '/user/:iduser/room/:idroom/editfacilities',
-  userAuthenticated,
-  editRoomFacilities
-); //Hecho
+app.post('/user/:id/room', userAuthenticated, newRoom); //HECHO EN FRONT
+app.put('/user/:id/room', userAuthenticated, editRoom); //HECHO EN FRONT
+app.get('/user/:id/room/facilities', userAuthenticated, getRoomFacilities); //HECHO EN FRONT
+app.put('/user/:id/room/facilities', userAuthenticated, editRoomFacilities); //Hecho
 // app.get('/room', getRooms); //Hecho
-app.get('/user/:iduser/room/:idroom', userAuthenticated, viewRoom); //Hecho
+app.get('/user/:iduser/room/', userAuthenticated, viewRoom); //HECHO EN FRONT
 app.delete('/room/:id', userAuthenticated, deleteRoom); //Hecho
 
 // RUTAS DE VOTO
 //Al terminar una reserva, por mail mandamos a esta ruta
-app.post('/user/:id/vote', userAuthenticated, voteUser); //Hecho
+app.post('/user/:id/vote', userAuthenticated, voteUser); //HECHO EN FRONT
 // Diferenciar entre valoraciones emitidas y recibidas
 app.get('/user/:id/submited-votes', getSubmitedVotes); //HECHO EN FRONT
 app.get('/user/:id/received-votes', getReceivedVotes); //HECHO EN FRONT
@@ -148,17 +149,13 @@ app.post(
   '/user/:iduser/matches/:idmatch/booking',
   userAuthenticated,
   requestBooking
-); //Hecho
-app.get('/matches/:id/booking/accept', acceptBooking); //Hecho
-//Tiene sentido meter una decline booking?
-app.get('/user/:id/booking', userAuthenticated, getBookings); //Hecho
-app.get('/user/:iduser/booking/:idbooking', userAuthenticated, viewBooking); //Hecho
+); //HECHO EN FRONT
+app.get('/matches/:id/booking/accept', userAuthenticated, acceptBooking); //HECHO EN EL FRONT
+app.get('/matches/:id/booking/cancel', userAuthenticated, cancelBooking); //HECHO EN EL FRONT
+app.get('/matches/:id/booking/finish', userAuthenticated, finishBooking); //HECHO EN EL FRONT
+app.get('/user/:id/booking', userAuthenticated, getBookings); //HECHO EN EL FRONT
+// app.get('/user/:iduser/booking/:idbooking', userAuthenticated, viewBooking); //Hecho
 // app.put('/room/:id/booking/:id', userAuthenticated, editBooking); //Mandar mail a la otra persona solicitando un cambio en la reserva (aclarar que esto se hace para que quede por escrito)
-app.put(
-  '/user/:iduser/booking/:idbooking/finish',
-  userAuthenticated,
-  finishBooking
-); //Hecho
 app.delete(
   '/user/:iduser/booking/:idbooking',
   userAuthenticated,

@@ -45,10 +45,10 @@ async function getUsers(request, response, next) {
 
     let userType;
 
-    if (type[0].type === 'looking') {
-      userType = 'owner';
+    if (type[0].type === 'buscando piso') {
+      userType = 'buscando inquilino';
     } else {
-      userType = 'looking';
+      userType = 'buscando piso';
     }
 
     let q = `SELECT user.id_user
@@ -291,8 +291,8 @@ async function getUsers(request, response, next) {
       LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
       LEFT JOIN rule_user ON user.id_user = rule_user.id_user
       LEFT JOIN rule ON rule.id_rule = rule_user.id_rule 
-      WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=?) 
-      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?) 
+      WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=? AND user_match.status!='enviado') 
+      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=? AND user_match.status!='enviado') 
       AND user.hidden=0 AND user.type=? AND user.city=? GROUP BY user.id_user`;
     }
 
@@ -319,7 +319,7 @@ async function getUsers(request, response, next) {
       let [
         sqlPersonalityQuery
       ] = await connection.query(
-        `SELECT personality.name FROM personality_user JOIN personality ON personality_user.id_personality=personality.id_personality WHERE personality_user.id_user=?`,
+        `SELECT personality.name FROM personality_user JOIN personality ON personality_user.id_personality=personality.id_personality WHERE personality_user.id_user=? AND personality_user.status=1`,
         [users[i].id_user]
       );
       userPersonality.push(sqlPersonalityQuery);
@@ -327,7 +327,7 @@ async function getUsers(request, response, next) {
       let [
         sqlRuleQuery
       ] = await connection.query(
-        `SELECT rule.name FROM rule_user JOIN rule ON rule_user.id_rule=rule.id_rule WHERE rule_user.id_user=?`,
+        `SELECT rule.name FROM rule_user JOIN rule ON rule_user.id_rule=rule.id_rule WHERE rule_user.id_user=? AND rule_user.status=1`,
         [users[i].id_user]
       );
       userRule.push(sqlRuleQuery);
@@ -335,7 +335,7 @@ async function getUsers(request, response, next) {
       let [
         sqlHobbyQuery
       ] = await connection.query(
-        `SELECT hobby.name, hobby_user.description FROM hobby_user JOIN hobby ON hobby_user.id_hobby=hobby.id_hobby WHERE hobby_user.id_user=?`,
+        `SELECT hobby.name, hobby_user.description FROM hobby_user JOIN hobby ON hobby_user.id_hobby=hobby.id_hobby WHERE hobby_user.id_user=? AND hobby_user.status=1`,
         [users[i].id_user]
       );
       userHobby.push(sqlHobbyQuery);

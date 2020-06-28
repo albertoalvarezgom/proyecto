@@ -39,6 +39,8 @@ async function validateUser(request, response, next) {
       );
     }
 
+    console.log(personalities.length);
+
     const [rules] = await connection.query(`SELECT id_rule FROM rule`);
 
     for (let i = 1; i <= rules.length; i++) {
@@ -59,8 +61,6 @@ async function validateUser(request, response, next) {
       throw generateError('Validación incorrecta', 400);
     }
 
-    const editURL = `${process.env.PUBLIC_HOST}/user/${user[0].id_user}`;
-
     try {
       await sendEmail({
         toEmail: user[0].email,
@@ -68,7 +68,7 @@ async function validateUser(request, response, next) {
         title: '¡Bienvenido/a a roomie!',
         html: `<div>
       <h1>El siguiente paso es completar tu perfil</h1>
-      <p>Puedes editar tu perfil de usuario a través de esta URL: ${editURL}</p> 
+      <p>Haz login y comienza a editar tu perfil.</p> 
       <p>¡Cuanto más completo más oportunidades tendrás de encontrar a tu roomie ideal!</p> 
     </div>`
       });

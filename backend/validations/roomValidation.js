@@ -3,7 +3,6 @@ const { generateError } = require('../helpers/helpers.js');
 
 const string = joi
   .string()
-  .required()
   .max(400)
   .error(
     generateError(

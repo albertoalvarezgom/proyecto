@@ -14,26 +14,12 @@ async function viewUser(request, response, next) {
 
     connection = await getConnection();
 
-    const [
-      hiddenUser
-    ] = await connection.query(
-      `SELECT id_user FROM user WHERE hidden=1 AND id_user=?`,
-      [request.auth.id]
-    );
-
-    if (hiddenUser.length) {
-      throw generateError(
-        'Un usuario oculto no puede realizar búsqedas. Haz tu cuenta visible e inténtalo de nuevo',
-        401
-      );
-    }
-
     const [user] = await connection.query(
       `SELECT *,
       (SELECT YEAR(CURDATE()) - YEAR(birthday)) AS age, 
       (SELECT ROUND(AVG(rate),1) FROM rating WHERE rating.id_user_gets=user.id_user) AS rating
       FROM user
-      WHERE hidden=0 AND id_user=?`,
+      WHERE id_user=?`,
       [id]
     );
 
@@ -109,40 +95,15 @@ async function viewUser(request, response, next) {
       formatHidden = 'Sí';
     }
 
-    let formatType;
-    if (dbUser.type === 'owner') {
-      formatType = 'Buscando inquilino';
-    } else {
-      formatType = 'Buscando piso';
-    }
-
-    let formatStatus;
-    if (dbUser.occupation_status === 'both') {
-      formatStatus = 'Ambas';
-    } else if (dbUser.occupation_status === 'working') {
-      formatStatus = 'Trabajando';
-    } else {
-      formatStatus = 'Estudiando';
-    }
-
-    let formatGender;
-    if (dbUser.gender === 'masculine') {
-      formatGender = 'Masculino';
-    } else if (dbUser.gender === 'femenine') {
-      formatGender = 'Femenino';
-    } else {
-      formatGender = 'Otro';
-    }
-
     //Armamos el payload con toda la info
     const payload = {
       name: dbUser.first_name,
       age: dbUser.age,
       birthday: date,
       city: dbUser.city,
-      gender: formatGender,
-      occupationField: dbUser.occupation_field,
-      occupationStatus: formatStatus,
+      gender: dbUser.gender,
+      occupation_field: dbUser.occupation_field,
+      occupation_status: dbUser.occupation_status,
       couple: formatCouple,
       ig_profile: dbUser.ig_profile,
       image1: dbUser.image_1,
@@ -151,7 +112,7 @@ async function viewUser(request, response, next) {
       image4: dbUser.image_4,
       image5: dbUser.image_5,
       hidden: formatHidden,
-      type: formatType,
+      type: dbUser.type,
       memberSince: dbUser.creation_date,
       views: dbUser.views,
       rating: dbUser.rating
@@ -164,6 +125,7 @@ async function viewUser(request, response, next) {
       bookingMatchB.length
     ) {
       payload.email = dbUser.email;
+      payload.phone = dbUser.phone;
     }
 
     await connection.query('update user set views=? where id_user=?', [

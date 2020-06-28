@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const { getConnection } = require('../../db/db.js');
 const { generateError, sendEmail } = require('../../helpers/helpers.js');
-// const chalk = require('chalk');
+const chalk = require('chalk');
 
 async function acceptBooking(request, response, next) {
   let connection;
@@ -29,7 +29,7 @@ async function acceptBooking(request, response, next) {
     const [
       result
     ] = await connection.query(
-      `UPDATE booking SET status='accepted' WHERE confirmation_code=?`,
+      `UPDATE booking SET status='aceptada' WHERE confirmation_code=?`,
       [code]
     );
 
@@ -40,7 +40,7 @@ async function acceptBooking(request, response, next) {
     const [
       booking
     ] = await connection.query(
-      `SELECT user_match.id_user1, user_match.id_user2 FROM user_match JOIN booking ON booking.id_match=user_match.id_match WHERE booking.confirmation_code=?`,
+      `SELECT user_match.id_user1, user_match.id_user2, booking.id_room FROM user_match JOIN booking ON booking.id_match=user_match.id_match WHERE booking.confirmation_code=?`,
       [code]
     );
 
@@ -53,7 +53,7 @@ async function acceptBooking(request, response, next) {
       booking[0].id_user1
     ]);
 
-    if (user1Type[0].type === 'looking') {
+    if (user1Type[0].type === 'buscando piso') {
       await connection.query(`UPDATE user SET hidden=1 WHERE id_user=?`, [
         booking[0].id_user1
       ]);
@@ -81,7 +81,7 @@ async function acceptBooking(request, response, next) {
       booking[0].id_user2
     ]);
 
-    if (user2Type[0].type === 'looking') {
+    if (user2Type[0].type === 'buscando piso') {
       await connection.query(`UPDATE user SET hidden=1 WHERE id_user=?`, [
         booking[0].id_user2
       ]);
@@ -145,7 +145,6 @@ async function acceptBooking(request, response, next) {
     </div>`
       });
     } catch (error) {
-      console.error(error.response.body);
       throw generateError(
         'Error en el envío de mail. Inténtalo de nuevo más tarde.',
         500
@@ -156,6 +155,42 @@ async function acceptBooking(request, response, next) {
     await connection.query(
       `UPDATE user_match SET status='booking' WHERE id_match=?`,
       [idmatch]
+    );
+
+    //Cancelamos el resto de solicitudes de reserva de ambos ususarios al aceptar una reserva
+    const [bookingsUser1] = await connection.query(
+      `
+    SELECT booking.id_booking FROM booking
+    JOIN user_match ON booking.id_match=user_match.id_match 
+    WHERE (user_match.id_user1=? OR user_match.id_user2=?) AND booking.status ='enviada'
+     `,
+      [booking[0].id_user1, booking[0].id_user1]
+    );
+
+    const [bookingsUser2] = await connection.query(
+      `
+    SELECT booking.id_booking FROM booking
+    JOIN user_match ON booking.id_match=user_match.id_match 
+    WHERE (user_match.id_user1=? OR user_match.id_user2=?) AND booking.status ='enviada'
+     `,
+      [booking[0].id_user2, booking[0].id_user2]
+    );
+
+    const bookingsToCancel = bookingsUser1.concat(bookingsUser2);
+
+    for (let i = 0; i < bookingsToCancel.length; i++) {
+      await connection.query(
+        `UPDATE booking SET status='cancelada' WHERE id_booking=?`,
+        [bookingsToCancel[i].id_booking]
+      );
+    }
+
+    //La habitación deja de estar disponible en ninguna fecha
+    await connection.query(
+      `
+    UPDATE room SET availability_from=null, availability_until=null WHERE id_room=?
+    `,
+      [booking[0].id_room]
     );
 
     response.send({

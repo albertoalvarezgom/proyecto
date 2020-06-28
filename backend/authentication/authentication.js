@@ -11,6 +11,8 @@ async function userAuthenticated(request, response, next) {
   try {
     const { authorization } = request.headers;
 
+    // console.log(chalk.inverse.yellow(authorization));
+
     if (!authorization) {
       throw generateError(
         'La cabecera de autorización es necesaria para realizar esta acción',

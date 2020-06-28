@@ -2,7 +2,10 @@ require('dotenv').config();
 const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
-const { generateError } = require('../../helpers/helpers.js');
+const {
+  generateError,
+  formatDateToFront
+} = require('../../helpers/helpers.js');
 
 async function viewRoom(request, response, next) {
   let connection;
@@ -11,50 +14,19 @@ async function viewRoom(request, response, next) {
 
     connection = await getConnection();
 
-    const [
-      hiddenUser
-    ] = await connection.query(
-      `SELECT id_user FROM user WHERE hidden=1 AND id_user=?`,
-      [request.auth.id]
-    );
-
-    if (hiddenUser.length) {
-      throw generateError(
-        'Un usuario oculto no puede realizar búsqedas. Haz tu cuenta visible e inténtalo de nuevo',
-        401
-      );
-    }
-
     const [room] = await connection.query(
-      `SELECT * FROM room WHERE id_room=?`,
-      [idroom]
+      `SELECT * FROM room WHERE id_user=?`,
+      [iduser]
     );
 
     if (!room.length) {
-      throw generateError(
-        `La habitación con id ${idroom} no existe en la BBDD`,
-        404
-      );
+      throw generateError(`La habitación no existe en la BBDD`, 404);
     }
 
-    if (room[0].hidden === 1) {
+    if (room[0].hidden === 1 && request.auth.id !== room[0].id_user) {
       throw generateError(
-        `No se puede mostrar la habitación con id ${idroom}. Ahora mismo esta entrada está oculta`,
+        `No se puede mostrar la habitación con id ${room[0].id_room}. Ahora mismo esta entrada está oculta`,
         404
-      );
-    }
-
-    const [
-      roomUser
-    ] = await connection.query(
-      `SELECT id_room FROM room WHERE id_room=? AND id_user=?`,
-      [idroom, iduser]
-    );
-
-    if (!roomUser.length) {
-      throw generateError(
-        `La habitación con id ${idroom} no se corresponde con el usuario con id ${iduser}`,
-        400
       );
     }
 
@@ -65,21 +37,46 @@ async function viewRoom(request, response, next) {
       [idroom]
     );
 
-    const [
-      rule
-    ] = await connection.query(
-      `SELECT rule.name FROM rule JOIN rule_room ON rule.id_rule = rule_room.id_rule WHERE rule_room.id_room =?`,
-      [idroom]
-    );
-
     await connection.query('UPDATE room SET views=? WHERE id_room=?', [
       room[0].views + 1,
       idroom
     ]);
 
+    const fromDate = formatDateToFront(room[0].availability_from);
+    const untilDate = formatDateToFront(room[0].availability_until);
+
+    console.log(fromDate);
+    console.log(untilDate);
+
+    const payload = {
+      title: room[0].title,
+      description: room[0].description,
+      address: room[0].address,
+      postal_code: room[0].postal_ode,
+      city: room[0].city,
+      flatmates_masc: room[0].flatmates_masc,
+      flatmates_fem: room[0].flatmates_fem,
+      flatSize: room[0].flat_size,
+      preference_gender: room[0].preference_gender,
+      status: room[0].status,
+      min_age: room[0].min_age,
+      max_age: room[0].max_age,
+      room_type: room[0].room_type,
+      room_size: room[0].room_size,
+      bed_type: room[0].bed_type,
+      price: room[0].price,
+      bills_included: room[0].bills_included,
+      deposit: room[0].deposit,
+      deposit_ammount: room[0].deposit_ammount,
+      availability_from: fromDate,
+      availability_until: untilDate,
+      min_stay: room[0].min_stay,
+      max_stay: room[0].max_stay
+    };
+
     response.send({
       status: 'ok',
-      data: { room: room[0], facility: facility, rule: rule }
+      data: { room: payload, facility: facility }
     });
   } catch (error) {
     next(error);

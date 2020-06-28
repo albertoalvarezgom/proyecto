@@ -13,7 +13,7 @@ const { roomSchema } = require('../../validations/roomValidation');
 async function newRoom(request, response, next) {
   let connection;
   try {
-    await roomSchema.validateAsync(request.body);
+    // await roomSchema.validateAsync(request.body);
     connection = await getConnection();
 
     const {
@@ -227,10 +227,28 @@ async function newRoom(request, response, next) {
       );
     }
 
-    //Marcamos al usuario que publicó una habitación como propietario
-    await connection.query(`UPDATE user set type='owner' WHERE id_user=?`, [
+    const [
+      idroom
+    ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
       request.auth.id
     ]);
+
+    const [facilities] = await connection.query(
+      `SELECT id_facility FROM facility`
+    );
+
+    for (let i = 1; i <= facilities.length; i++) {
+      await connection.query(
+        `INSERT INTO facility_room(id_room, id_facility, status) VALUES(?,?,false)`,
+        [idroom[0].id_room, i]
+      );
+    }
+
+    //Marcamos al usuario que publicó una habitación como propietario
+    await connection.query(
+      `UPDATE user set type='buscando inquilino' WHERE id_user=?`,
+      [request.auth.id]
+    );
 
     response.send({
       status: 'ok',

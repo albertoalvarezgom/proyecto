@@ -20,12 +20,14 @@ async function editUser(request, response, next) {
       birthday,
       userCity,
       email,
+      phone,
       occupationField,
       occupationStatus,
       couple,
       gender,
       ig_profile,
-      type
+      type,
+      hidden
     } = request.body;
 
     connection = await getConnection();
@@ -105,8 +107,6 @@ async function editUser(request, response, next) {
       }
     }
 
-    console.log(chalk.inverse.yellow(type));
-
     let formatCouple;
     if (couple === 'No') {
       formatCouple = 0;
@@ -114,49 +114,27 @@ async function editUser(request, response, next) {
       formatCouple = 1;
     }
 
-    let formatStatus;
-    if (occupationStatus === 'Trabajando') {
-      formatStatus = 'working';
-    } else if (occupationStatus === 'Estudiando') {
-      formatStatus = 'studying';
-    } else {
-      formatStatus = 'both';
-    }
-
-    let formatGender;
-    if (gender === 'Masculino') {
-      formatGender = 'masculine';
-    } else if (gender === 'Femenino') {
-      formatGender = 'femenine';
-    } else {
-      formatGender = 'other';
-    }
-
-    let formatType;
-    if (type === 'Buscando piso') {
-      formatType = 'looking';
-    } else {
-      formatType = 'owner';
-    }
     await connection.query(
       `UPDATE user SET first_name=?, birthday=?, city=?, email=?, occupation_field=?, occupation_status=?, couple=?,
-      image_1=?, image_2=?, image_3=?, image_4=?, image_5=?, gender=?, type=?, ig_profile=? WHERE id_user=?`,
+      image_1=?, image_2=?, image_3=?, image_4=?, image_5=?, gender=?, type=?, ig_profile=?, phone=?, hidden=? WHERE id_user=?`,
       [
         name,
         birthday,
         userCity,
         email,
         occupationField,
-        formatStatus,
+        occupationStatus,
         formatCouple,
         imagestoDB[0],
         imagestoDB[1],
         imagestoDB[2],
         imagestoDB[3],
         imagestoDB[4],
-        formatGender,
-        formatType,
+        gender,
+        type,
         ig_profile,
+        phone,
+        hidden,
         id
       ]
     );

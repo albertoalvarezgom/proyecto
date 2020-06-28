@@ -14,7 +14,7 @@ async function requestBooking(request, response, next) {
   try {
     const { idmatch } = request.params;
 
-    await bookingSchema.validateAsync(request.body);
+    // await bookingSchema.validateAsync(request.body);
     const { startDate, finishDate } = request.body;
 
     connection = await getConnection();
@@ -117,30 +117,29 @@ async function requestBooking(request, response, next) {
       );
     }
 
-    let idroom;
-
-    if (user1[0].type === 'owner') {
-      [
-        idroom
-      ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
-        user1[0].id_user
-      ]);
-    } else {
-      [
-        idroom
-      ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
-        user2[0].id_user
-      ]);
-    }
+    // console.log(chalk.inverse.yellow(user2[0].id_user));
+    const [
+      idroom
+    ] = await connection.query(
+      `SELECT id_room FROM room WHERE id_user=? OR id_user=?`,
+      [user1[0].id_user, user2[0].id_user]
+    );
 
     //Metemos los valores de la reserva en la BBDD.
     //Por defecto, las nuevas reservas tienen status='pending' hasta que no son confirmadas
     await connection.query(
       `
-      INSERT INTO booking (id_match, id_room, confirmation_code, start_date, finish_date)
-      VALUES(?, ?, ?, ?, ?)
+      INSERT INTO booking (id_match, id_room, confirmation_code, id_user_sending, start_date, finish_date)
+      VALUES(?, ?, ?, ?, ?, ?)
     `,
-      [idmatch, idroom[0].id_room, confirmationCode, startDate, finishDate]
+      [
+        idmatch,
+        idroom[0].id_room,
+        confirmationCode,
+        request.auth.id,
+        startDate,
+        finishDate
+      ]
     );
 
     response.send({

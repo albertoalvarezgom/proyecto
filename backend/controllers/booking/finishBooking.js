@@ -2,39 +2,23 @@ require('dotenv').config();
 
 const { getConnection } = require('../../db/db.js');
 const { generateError, sendEmail } = require('../../helpers/helpers.js');
-// const chalk = require('chalk');
+const chalk = require('chalk');
 
 async function finishBooking(request, response, next) {
   let connection;
   try {
-    const { iduser, idbooking } = request.params;
+    const { code } = request.query;
+
     connection = await getConnection();
-
-    const [
-      existingUser
-    ] = await connection.query(`SELECT id_user FROM user WHERE id_user=?`, [
-      iduser
-    ]);
-
-    if (!existingUser.length) {
-      throw generateError(
-        `El usuario con id ${iduser} no existe en nuestra BBDD`
-      );
-    }
 
     const [
       existingBooking
     ] = await connection.query(
-      `SELECT id_booking, id_match, id_room FROM booking WHERE id_booking=? AND status='accepted'`,
-      [idbooking]
+      `SELECT id_booking, id_match, id_room FROM booking WHERE confirmation_code=? AND status='aceptada'`,
+      [code]
     );
 
-    if (!existingBooking.length) {
-      throw generateError(
-        `La reserva con id ${idbooking} no existe en nuestra BBDD o no se encuentra en activo`,
-        404
-      );
-    }
+    console.log(chalk.inverse.yellow(existingBooking[0].id_booking));
 
     const [
       users
@@ -42,6 +26,22 @@ async function finishBooking(request, response, next) {
       `SELECT id_user1, id_user2 FROM user_match WHERE id_match=?`,
       [existingBooking[0].id_match]
     );
+
+    if (!existingBooking.length) {
+      throw generateError(
+        `La reserva con id ${existingBooking[0].id_booking} no existe en nuestra BBDD o no se encuentra en activo`,
+        404
+      );
+    }
+
+    //     const [
+    //       idusers
+    //     ] = await connection.query(
+    //       `SELECT id_user1, id_user2 FROM user_match WHERE id_match=?`,
+    //       [existingBooking[0].id_match]
+    //     );
+
+    // idusers[0].id_user1
 
     if (
       request.auth.id !== users[0].id_user1 &&
@@ -54,8 +54,8 @@ async function finishBooking(request, response, next) {
     }
 
     await connection.query(
-      `UPDATE booking SET status='finished', finish_date=now() WHERE id_booking=?`,
-      [idbooking]
+      `UPDATE booking SET status='terminada', finish_date=now() WHERE id_booking=?`,
+      [existingBooking[0].id_booking]
     );
 
     await connection.query(`UPDATE user SET hidden=0 WHERE id_user=?`, [
@@ -85,8 +85,8 @@ async function finishBooking(request, response, next) {
       [users[0].id_user2]
     );
 
-    const voteURL1 = `${process.env.PUBLIC_HOST}/user/${existingBooking[0].id_user2}/vote`;
-    const voteURL2 = `${process.env.PUBLIC_HOST}/user/${existingBooking[0].id_user1}/vote`;
+    // const voteURL1 = `${process.env.PUBLIC_HOST}/user/${users[0].id_user2}/vote`;
+    // const voteURL2 = `${process.env.PUBLIC_HOST}/user/${users[0].id_user1}/vote`;
 
     try {
       await sendEmail({
@@ -95,7 +95,7 @@ async function finishBooking(request, response, next) {
         title: `¡${user1[0].first_name}, tu reserva de habitación con ${user2[0].first_name} ha finalizado!`,
         html: `<div>
       <h1>La reserva ha terminado</h1>
-      <p>Haz click en la siguiente URL para votar a tu roomie: ${voteURL1}</p>  
+      <p>¡No olvides votar a tu roomie!</p>  
     </div>`
       });
       await sendEmail({
@@ -104,7 +104,7 @@ async function finishBooking(request, response, next) {
         title: `¡${user2[0].first_name}, tu reserva de habitación con ${user1[0].first_name} ha finalizado!`,
         html: `<div>
       <h1>La reserva ha terminado</h1>
-      <p>Haz click en la siguiente URL para votar a tu roomie: ${voteURL2}</p>  
+      <p>¡No olvides votar a tu roomie!</p>  
     </div>`
       });
     } catch (error) {
@@ -117,7 +117,7 @@ async function finishBooking(request, response, next) {
 
     response.send({
       status: 'ok',
-      message: `La reserva con id ${idbooking} ha finalizado. 
+      message: `La reserva con id ${existingBooking[0].id_booking} ha finalizado. 
       La habitación con id ${existingBooking[0].id_room} vuelve a estar disponible y los usuarios ${existingBooking[0].id_user1} y ${existingBooking[0].id_user2} visibles de nuevo.`
     });
   } catch (error) {

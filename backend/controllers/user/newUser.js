@@ -14,10 +14,10 @@ const { newUserSchema } = require('../../validations/userValidation');
 async function newUser(request, response, next) {
   let connection;
   try {
-    await newUserSchema.validateAsync(request.body);
+    // await newUserSchema.validateAsync(request.body);
     connection = await getConnection();
 
-    const { name, birthday, email, password, city } = request.body;
+    const { name, birthday, email, password, city, phone } = request.body;
 
     const [
       existingEmail
@@ -54,10 +54,10 @@ async function newUser(request, response, next) {
 
     await connection.query(
       `
-      INSERT INTO user (first_name, birthday, email, password, city, creation_date, last_update, registration_code)
-      VALUES(?, ?, ?, ?, ?, NOW(), NOW(), ?)
+      INSERT INTO user (first_name, birthday, email, password, city, phone, creation_date, last_update, registration_code)
+      VALUES(?, ?, ?, ?, ?, ?, NOW(), NOW(), ?)
     `,
-      [name, birthday, email, dbPassword, city, registrationCode]
+      [name, birthday, email, dbPassword, city, phone, registrationCode]
     );
 
     response.send({

@@ -6,7 +6,8 @@ const { getConnection } = require('../../db/db.js');
 const {
   generateError,
   processAndSavePhoto,
-  deletePhoto
+  deletePhoto,
+  formatDateToDB
 } = require('../../helpers/helpers.js');
 
 const { roomSchema } = require('../../validations/roomValidation');
@@ -14,8 +15,8 @@ const { roomSchema } = require('../../validations/roomValidation');
 async function editRoom(request, response, next) {
   let connection;
   try {
-    await roomSchema.validateAsync(request.body);
-    const { idroom, iduser } = request.params;
+    // await roomSchema.validateAsync(request.body);
+    const { id } = request.params;
 
     const {
       title,
@@ -43,7 +44,17 @@ async function editRoom(request, response, next) {
       maxStay
     } = request.body;
 
+    console.log(availabilityFrom);
+
     connection = await getConnection();
+
+    const [
+      idRoom
+    ] = await connection.query(`SELECT id_room FROM room WHERE id_user =?`, [
+      id
+    ]);
+
+    const idroom = idRoom[0].id_room;
 
     const [
       room
@@ -59,7 +70,7 @@ async function editRoom(request, response, next) {
       );
     }
 
-    if (iduser !== request.auth.id && request.auth.role !== 'admin') {
+    if (Number(id) !== request.auth.id && request.auth.role !== 'admin') {
       throw generateError('No tienes permiso para editar esta habitación', 401);
     }
 
@@ -79,25 +90,25 @@ async function editRoom(request, response, next) {
       }
     }
 
-    const newImages = [
-      request.files.image_1,
-      request.files.image_2,
-      request.files.image_3,
-      request.files.image_4,
-      request.files.image_5
-    ];
-
-    const checkNewImages = [];
-
-    for (const image of newImages) {
-      if (image) {
-        checkNewImages.push(image);
-      }
-    }
-
     const imagestoDB = [];
 
     if (request.files) {
+      const newImages = [
+        request.files.image_1,
+        request.files.image_2,
+        request.files.image_3,
+        request.files.image_4,
+        request.files.image_5
+      ];
+
+      const checkNewImages = [];
+
+      for (const image of newImages) {
+        if (image) {
+          checkNewImages.push(image);
+        }
+      }
+
       let savedFileName;
 
       for (let i = 0; i < checkNewImages.length; i++) {
@@ -109,6 +120,20 @@ async function editRoom(request, response, next) {
           imagestoDB.push(savedFileName);
         }
       }
+    }
+
+    let dateFrom;
+    if (availabilityFrom) {
+      dateFrom = formatDateToDB(new Date(availabilityFrom));
+    } else {
+      dateFrom = null;
+    }
+
+    let dateUntil;
+    if (availabilityUntil) {
+      dateUntil = formatDateToDB(new Date(availabilityUntil));
+    } else {
+      dateUntil = null;
     }
 
     await connection.query(
@@ -135,8 +160,8 @@ async function editRoom(request, response, next) {
         billsIncluded,
         deposit,
         depositAmmount,
-        availabilityFrom,
-        availabilityUntil,
+        dateFrom,
+        dateUntil,
         minStay,
         maxStay,
         imagestoDB[0],

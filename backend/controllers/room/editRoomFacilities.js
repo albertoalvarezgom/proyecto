@@ -11,7 +11,7 @@ const {
 async function editRoomFacilities(request, response, next) {
   let connection;
   try {
-    await editRoomFacilitiesSchema.validateAsync(request.body);
+    // await editRoomFacilitiesSchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       facility1,
@@ -56,271 +56,97 @@ async function editRoomFacilities(request, response, next) {
 
     const [
       current
-    ] = await connection.query(`SELECT id_user FROM room WHERE id_room=?`, [
+    ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
       id
     ]);
 
     if (!current.length) {
-      throw generateError(
-        `La habitación con id ${id} no existe en la BBDD`,
-        404
-      );
+      throw generateError(`La habitación no existe en la BBDD`, 404);
     }
 
-    if (
-      current[0].id_user !== request.auth.id &&
-      request.auth.role !== 'admin'
-    ) {
+    console.log(chalk.inverse.green(id));
+    console.log(chalk.inverse.green(request.auth.id));
+    if (Number(id) !== request.auth.id && request.auth.role !== 'admin') {
       throw generateError(
         'No tienes permiso para editar este perfil de usuario',
         401
       );
     }
 
+    const [
+      roomid
+    ] = await connection.query(`SELECT id_room FROM room WHERE id_user=?`, [
+      id
+    ]);
+
     await connection.query(
       `
       DELETE FROM facility_room WHERE id_room=?
       `,
-      [id]
+      [roomid[0].id_room]
     );
+    //BUCLE
 
-    const [
-      idfacility1
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility1]
-    );
+    const facilities = [
+      facility1,
+      facility2,
+      facility3,
+      facility4,
+      facility5,
+      facility6,
+      facility7,
+      facility8,
+      facility9,
+      facility10,
+      facility11,
+      facility12,
+      facility13,
+      facility14,
+      facility15,
+      facility16,
+      facility17,
+      facility18
+    ];
 
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
+    const status = [
+      status1,
+      status2,
+      status3,
+      status4,
+      status5,
+      status6,
+      status7,
+      status8,
+      status9,
+      status10,
+      status11,
+      status12,
+      status13,
+      status14,
+      status15,
+      status16,
+      status17,
+      status18
+    ];
+
+    for (let i = 0; i < facilities.length; i++) {
+      const [
+        idfacility
+      ] = await connection.query(
+        `SELECT id_facility FROM facility WHERE name=?`,
+        [facilities[i]]
+      );
+
+      await connection.query(
+        `INSERT INTO facility_room(id_room, id_facility, status) 
       VALUES(?,?,?)`,
-      [id, idfacility1[0].id_facility, status1]
-    );
-
-    const [
-      idfacility2
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility2]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility2[0].id_facility, status2]
-    );
-
-    const [
-      idfacility3
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility3]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility3[0].id_facility, status3]
-    );
-
-    const [
-      idfacility4
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility4]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility4[0].id_facility, status4]
-    );
-
-    const [
-      idfacility5
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility5]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility5[0].id_facility, status5]
-    );
-
-    const [
-      idfacility6
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility6]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility6[0].id_facility, status6]
-    );
-
-    const [
-      idfacility7
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility7]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility7[0].id_facility, status7]
-    );
-
-    const [
-      idfacility8
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility8]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility8[0].id_facility, status8]
-    );
-
-    const [
-      idfacility9
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility9]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility9[0].id_facility, status9]
-    );
-
-    const [
-      idfacility10
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility10]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility10[0].id_facility, status10]
-    );
-
-    const [
-      idfacility11
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility11]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility11[0].id_facility, status11]
-    );
-
-    const [
-      idfacility12
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility12]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility12[0].id_facility, status12]
-    );
-
-    const [
-      idfacility13
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility13]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility13[0].id_facility, status13]
-    );
-
-    const [
-      idfacility14
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility14]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility14[0].id_facility, status14]
-    );
-
-    const [
-      idfacility15
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility15]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility15[0].id_facility, status15]
-    );
-
-    const [
-      idfacility16
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility16]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility16[0].id_facility, status16]
-    );
-
-    const [
-      idfacility17
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility17]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility17[0].id_facility, status17]
-    );
-
-    const [
-      idfacility18
-    ] = await connection.query(
-      `SELECT id_facility FROM facility WHERE name=?`,
-      [facility18]
-    );
-
-    await connection.query(
-      `INSERT INTO facility_user(id_user, id_facility, status) 
-      VALUES(?,?,?)`,
-      [id, idfacility18[0].id_facility, status18]
-    );
+        [roomid[0].id_room, idfacility[0].id_facility, status[i]]
+      );
+    }
 
     response.send({
       status: 'ok',
-      message: `Características de la habitación con id ${id} actualizado correctamente`
+      message: `Características de la habitación con id ${roomid[0].id_room} actualizado correctamente`
     });
   } catch (error) {
     next(error);

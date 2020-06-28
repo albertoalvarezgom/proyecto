@@ -27,7 +27,9 @@ function formatDateToDB(date) {
 
 //Formatear fecha a Vue
 function formatDateToFront(date) {
-  return format(date, 'yyyy-MM-dd');
+  if (date) {
+    return format(date, 'yyyy-MM-dd');
+  }
 }
 
 //Formatear errores
