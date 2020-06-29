@@ -10,10 +10,13 @@ const { loginSchema } = require('../../validations/userValidation');
 async function loginUser(request, res, next) {
   let connection;
   try {
-    const { email, password } = request.body;
     await loginSchema.validateAsync(request.body);
 
+    const { email, password } = request.body;
+
     connection = await getConnection();
+
+    console.log(chalk.inverse.green(email));
 
     const [
       dbUser

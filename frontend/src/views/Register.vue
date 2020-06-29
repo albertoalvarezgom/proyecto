@@ -2,7 +2,9 @@
   <div>
     <vue-headful title="Registro" description="Página de registro" />
     <!-- PÁRRAFO DE AVISO -->
-    <p v-show="required">Todos los campos de este formulario son obligatorios : /</p>
+    <p v-show="required">
+      Todos los campos de este formulario son obligatorios : /
+    </p>
     <!-- /PÁRRAFO DE AVISO -->
     <!-- FORMULARIO -->
     <div class="login">
@@ -10,7 +12,12 @@
       <form>
         <fieldset>
           <label for="name">Nombre:</label>
-          <input type="text" name="name" placeholder="Escribe tu nombre" v-model="name" />
+          <input
+            type="text"
+            name="name"
+            placeholder="Escribe tu nombre"
+            v-model="name"
+          />
         </fieldset>
         <fieldset>
           <label for="nbirthday">Fecha de nacimiento:</label>
@@ -18,7 +25,12 @@
         </fieldset>
         <fieldset>
           <label for="email">Email:</label>
-          <input type="email" name="email" placeholder="Escribe tu email" v-model="email" />
+          <input
+            type="email"
+            name="email"
+            placeholder="Escribe tu email"
+            v-model="email"
+          />
         </fieldset>
         <fieldset>
           <label for="password">Contraseña:</label>
@@ -31,11 +43,21 @@
         </fieldset>
         <fieldset>
           <label for="city">Ciudad:</label>
-          <input type="text" name="city" placeholder="Escribe tu ciudad" v-model="city" />
+          <input
+            type="text"
+            name="city"
+            placeholder="Escribe tu ciudad"
+            v-model="city"
+          />
         </fieldset>
         <fieldset>
           <label for="phone">Número de teléfono</label>
-          <input type="text" name="phone" v-model="phone" placeholder="Escribe tu teléfono" />
+          <input
+            type="text"
+            name="phone"
+            v-model="phone"
+            placeholder="Escribe tu teléfono"
+          />
         </fieldset>
       </form>
       <button @click="addUser(email, password)">Enviar</button>
@@ -65,7 +87,7 @@ export default {
       city: "",
       correctData: false,
       required: false,
-      sent: false
+      sent: false,
     };
   },
   methods: {
@@ -101,7 +123,7 @@ export default {
             email: self.email,
             password: self.password,
             city: self.city,
-            phone: self.phone
+            phone: self.phone,
           })
           //y a continuación vaciamos los inputs
           .then(function(response) {
@@ -113,7 +135,7 @@ export default {
             Swal.fire({
               icon: "error",
               title: error.response.status,
-              text: error.response.data.message
+              text: error.response.data.message,
             });
           });
         //Lanzamos cuadro de diálogo de éxito :)
@@ -122,7 +144,7 @@ export default {
           icon: "success",
           title: "Usuario registrado con éxito :)",
           text: "Revisa tu email, valida tu registo y manos a la obra!",
-          showConfirmButton: true
+          showConfirmButton: true,
         });
         this.$router.push("/login");
       }
@@ -134,7 +156,7 @@ export default {
           icon: "error",
           title: "Algo falló en el registro :(",
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
         });
       }
     },
@@ -145,8 +167,8 @@ export default {
       this.email = "";
       this.password = "";
       this.city = "";
-    }
-  }
+    },
+  },
 };
 </script>
 

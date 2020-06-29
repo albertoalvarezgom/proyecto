@@ -1,7 +1,17 @@
 <template>
   <div>
+    <menucustom></menucustom>
+    <!-- <logincustom
+      :email="email"
+      :password="password"
+      :newPass="newPass"
+      :restore="restore"
+      :newEmail="newEmail"
+      v-on:login="login"
+      v-on:show="showInput"
+      v-on:restore="restorePassword"
+    ></logincustom> -->
     <div class="login">
-      <menucustom></menucustom>
       <fieldset>
         <input type="email" placeholder="Email" v-model="email" />
         <input type="password" placeholder="Contraseña" v-model="password" />
@@ -9,9 +19,11 @@
       </fieldset>
       <p>¿Has olvidado tu contraseña?</p>
       <button @click="showInput()">Reestablecer contraseña</button>
-      <label for="mail" v-show="restoreEmail">Escribe tu email:</label>
-      <input type="email" name="mail" v-show="restoreEmail" v-model="newEmail" />
-      <button v-show="restoreEmail" @click="restorePassword()">Enviar</button>
+      <label for="mail" v-show="restore">Escribe tu email:</label>
+      <input type="email" name="mail" v-show="restore" v-model="newEmail" />
+      <button v-show="restore" @click="restorePassword()">
+        Enviar
+      </button>
       <p v-show="newPass">Haz login con tu nueva contraseña</p>
     </div>
   </div>
@@ -21,6 +33,7 @@
 import Swal from "sweetalert2";
 import { loginUser } from "../api/utils.js";
 import menucustom from "@/components/MenuCustom.vue";
+// import logincustom from "@/components/LoginCustom.vue";
 import axios from "axios";
 
 export default {
@@ -30,11 +43,14 @@ export default {
       email: "",
       password: "",
       newPass: false,
-      restoreEmail: false,
-      newEmail: ""
+      restore: false,
+      newEmail: "",
     };
   },
-  components: { menucustom },
+  components: {
+    menucustom,
+    // logincustom,
+  },
   methods: {
     async login() {
       try {
@@ -46,32 +62,32 @@ export default {
           icon: "success",
           title: "Login correcto. ¡Bienvenido/a!",
           showConfirmButton: false,
-          timer: 1500
+          timer: 1500,
         });
-        //Si funciona nos vamos a la página de productos
+        //Si funciona nos vamos a la home
         this.$router.push("/");
       } catch (error) {
         Swal.fire({
           icon: "error",
           title: error.response.status,
-          text: error.response.data.message
+          text: error.response.data.message,
         });
       }
     },
     showInput() {
-      this.restoreEmail = true;
+      this.restore = true;
     },
-    restorePassword() {
+    restorePassword(email) {
       let self = this;
       axios
         .put("http://localhost:3001/user/restore", {
-          email: self.newEmail
+          email: email,
         })
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "Hemos enviado tu nueva contraseña a tu email",
-            text: "¡Revisa tu carpeta de spam por si acaso!"
+            text: "¡Revisa tu carpeta de spam por si acaso!",
           });
           this.newPass = true;
         })
@@ -79,11 +95,11 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
 

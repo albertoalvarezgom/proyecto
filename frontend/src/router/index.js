@@ -52,7 +52,7 @@ const routes = [
     name: "NewRoom",
     component: () => import("../views/NewRoom.vue"),
     meta: {
-      allowAnonymous: true,
+      allowAnonymous: false,
     },
   },
   {
@@ -129,9 +129,8 @@ router.beforeEach((to, from, next) => {
     Swal.fire({
       position: "center",
       icon: "warning",
-      title: "Lo sentimos. Esta ruta es sólo para usuarios :(",
-      showConfirmButton: false,
-      timer: 1500,
+      title: "Lo sentimos. Esta ruta es sólo para usuarios resgistrados",
+      showConfirmButton: true,
     });
   } else {
     next();

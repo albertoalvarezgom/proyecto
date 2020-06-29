@@ -1,9 +1,11 @@
 <template>
   <div>
     <menucustom></menucustom>
-    <vue-headful title="Publica tu habitación" description="Publica tu habitación" />
+    <vue-headful
+      title="Publica tu habitación"
+      description="Publica tu habitación"
+    />
     <h1>Aquí se publican las habitaciones. Mola bastante, la verdad</h1>
-    <h2 v-show="!checkLogin()">COMPONENTE LOGIN</h2>
     <form v-show="checkLogin()">
       <fieldset>
         <label for="title">Título de tu anuncio</label>
@@ -11,7 +13,12 @@
       </fieldset>
       <fieldset>
         <label for="description">Descripción de tu anuncio</label>
-        <textarea name="description" cols="30" rows="10" v-model="description"></textarea>
+        <textarea
+          name="description"
+          cols="30"
+          rows="10"
+          v-model="description"
+        ></textarea>
       </fieldset>
       <fieldset>
         <label for="address">Dirección</label>
@@ -27,8 +34,22 @@
       </fieldset>
       <fieldset>
         <label for="flatMates">Compartes piso con...</label>
-        <input type="number" name="flatMates" min="0" max="5" v-model="flatmatesMasc" /> chicos
-        <input type="number" name="flatMates" min="0" max="5" v-model="flatmatesFem" /> chicas
+        <input
+          type="number"
+          name="flatMates"
+          min="0"
+          max="5"
+          v-model="flatmatesMasc"
+        />
+        chicos
+        <input
+          type="number"
+          name="flatMates"
+          min="0"
+          max="5"
+          v-model="flatmatesFem"
+        />
+        chicas
       </fieldset>
       <fieldset>
         <label for="flatSize">Tamaño del piso</label>
@@ -96,7 +117,11 @@
         <label for="availabilityFrom">Disponible desde...</label>
         <input type="date" name="availabilityFrom" v-model="availabilityFrom" />
         <label for="availabilityUntil">Disponible hasta...</label>
-        <input type="date" name="availabilityUntil" v-model="availabilityUntil" />
+        <input
+          type="date"
+          name="availabilityUntil"
+          v-model="availabilityUntil"
+        />
       </fieldset>
       <fieldset>
         <label for="stay">Duración de la estancia (en meses)</label>
@@ -154,7 +179,7 @@ export default {
       availabilityFrom: null,
       availabilityUntil: null,
       minStay: null,
-      maxStay: null
+      maxStay: null,
     };
   },
   components: { menucustom },
@@ -164,38 +189,40 @@ export default {
     },
     newRoom() {
       let self = this;
+      let formData = new FormData();
+      formData.append("title", self.title);
+      formData.append("description", self.description);
+      formData.append("address", self.address);
+      formData.append("postalCode", self.postalCode);
+      formData.append("city", self.city);
+      formData.append("flatmatesMasc", self.flatmatesMasc);
+      formData.append("flatmatesFem", self.flatmatesFem);
+      formData.append("flatSize", self.flatSize);
+      formData.append("preferenceGender", self.preferenceGender);
+      formData.append("status", self.status);
+      formData.append("minAge", self.minAge);
+      formData.append("maxAge", self.maxAge);
+      formData.append("roomType", self.roomType);
+      formData.append("roomSize", self.roomSize);
+      formData.append("bedType", self.bedType);
+      formData.append("price", self.price);
+      formData.append("billsIncluded", self.billsIncluded);
+      formData.append("deposit", self.deposit);
+      formData.append("depositAmmount", self.depositAmmount);
+      formData.append("availabilityFrom", self.availabilityFrom);
+      formData.append("availabilityUntil", self.availabilityUntil);
+      formData.append("minStay", self.minStay);
+      formData.append("maxStay", self.maxStay);
+
       axios
-        .post("http://localhost:3001/user/" + self.id + "/room", {
+        .post("http://localhost:3001/user/" + self.id + "/room", formData, {
           headers: { authorization: localStorage.getItem("authorization") },
-          title: self.title,
-          description: self.description,
-          address: self.address,
-          postalCode: self.postalCode,
-          city: self.city,
-          flatmatesMasc: self.flatmatesMasc,
-          flatmatesFem: self.flatmatesFem,
-          flatSize: self.flatSize,
-          preferenceGender: self.preferenceGender,
-          status: self.status,
-          minAge: self.minAge,
-          maxAge: self.maxAge,
-          roomType: self.roomType,
-          roomSize: self.roomSize,
-          bedType: self.bedType,
-          price: self.price,
-          billsIncluded: self.billsIncluded,
-          deposit: self.deposit,
-          depositAmmount: self.depositAmmount,
-          availabilityFrom: self.availabilityFrom,
-          availabilityUntil: self.availabilityUntil,
-          minStay: self.minStay,
-          maxStay: self.maxStay
         })
         .then(function(response) {
           Swal.fire({
             position: "center",
             icon: "success",
-            title: "Habitación publicada con éxito :)"
+            title: "Habitación publicada con éxito :)",
           });
           self.$router.push("/");
           localStorage.setItem("type", "buscando inquilino");
@@ -204,13 +231,10 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
-    }
-  }
+    },
+  },
 };
 </script>
-
-<style>
-</style>

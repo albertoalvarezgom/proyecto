@@ -18,8 +18,6 @@ async function finishBooking(request, response, next) {
       [code]
     );
 
-    console.log(chalk.inverse.yellow(existingBooking[0].id_booking));
-
     const [
       users
     ] = await connection.query(
@@ -62,6 +60,10 @@ async function finishBooking(request, response, next) {
       users[0].id_user1
     ]);
 
+    await connection.query(`UPDATE user SET hidden=0 WHERE id_user=?`, [
+      users[0].id_user2
+    ]);
+
     await connection.query(`UPDATE room SET hidden=0 WHERE id_user=?`, [
       users[0].id_user2
     ]);
@@ -84,9 +86,6 @@ async function finishBooking(request, response, next) {
     `,
       [users[0].id_user2]
     );
-
-    // const voteURL1 = `${process.env.PUBLIC_HOST}/user/${users[0].id_user2}/vote`;
-    // const voteURL2 = `${process.env.PUBLIC_HOST}/user/${users[0].id_user1}/vote`;
 
     try {
       await sendEmail({

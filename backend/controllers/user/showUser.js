@@ -25,16 +25,14 @@ async function showUser(request, response, next) {
       );
     }
 
-    if (user[0].id_user !== request.auth.id || request.auth.role !== 'admin') {
+    if (user[0].id_user !== request.auth.id && request.auth.role !== 'admin') {
       throw generateError(
         'No tienes permisos para hacer visible esta cuenta de usuario',
         401
       );
     }
 
-    await connection.query('update user set hidden=false where id_user=?', [
-      id
-    ]);
+    await connection.query(`update user set hidden=0 where id_user=?`, [id]);
 
     response.send({
       status: 'ok',

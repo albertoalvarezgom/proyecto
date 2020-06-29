@@ -6,13 +6,15 @@
 
 <script>
 export default {
-  name: "App"
+  name: "App",
 };
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Raleway;
+  font-weight: 500;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -20,15 +22,37 @@ export default {
 }
 
 #nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+  padding: 0px;
+  margin: 0;
 }
 
 #nav a.router-link-exact-active {
-  color: #42b983;
+  color: lightcoral;
+}
+
+a {
+  color: #2c3e50;
+}
+
+img {
+  max-width: 300px;
+}
+ul {
+  list-style: none;
+}
+h1 {
+  text-decoration: none;
+  font-family: "Dm Serif Display";
+  font-size: 3rem;
+}
+a {
+  text-decoration: none;
+}
+h1 {
+  color: #2c3e50;
+  margin-bottom: 0;
+}
+fieldset {
+  border: none;
 }
 </style>

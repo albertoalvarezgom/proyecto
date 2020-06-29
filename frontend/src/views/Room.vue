@@ -9,33 +9,44 @@
       <img :src="room.image_3" />
       <img :src="room.image_4" />
       <img :src="room.image_5" />
-      <h3>{{room.title}}</h3>
-      <p>{{room.description}}</p>
-      <p>{{room.address}}, {{room.postal_code}} {{room.city}}</p>
-      <p>El piso tiene {{room.flat_size}} m2</p>
+      <h3>{{ room.title }}</h3>
+      <p>{{ room.description }}</p>
+      <p>{{ room.address }}, {{ room.postal_code }} {{ room.city }}</p>
+      <p>El piso tiene {{ room.flat_size }} m2</p>
       <div v-show="sharing">
         <p>Comparto piso con</p>
-        <p>{{room.flatmates_masc}} chicos</p>
-        <p>{{room.flatmates_fem}} chicas</p>
+        <p>{{ room.flatmates_masc }} chicos</p>
+        <p>{{ room.flatmates_fem }} chicas</p>
       </div>
       <p v-show="!sharing">No comparto piso con nadie ahora mismo</p>
-      <p v-show="gender">Prefiero que mi roomie sea {{room.preference_gender}}</p>
-      <p v-show="status">Prefiero que mi roomie esté {{room.status}}</p>
-      <p v-show="age">Busco alguien que tenga entre {{room.min_age}} y {{room.max_age}} años</p>
-      <p v-show="minAge">Busco alguien que tenga más de {{room.min_age}}</p>
-      <p v-show="maxAge">Busco alguien que tenga menos de {{room.max_age}}</p>
-      <p>La habitación es {{room.room_type}}</p>
-      <p>La habitación tiene {{room.room_size}} m2</p>
-      <p v-show="bed">La cama es {{room.bed_type}}</p>
+      <p v-show="gender">
+        Prefiero que mi roomie sea {{ room.preference_gender }}
+      </p>
+      <p v-show="status">Prefiero que mi roomie esté {{ room.status }}</p>
+      <p v-show="age">
+        Busco alguien que tenga entre {{ room.min_age }} y
+        {{ room.max_age }} años
+      </p>
+      <p v-show="minAge">Busco alguien que tenga más de {{ room.min_age }}</p>
+      <p v-show="maxAge">Busco alguien que tenga menos de {{ room.max_age }}</p>
+      <p>La habitación es {{ room.room_type }}</p>
+      <p>La habitación tiene {{ room.room_size }} m2</p>
+      <p v-show="bed">La cama es {{ room.bed_type }}</p>
       <p v-show="!bed">La habitacón no tiene cama</p>
-      <p>El precio es {{room.price}} €/mes</p>
+      <p>El precio es {{ room.price }} €/mes</p>
       <p v-show="bills">Las facturas están incluidas en el precio</p>
-      <p v-show="deposit">Se pide un depósito de {{room.deposit_ammount}} €</p>
-      <p v-show="from">La habitación está disponible desde el {{room.availability_from}}</p>
-      <p v-show="until">La habitación está disponible hasta el {{room.availability_until}}</p>
-      <p v-show="minStay">La estancia mínima es de {{room.min_stay}} meses</p>
-      <p v-show="maxStay">La estancia máxima es de {{room.max_stay}} meses</p>
-      <p>Habitación vista {{room.views}} veces</p>
+      <p v-show="deposit">
+        Se pide un depósito de {{ room.deposit_ammount }} €
+      </p>
+      <p v-show="from">
+        La habitación está disponible desde el {{ room.availability_from }}
+      </p>
+      <p v-show="until">
+        La habitación está disponible hasta el {{ room.availability_until }}
+      </p>
+      <p v-show="minStay">La estancia mínima es de {{ room.min_stay }} meses</p>
+      <p v-show="maxStay">La estancia máxima es de {{ room.max_stay }} meses</p>
+      <p>Habitación vista {{ room.views }} veces</p>
       <button @click="openModal()">Editar habitación</button>
     </div>
     <div class="modal" v-show="modal">
@@ -47,7 +58,12 @@
           </fieldset>
           <fieldset>
             <label for="description">Descripción de tu anuncio</label>
-            <textarea name="description" cols="30" rows="10" v-model="newRoom.description"></textarea>
+            <textarea
+              name="description"
+              cols="30"
+              rows="10"
+              v-model="newRoom.description"
+            ></textarea>
           </fieldset>
           <fieldset>
             <label for="address">Dirección</label>
@@ -55,7 +71,11 @@
           </fieldset>
           <fieldset>
             <label for="postalCode">Código postal</label>
-            <input type="text" name="postalCode" v-model="newRoom.postal_code" />
+            <input
+              type="text"
+              name="postalCode"
+              v-model="newRoom.postal_code"
+            />
           </fieldset>
           <fieldset>
             <label for="city">Ciudad</label>
@@ -63,14 +83,22 @@
           </fieldset>
           <fieldset>
             <label for="flatMates">Compartes piso con...</label>
-            <input type="number" name="flatMates" min="0" max="5" v-model="newRoom.flatmates_masc" /> chicos
+            <input
+              type="number"
+              name="flatMates"
+              min="0"
+              max="5"
+              v-model="newRoom.flatmates_masc"
+            />
+            chicos
             <input
               type="number"
               name="flatMates"
               min="0"
               max="5"
               v-model="newRoom.flatmates_fem"
-            /> chicas
+            />
+            chicas
           </fieldset>
           <fieldset>
             <label for="flatSize">Tamaño del piso</label>
@@ -85,7 +113,9 @@
             </select>
           </fieldset>
           <fieldset>
-            <label for="status">Prefiero compartir con alguien que esté...</label>
+            <label for="status"
+              >Prefiero compartir con alguien que esté...</label
+            >
             <select name="status" v-model="newRoom.status">
               <option value="trabajando">Trabajando</option>
               <option value="estudiando">Estudiando</option>
@@ -94,8 +124,20 @@
           </fieldset>
           <fieldset>
             <label for="age">Edad</label>
-            <input type="number" name="age" min="18" max="50" v-model="newRoom.min_age" />
-            <input type="number" name="age" min="18" max="50" v-model="newRoom.max_age" />
+            <input
+              type="number"
+              name="age"
+              min="18"
+              max="50"
+              v-model="newRoom.min_age"
+            />
+            <input
+              type="number"
+              name="age"
+              min="18"
+              max="50"
+              v-model="newRoom.max_age"
+            />
           </fieldset>
           <fieldset>
             <label for="roomType">Tipo de habitación</label>
@@ -123,7 +165,11 @@
           </fieldset>
           <fieldset>
             <label for="billsInlcuded">Facturas incluidas</label>
-            <input type="checkbox" name="billsIncluded" v-model="newRoom.bills_included" />
+            <input
+              type="checkbox"
+              name="billsIncluded"
+              v-model="newRoom.bills_included"
+            />
           </fieldset>
           <fieldset>
             <label for="deposit">Depósito</label>
@@ -135,9 +181,17 @@
           </fieldset>
           <fieldset>
             <label for="availabilityFrom">Disponible desde...</label>
-            <input type="date" name="availabilityFrom" v-model="newRoom.availability_from" />
+            <input
+              type="date"
+              name="availabilityFrom"
+              v-model="newRoom.availability_from"
+            />
             <label for="availabilityUntil">Disponible hasta...</label>
-            <input type="date" name="availabilityUntil" v-model="newRoom.availability_until" />
+            <input
+              type="date"
+              name="availabilityUntil"
+              v-model="newRoom.availability_until"
+            />
           </fieldset>
           <fieldset>
             <label for="stay">Duración de la estancia (en meses)</label>
@@ -176,9 +230,14 @@
         <li v-for="(facility, index) in facilities" :key="facility.id_facility">
           <button
             value="facility.name"
-            :class="{ activado: facility.status === 1, desactivado: facility.status === 0 }"
+            :class="{
+              activado: facility.status === 1,
+              desactivado: facility.status === 0,
+            }"
             @click="selectFacility(index)"
-          >{{facility.name}}</button>
+          >
+            {{ facility.name }}
+          </button>
         </li>
       </ul>
       <button @click="editRoomFacilities()">Guardar cambios</button>
@@ -215,7 +274,12 @@ export default {
       modal: false,
       facilities: [],
       selectedFacilities: [],
-      selectedFacilitiesNames: []
+      selectedFacilitiesNames: [],
+      image_1: "",
+      image_2: "",
+      image_3: "",
+      image_4: "",
+      image_5: "",
     };
   },
   methods: {
@@ -224,34 +288,53 @@ export default {
       axios
         .get("http://localhost:3001/user/" + self.id + "/room", {
           headers: { authorization: localStorage.getItem("authorization") },
-          title: self.newRoom.title,
-          description: self.newRoom.description,
-          address: self.newRoom.address,
-          postalCode: self.newRoom.postal_ode,
-          city: self.newRoom.city,
-          flatmatesMasc: self.newRoom.flatmates_masc,
-          flatmatesFem: self.newRoom.flatmates_fem,
-          flatSize: self.newRoom.flat_size,
-          preferenceGender: self.newRoom.preference_gender,
-          status: self.newRoom.status,
-          minAge: self.newRoom.min_age,
-          maxAge: self.newRoom.max_age,
-          roomType: self.newRoom.room_type,
-          roomSize: self.newRoom.room_size,
-          bedType: self.newRoom.bed_type,
-          price: self.newRoom.price,
-          billsIncluded: self.newRoom.bills_included,
-          deposit: self.newRoom.deposit,
-          depositAmmount: self.newRoom.deposit_ammount,
-          availabilityFrom: self.newRoom.availability_from,
-          availabilityUntil: self.newRoom.availability_until,
-          minStay: self.newRoom.min_stay,
-          maxStay: self.newRoom.max_stay
         })
         .then(function(response) {
           self.room = response.data.data.room;
           self.newRoom = self.room;
 
+          const roomImage_1 = response.data.data.room.image_1;
+          const roomImage_2 = response.data.data.room.image_2;
+          const roomImage_3 = response.data.data.room.image_3;
+          const roomImage_4 = response.data.data.room.image_4;
+          const roomImage_5 = response.data.data.room.image_5;
+
+          const imagesArray = [
+            roomImage_1,
+            roomImage_2,
+            roomImage_3,
+            roomImage_4,
+            roomImage_5,
+          ];
+
+          const imagesToFront = [];
+
+          for (const image of imagesArray) {
+            if (image) {
+              imagesToFront.push("http://localhost:3001/uploads/" + image);
+            } else {
+              imagesToFront.push(null);
+            }
+          }
+
+          if (!self.room.image_1) {
+            self.room.image_1 =
+              "http://localhost:3001/uploads/roomie-profile.jpg";
+            self.newroom.image_1 =
+              "http://localhost:3001/uploads/roomie-profile.jpg";
+          } else {
+            self.room.image_1 = imagesToFront[0];
+            self.room.image_2 = imagesToFront[1];
+            self.room.image_3 = imagesToFront[2];
+            self.room.image_4 = imagesToFront[3];
+            self.room.image_5 = imagesToFront[4];
+            self.newroom.image_1 = imagesToFront[0];
+            self.newroom.image_2 = imagesToFront[1];
+            self.newroom.image_3 = imagesToFront[2];
+            self.newroom.image_4 = imagesToFront[3];
+            self.newroom.image_5 = imagesToFront[4];
+          }
+          //CONTROLANDO Y FORMATEANDO INFO DEL PISO
           self.facilities = response.data.data.facility;
           if (self.newRoom.preference_gender === "indiferente") {
             self.gender = false;
@@ -308,43 +391,48 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
     updateRoom() {
       let self = this;
       axios
-        .put("http://localhost:3001/user/" + self.id + "/room", {
-          headers: { authorization: localStorage.getItem("authorization") },
-          title: self.newRoom.title,
-          description: self.newRoom.description,
-          address: self.newRoom.address,
-          postalCode: self.newRoom.postal_code,
-          city: self.newRoom.city,
-          flatmatesMasc: self.newRoom.flatmates_masc,
-          flatmatesFem: self.newRoom.flatmates_fem,
-          flatSize: self.newRoom.flat_size,
-          preferenceGender: self.newRoom.preference_gender,
-          status: self.newRoom.status,
-          minAge: self.newRoom.min_age,
-          maxAge: self.newRoom.max_age,
-          roomType: self.newRoom.room_type,
-          roomSize: self.newRoom.room_size,
-          bedType: self.newRoom.bed_type,
-          price: self.newRoom.price,
-          billsIncluded: self.newRoom.bills_included,
-          deposit: self.newRoom.deposit,
-          depositAmmount: self.newRoom.deposit_ammount,
-          availabilityFrom: self.newRoom.availability_from,
-          availabilityUntil: self.newRoom.availability_until,
-          minStay: self.newRoom.min_stay,
-          maxStay: self.newRoom.max_stay
-        })
+        .put(
+          "http://localhost:3001/user/" + self.id + "/room",
+          {
+            title: self.newRoom.title,
+            description: self.newRoom.description,
+            address: self.newRoom.address,
+            postalCode: self.newRoom.postal_code,
+            city: self.newRoom.city,
+            flatmatesMasc: self.newRoom.flatmates_masc,
+            flatmatesFem: self.newRoom.flatmates_fem,
+            flatSize: self.newRoom.flat_size,
+            preferenceGender: self.newRoom.preference_gender,
+            status: self.newRoom.status,
+            minAge: self.newRoom.min_age,
+            maxAge: self.newRoom.max_age,
+            roomType: self.newRoom.room_type,
+            roomSize: self.newRoom.room_size,
+            bedType: self.newRoom.bed_type,
+            price: self.newRoom.price,
+            billsIncluded: self.newRoom.bills_included,
+            deposit: self.newRoom.deposit,
+            depositAmmount: self.newRoom.deposit_ammount,
+            availabilityFrom: self.newRoom.availability_from,
+            availabilityUntil: self.newRoom.availability_until,
+            minStay: self.newRoom.min_stay,
+            maxStay: self.newRoom.max_stay,
+          },
+          {
+            headers: { authorization: localStorage.getItem("authorization") },
+          }
+        )
         .then(function(response) {
           Swal.fire({
             icon: "success",
-            title: "¡Tu habitación ha sido actualizada con éxito!"
+            title: "¡Tu habitación ha sido actualizada con éxito!",
           });
           self.modal = false;
         })
@@ -352,7 +440,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
           if (error.response.status === 401) {
             self.$router.push("/login");
@@ -363,12 +451,12 @@ export default {
       let self = this;
       axios
         .get("http://localhost:3001/user/" + self.id + "/room/facilities", {
-          headers: { authorization: localStorage.getItem("authorization") }
+          headers: { authorization: localStorage.getItem("authorization") },
         })
         .then(function(response) {
           self.facilities = response.data.facilities;
           self.selectedFacilities = self.facilities.filter(
-            facility => facility.status === 1
+            (facility) => facility.status === 1
           );
           for (const facilityName of self.selectedFacilities) {
             self.selectedFacilitiesNames.push(facilityName.name);
@@ -378,7 +466,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -386,7 +474,7 @@ export default {
       if (this.selectedFacilitiesNames.includes(this.facilities[index].name)) {
         this.facilities[index].status = 0;
         this.selectedFacilities = this.selectedFacilities.filter(
-          facility => facility.name !== this.facilities[index].name
+          (facility) => facility.name !== this.facilities[index].name
         );
         this.selectedFacilitiesNames.splice(
           this.selectedFacilitiesNames.indexOf(this.facilities[index].name),
@@ -395,7 +483,7 @@ export default {
       } else {
         this.selectedFacilities.push({
           name: this.facilities[index].name,
-          status: 1
+          status: 1,
         });
         this.facilities[index].status = 1;
         this.selectedFacilitiesNames.push(this.facilities[index].name);
@@ -404,51 +492,56 @@ export default {
     editRoomFacilities() {
       let self = this;
       axios
-        .put("http://localhost:3001/user/" + self.id + "/room/facilities", {
-          headers: { authorization: localStorage.getItem("authorization") },
-          facility1: self.facilities[0].name,
-          status1: self.facilities[0].status,
-          facility2: self.facilities[1].name,
-          status2: self.facilities[1].status,
-          facility3: self.facilities[2].name,
-          status3: self.facilities[2].status,
-          facility4: self.facilities[3].name,
-          status4: self.facilities[3].status,
-          facility5: self.facilities[4].name,
-          status5: self.facilities[4].status,
-          facility6: self.facilities[5].name,
-          status6: self.facilities[5].status,
-          facility7: self.facilities[6].name,
-          status7: self.facilities[6].status,
-          facility8: self.facilities[7].name,
-          status8: self.facilities[7].status,
-          facility9: self.facilities[8].name,
-          status9: self.facilities[8].status,
-          facility10: self.facilities[9].name,
-          status10: self.facilities[9].status,
-          facility11: self.facilities[10].name,
-          status11: self.facilities[10].status,
-          facility12: self.facilities[11].name,
-          status12: self.facilities[11].status,
-          facility13: self.facilities[12].name,
-          status13: self.facilities[12].status,
-          facility14: self.facilities[13].name,
-          status14: self.facilities[13].status,
-          facility15: self.facilities[14].name,
-          status15: self.facilities[14].status,
-          facility16: self.facilities[15].name,
-          status16: self.facilities[15].status,
-          facility17: self.facilities[16].name,
-          status17: self.facilities[16].status,
-          facility18: self.facilities[17].name,
-          status18: self.facilities[17].status
-        })
+        .put(
+          "http://localhost:3001/user/" + self.id + "/room/facilities",
+          {
+            facility1: self.facilities[0].name,
+            status1: self.facilities[0].status,
+            facility2: self.facilities[1].name,
+            status2: self.facilities[1].status,
+            facility3: self.facilities[2].name,
+            status3: self.facilities[2].status,
+            facility4: self.facilities[3].name,
+            status4: self.facilities[3].status,
+            facility5: self.facilities[4].name,
+            status5: self.facilities[4].status,
+            facility6: self.facilities[5].name,
+            status6: self.facilities[5].status,
+            facility7: self.facilities[6].name,
+            status7: self.facilities[6].status,
+            facility8: self.facilities[7].name,
+            status8: self.facilities[7].status,
+            facility9: self.facilities[8].name,
+            status9: self.facilities[8].status,
+            facility10: self.facilities[9].name,
+            status10: self.facilities[9].status,
+            facility11: self.facilities[10].name,
+            status11: self.facilities[10].status,
+            facility12: self.facilities[11].name,
+            status12: self.facilities[11].status,
+            facility13: self.facilities[12].name,
+            status13: self.facilities[12].status,
+            facility14: self.facilities[13].name,
+            status14: self.facilities[13].status,
+            facility15: self.facilities[14].name,
+            status15: self.facilities[14].status,
+            facility16: self.facilities[15].name,
+            status16: self.facilities[15].status,
+            facility17: self.facilities[16].name,
+            status17: self.facilities[16].status,
+            facility18: self.facilities[17].name,
+            status18: self.facilities[17].status,
+          },
+          {
+            headers: { authorization: localStorage.getItem("authorization") },
+          }
+        )
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "Prestaciones del piso actualizadas correctamente",
             text: "Completa tu perfil al máximo :)",
-            timer: 1500
+            timer: 1500,
           });
           self.getRoomFacilities();
         })
@@ -456,7 +549,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -465,12 +558,12 @@ export default {
     },
     closeModal() {
       this.modal = false;
-    }
+    },
   },
   created() {
     this.viewRoom();
     this.getRoomFacilities();
-  }
+  },
 };
 </script>
 

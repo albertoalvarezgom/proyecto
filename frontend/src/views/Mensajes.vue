@@ -5,23 +5,36 @@
     <ul v-for="match in matches" :key="match.id_match" v-show="!openedChat">
       <li>
         <img :src="match.user[0].image_1" />
-        <h2>{{match.user[0].first_name}}</h2>
-        <i>{{match.match.status}}</i>
-        <button @click="openChat(match.match.id_match)" v-if="match.match.status==='match'">Hablar</button>
+        <h2>{{ match.user[0].first_name }}</h2>
+        <i>{{ match.match.status }}</i>
+        <button
+          @click="openChat(match.match.id_match)"
+          v-if="match.match.status === 'match'"
+        >
+          Hablar
+        </button>
         <button @click="deleteChat(match.match.id_match)">Borrar chat</button>
       </li>
     </ul>
 
     <div v-show="openedChat">
       <ul v-for="message in messages" :key="message.id_message">
-        <li :class="{ eu: id === message.id_user, outro: id !== message.id_user }">
-          <p>{{message.comment}}</p>
-          <b>{{message.first_name}}</b>
-          <i>{{message.creation_date}}</i>
+        <li
+          :class="{ eu: id === message.id_user, outro: id !== message.id_user }"
+        >
+          <p>{{ message.comment }}</p>
+          <b>{{ message.first_name }}</b>
+          <i>{{ message.creation_date }}</i>
         </li>
       </ul>
       <label for="message">Escribe tu mensaje:</label>
-      <textarea name="message" id="message" cols="30" rows="10" v-model="message"></textarea>
+      <textarea
+        name="message"
+        id="message"
+        cols="30"
+        rows="10"
+        v-model="message"
+      ></textarea>
       <button @click="sendMessage(matchid)">Enviar</button>
       <button @click="closeChat()">Cerrar</button>
       <div>
@@ -32,7 +45,9 @@
           <label for="finishDate">Fecha de fin de la reserva</label>
           <input type="date" name="finishDate" v-model="finishDate" />
         </fieldset>
-        <button @click="requestBooking(matchid)" v-show="request">Enviar solicitud</button>
+        <button @click="requestBooking(matchid)" v-show="request">
+          Enviar solicitud
+        </button>
       </div>
     </div>
     <button>
@@ -59,7 +74,7 @@ export default {
       message: "",
       request: false,
       startDate: null,
-      finishDate: null
+      finishDate: null,
     };
   },
   methods: {
@@ -68,16 +83,20 @@ export default {
       self.search = true;
       axios
         .get("http://localhost:3001/user/" + self.id + "/matches", {
-          headers: { authorization: localStorage.getItem("authorization") }
+          headers: { authorization: localStorage.getItem("authorization") },
         })
         .then(function(response) {
-          self.matches = response.data.data;
+          self.matches = response.data.data.map((match) => {
+            match.user[0].image_1 =
+              "http://localhost:3001/uploads/" + match.user[0].image_1;
+            return match;
+          });
         })
         .catch(function(error) {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
           if (error.response.status === 401) {
             self.$router.push("/login");
@@ -88,7 +107,7 @@ export default {
       let self = this;
       axios
         .get("http://localhost:3001/user/" + self.id + "/matches/" + matchId, {
-          headers: { authorization: localStorage.getItem("authorization") }
+          headers: { authorization: localStorage.getItem("authorization") },
         })
         .then(function(response) {
           self.messages = response.data.messages;
@@ -99,7 +118,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
           if (error.response.status === 401) {
             self.$router.push("/login");
@@ -112,7 +131,7 @@ export default {
         .delete(
           "http://localhost:3001/user/" + self.id + "/matches/" + matchId,
           {
-            headers: { authorization: localStorage.getItem("authorization") }
+            headers: { authorization: localStorage.getItem("authorization") },
           }
         )
         .then(function(response) {
@@ -122,7 +141,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
           if (error.response.status === 401) {
             self.$router.push("/login");
@@ -132,16 +151,19 @@ export default {
     sendMessage(matchId) {
       let self = this;
       axios
-        .post("http://localhost:3001/user/" + self.id + "/matches/" + matchId, {
-          headers: { authorization: localStorage.getItem("authorization") },
-          comment: self.message
-        })
+        .post(
+          "http://localhost:3001/user/" + self.id + "/matches/" + matchId,
+          { comment: self.message },
+          {
+            headers: { authorization: localStorage.getItem("authorization") },
+          }
+        )
         .then(self.openChat(matchId))
         .catch(function(error) {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
           if (error.response.status === 401) {
             self.$router.push("/login");
@@ -161,10 +183,9 @@ export default {
             "/matches/" +
             matchId +
             "/booking",
+          { startDate: self.startDate, finishDate: self.finishDate },
           {
             headers: { authorization: localStorage.getItem("authorization") },
-            startDate: self.startDate,
-            finishDate: self.finishDate
           }
         )
         .then(function(response) {
@@ -172,7 +193,7 @@ export default {
             icon: "success",
             title: "La solicitud de reserva ha sido enviada",
             text:
-              "Consulta el estado de tu reserva en la sección 'Mis reservas'"
+              "Consulta el estado de tu reserva en la sección 'Mis reservas'",
           });
           self.$router.push("/reservas");
         })
@@ -180,18 +201,18 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
     closeChat() {
       this.messages = [];
       this.openedChat = false;
-    }
+    },
   },
   created() {
     this.getMatches();
-  }
+  },
 };
 </script>
 

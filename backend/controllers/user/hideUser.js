@@ -25,14 +25,14 @@ async function hideUser(request, response, next) {
       );
     }
 
-    if (user[0].id_user !== request.auth.id || request.auth.role !== 'admin') {
+    if (user[0].id_user !== request.auth.id && request.auth.role !== 'admin') {
       throw generateError(
         'No tienes permisos para ocultar esta cuenta de usuario',
         401
       );
     }
 
-    await connection.query('update user set hidden=true where id_user=?', [id]);
+    await connection.query(`UPDATE user SET hidden=1 WHERE id_user=?`, [id]);
 
     response.send({
       status: 'ok',

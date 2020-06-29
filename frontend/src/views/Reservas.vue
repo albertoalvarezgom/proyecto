@@ -4,61 +4,104 @@
     <vue-headful title="Mis reservas" description="Mis reservas" />
     <h1>Aquí verás y podrás gestionar tus reservas</h1>
     <div>
-      <ul v-for="(booking, index) in bookings" :key="booking.id_booking">
+      <ul
+        v-for="(booking, index) in bookings"
+        :key="booking.booking.confirmation_code"
+      >
         <li>
-          <p>{{booking.booking.title}}</p>
+          <p>{{ booking.booking.title }}</p>
           <img :src="booking.booking.image_1" />
-          <p>Reserva creada con fecha: {{booking.booking.creation_date}}</p>
-          <p v-show="booking.booking.start_date">La reserva empieza: {{booking.booking.start_date}}</p>
-          <p
-            v-show="booking.booking.finish_date"
-          >La reserva termina: {{booking.booking.finish_date}}</p>
+          <p>Reserva creada con fecha: {{ booking.booking.creation_date }}</p>
+          <p v-show="booking.booking.start_date">
+            La reserva empieza: {{ booking.booking.start_date }}
+          </p>
+          <p v-show="booking.booking.finish_date">
+            La reserva termina: {{ booking.booking.finish_date }}
+          </p>
           <div>
-            <p>{{booking.booking.name1}}</p>
-            <p>{{booking.booking.id_user1}}</p>
-            <img :src="booking.booking.user_image1" />
-            <p v-show="booking.booking.status==='aceptada'">{{booking.booking.email}}</p>
-            <p v-show="booking.booking.status==='aceptada'">{{booking.booking.phone}}</p>
+            <p>{{ booking.booking.name1 }}</p>
+            <img :src="booking.booking.user_image_1" />
+            <p v-show="booking.booking.status === 'aceptada'">
+              {{ booking.booking.email }}
+            </p>
+            <p v-show="booking.booking.status === 'aceptada'">
+              {{ booking.booking.phone }}
+            </p>
           </div>
           <div>
-            <p>{{booking.otherUser[0].first_name}}</p>
-            <p>{{booking.booking.id_user2}}</p>
-            <img :src="booking.otherUser[0].user_image1" />
-            <p v-show="booking.booking.status==='aceptada'">{{booking.otherUser[0].email}}</p>
-            <p v-show="booking.booking.status==='aceptada'">{{booking.otherUser[0].phone}}</p>
+            <p>{{ booking.otherUser[0].first_name }}</p>
+            <img :src="booking.otherUser[0].image_1" />
+            <p v-show="booking.booking.status === 'aceptada'">
+              {{ booking.otherUser[0].email }}
+            </p>
+            <p v-show="booking.booking.status === 'aceptada'">
+              {{ booking.otherUser[0].phone }}
+            </p>
           </div>
-          <p>{{booking.booking.status}}</p>
+          <p>{{ booking.booking.status }}</p>
+
           <button
             @click="acceptBooking(index, booking.booking.id_match)"
-            v-show="id !== booking.booking.id_user_sending && booking.booking.status==='enviada'"
-          >Aceptar reserva</button>
+            v-show="
+              id !== booking.booking.id_user_sending &&
+                booking.booking.status === 'enviada'
+            "
+          >
+            Aceptar reserva
+          </button>
           <button
             @click="cancelBooking(index, booking.booking.id_match)"
-            v-show="booking.booking.status==='enviada'"
-          >Cancelar reserva</button>
+            v-show="booking.booking.status === 'enviada'"
+          >
+            Cancelar reserva
+          </button>
           <button
             @click="finishBooking(index, booking.booking.id_match)"
-            v-show="booking.booking.status==='aceptada'"
-          >Finalizar reserva</button>
+            v-show="booking.booking.status === 'aceptada'"
+          >
+            Finalizar reserva
+          </button>
           <button
-            @click="openModal()"
-            v-show="booking.booking.status==='terminada' && booking.booking.voted===0"
-          >Votar usuario</button>
-          <p v-show="booking.booking.voted===1">¡Ya has votado a este usuario!</p>
+            @click="openModal(index)"
+            v-show="
+              booking.booking.status === 'terminada' &&
+                booking.booking.voted === 0
+            "
+          >
+            Votar usuario
+          </button>
+          <p v-show="booking.booking.voted === 1">
+            ¡Ya has votado a este usuario!
+          </p>
+
           <div class="modal" v-show="modal">
             <div class="modalBox">
               <fieldset>
                 <label for="rating">Vota a tu roomie</label>
-                <input type="number" name="rating" min="1" max="5" v-model="rating" />
+                <input
+                  type="number"
+                  name="rating"
+                  min="1"
+                  max="5"
+                  v-model="rating"
+                />
               </fieldset>
               <fieldset>
                 <label for="comment">Añade un comentario</label>
-                <textarea name="comment" id cols="30" rows="10" v-model="comment"></textarea>
+                <textarea
+                  name="comment"
+                  id
+                  cols="30"
+                  rows="10"
+                  v-model="comment"
+                ></textarea>
               </fieldset>
               <button @click="closeModal()">Cerrar</button>
               <button
-                @click="voteUser(booking.otherUser[0].id_user, booking.booking.id_user_sending)"
-              >Enviar</button>
+                @click="voteUser(rateBooking.id_user1, rateBooking.id_user1)"
+              >
+                Enviar
+              </button>
             </div>
           </div>
         </li>
@@ -82,10 +125,10 @@ export default {
     return {
       id: Number(localStorage.getItem("id")),
       bookings: [],
-      otherUsers: [],
       rating: null,
       comment: "",
-      modal: false
+      modal: false,
+      rateBooking: {},
     };
   },
   methods: {
@@ -93,16 +136,27 @@ export default {
       let self = this;
       axios
         .get("http://localhost:3001/user/" + self.id + "/booking", {
-          headers: { authorization: localStorage.getItem("authorization") }
+          headers: { authorization: localStorage.getItem("authorization") },
         })
         .then(function(response) {
-          self.bookings = response.data.bookings;
+          self.bookings = response.data.bookings.map((booking) => {
+            booking.booking.user_image_1 =
+              "http://localhost:3001/uploads/" + booking.booking.user_image_1;
+
+            booking.otherUser[0].image_1 =
+              "http://localhost:3001/uploads/" + booking.otherUser[0].image_1;
+
+            booking.booking.image_1 =
+              "http://localhost:3001/uploads/" + booking.booking.image_1;
+
+            return booking;
+          });
         })
         .catch(function(error) {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -111,14 +165,14 @@ export default {
       axios
         .get("http://localhost:3001/matches/" + idmatch + "/booking/accept", {
           headers: { authorization: localStorage.getItem("authorization") },
-          params: { code: self.bookings[index].booking.confirmation_code }
+          params: { code: self.bookings[index].booking.confirmation_code },
         })
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "¡Reserva aceptada con éxito!",
             text:
-              "Te hemos enviado por mail la confirmación. ¡Disfruta de tu roomie!"
+              "Te hemos enviado por mail la confirmación. ¡Disfruta de tu roomie!",
           });
           self.getBookings();
         })
@@ -126,7 +180,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -135,13 +189,13 @@ export default {
       axios
         .get("http://localhost:3001/matches/" + idmatch + "/booking/cancel", {
           headers: { authorization: localStorage.getItem("authorization") },
-          params: { code: self.bookings[index].booking.confirmation_code }
+          params: { code: self.bookings[index].booking.confirmation_code },
         })
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "La reserva ha sido cancelada",
-            text: "¡Buena suerte buscando a tu roomie!"
+            text: "¡Buena suerte buscando a tu roomie!",
           });
           self.getBookings();
         })
@@ -149,7 +203,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -158,13 +212,13 @@ export default {
       axios
         .get("http://localhost:3001/matches/" + idmatch + "/booking/finish", {
           headers: { authorization: localStorage.getItem("authorization") },
-          params: { code: self.bookings[index].booking.confirmation_code }
+          params: { code: self.bookings[index].booking.confirmation_code },
         })
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "La reserva ha sido finalizada",
-            text: "¿A qué esperas para buscar tu próximo roomie?"
+            text: "¿A qué esperas para buscar tu próximo roomie?",
           });
           self.getBookings();
         })
@@ -172,15 +226,15 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
-    checkUserToVote(index1, index2) {
-      if (self.id === index1) {
-        return index2;
+    checkUserToVote(id1, id2) {
+      if (this.id === id1) {
+        return id2;
       } else {
-        return index1;
+        return id1;
       }
     },
     voteUser(index1, index2) {
@@ -190,41 +244,41 @@ export default {
           "http://localhost:3001/user/" +
             self.checkUserToVote(index1, index2) +
             "/vote",
+          { rating: self.rating, comment: self.comment },
           {
             headers: { authorization: localStorage.getItem("authorization") },
-            rating: self.rating,
-            comment: self.comment
           }
         )
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "¡Gracias!",
-            text: "Tu voto ha sido enviado :)"
+            text: "Tu voto ha sido enviado :)",
           });
-          console.log(index1, index2);
+          // console.log(index1, index2);
           self.closeModal();
-          self.getBookings();
+          self.$router.go();
         })
         .catch(function(error) {
-          console.log(index1, index2);
+          // console.log(index1, index2);
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
-    openModal() {
+    openModal(index) {
+      this.rateBooking = this.bookings[index].booking;
       this.modal = true;
     },
     closeModal() {
       this.modal = false;
-    }
+    },
   },
   created() {
     this.getBookings();
-  }
+  },
 };
 </script>
 
@@ -249,8 +303,5 @@ ul {
   border: 1px solid #888;
   width: 60%;
   height: 500px;
-}
-li {
-  border: 1px solid red;
 }
 </style>

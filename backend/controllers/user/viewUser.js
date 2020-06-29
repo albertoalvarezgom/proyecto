@@ -88,11 +88,27 @@ async function viewUser(request, response, next) {
       formatCouple = 'Sí';
     }
 
+    // let formatHidden;
+    // if (dbUser.hidden === 0) {
+    //   formatHidden = 'No';
+    // } else {
+    //   formatHidden = 'Sí';
+    // }
+
+    let formatGender;
+    if (dbUser.gender === 'chico') {
+      formatGender = 'Masculino';
+    } else if (dbUser.gender === 'chica') {
+      formatGender = 'Femenino';
+    } else {
+      formatGender = 'Otro';
+    }
+
     let formatHidden;
     if (dbUser.hidden === 0) {
-      formatHidden = 'No';
+      formatHidden = 'visible';
     } else {
-      formatHidden = 'Sí';
+      formatHidden = 'oculto';
     }
 
     //Armamos el payload con toda la info
@@ -101,7 +117,7 @@ async function viewUser(request, response, next) {
       age: dbUser.age,
       birthday: date,
       city: dbUser.city,
-      gender: dbUser.gender,
+      gender: formatGender,
       occupation_field: dbUser.occupation_field,
       occupation_status: dbUser.occupation_status,
       couple: formatCouple,

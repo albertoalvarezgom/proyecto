@@ -1,6 +1,7 @@
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 const chalk = require('chalk');
+const formatDistance = require('date-fns/formatDistance');
 
 async function getMessages(request, response, next) {
   let connection;
@@ -33,7 +34,7 @@ async function getMessages(request, response, next) {
     const [
       messages
     ] = await connection.query(
-      `SELECT messages.*, user.first_name FROM messages JOIN user ON messages.id_user=user.id_user WHERE messages.id_match=? ORDER BY messages.creation_date ASC`,
+      `SELECT messages.*, user.first_name, user.image_1 FROM messages JOIN user ON messages.id_user=user.id_user WHERE messages.id_match=? ORDER BY messages.creation_date ASC`,
       [idmatch]
     );
 

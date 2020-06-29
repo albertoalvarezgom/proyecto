@@ -5,20 +5,23 @@
       <h1>{{ user.perfil[0].first_name }}, {{ user.perfil[0].age }}</h1>
       <h3>{{ user.perfil[0].rating }}</h3>
       <img :src="user.perfil[0].image_1" alt />
-      <ul v-for="personalidad in user.personalidad" :key="personalidad.id_personality">
-        <li>{{personalidad.name}}</li>
+      <ul
+        v-for="personalidad in user.personalidad"
+        :key="personalidad.id_personality"
+      >
+        <li>{{ personalidad.name }}</li>
       </ul>
       <ul v-for="hobby in user.hobbies" :key="hobby.id_hobby">
-        <li>{{hobby.name}}</li>
-        <li>{{hobby.description}}</li>
+        <li>{{ hobby.name }}</li>
+        <li>{{ hobby.description }}</li>
       </ul>
       <ul v-for="rule in user.rules" :key="rule.id_rule">
-        <li>{{rule.name}}</li>
+        <li>{{ rule.name }}</li>
       </ul>
       <ul v-for="room in user.room" :key="room.id_room">
-        <li>{{room.title}}</li>
-        <li>{{room.price}}</li>
-        <li>{{room.address}}</li>
+        <li>{{ room.title }}</li>
+        <li>{{ room.price }}</li>
+        <li>{{ room.address }}</li>
       </ul>
     </div>
   </div>
@@ -32,7 +35,7 @@ export default {
   name: "Users",
   data() {
     return {
-      users: []
+      users: [],
     };
   },
   methods: {
@@ -40,25 +43,23 @@ export default {
       let self = this;
       axios
         .get("http://localhost:3001/user", {
-          headers: { authorization: localStorage.getItem("authorization") }
+          headers: { authorization: localStorage.getItem("authorization") },
         })
         .then(function(response) {
           self.users = response.data.data;
-          // console.log(response.data.data);
-          // self.personality = response.data.data.user.personalidad;
         })
         .catch(function(error) {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
-    }
+    },
   },
   created() {
     this.getUsers();
-  }
+  },
 };
 </script>
 

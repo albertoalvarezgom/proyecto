@@ -30,6 +30,8 @@ async function editUser(request, response, next) {
       hidden
     } = request.body;
 
+    console.log(chalk.inverse.green(gender));
+
     connection = await getConnection();
 
     const [
@@ -77,7 +79,7 @@ async function editUser(request, response, next) {
       }
     }
 
-    const imagestoDB = [];
+    let imagestoDB = [];
 
     if (request.files) {
       const newImages = [
@@ -105,6 +107,8 @@ async function editUser(request, response, next) {
         }
         imagestoDB.push(savedFileName);
       }
+    } else {
+      imagestoDB = checkCurrentImages;
     }
 
     let formatCouple;
@@ -112,6 +116,18 @@ async function editUser(request, response, next) {
       formatCouple = 0;
     } else {
       formatCouple = 1;
+    }
+
+    let formatHidden;
+    if (hidden === 'No') {
+      formatHidden = 0;
+    } else {
+      formatHidden = 1;
+    }
+
+    let formatGender;
+    if (gender === 'null') {
+      formatGender = null;
     }
 
     await connection.query(
@@ -130,11 +146,11 @@ async function editUser(request, response, next) {
         imagestoDB[2],
         imagestoDB[3],
         imagestoDB[4],
-        gender,
+        formatGender,
         type,
         ig_profile,
         phone,
-        hidden,
+        formatHidden,
         id
       ]
     );

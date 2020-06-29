@@ -4,12 +4,20 @@
     <menucustom></menucustom>
     <h3>Personalidad:</h3>
     <ul class="personalityContainer">
-      <li v-for="(personality, index) in personalities" :key="personality.id_personality">
+      <li
+        v-for="(personality, index) in personalities"
+        :key="personality.id_personality"
+      >
         <button
           value="personality.name"
-          :class="{ activado: personality.status === 1, desactivado: personality.status === 0 }"
+          :class="{
+            activado: personality.status === 1,
+            desactivado: personality.status === 0,
+          }"
           @click="selectPersonality(index)"
-        >{{personality.name}}</button>
+        >
+          {{ personality.name }}
+        </button>
       </li>
     </ul>
     <p v-show="warning">Sólo puedes elegir 5 personalidades</p>
@@ -19,9 +27,14 @@
       <li v-for="(rule, index) in rules" :key="rule.id_rule">
         <button
           value="rule.name"
-          :class="{ activado: rule.status === 1, desactivado: rule.status === 0 }"
+          :class="{
+            activado: rule.status === 1,
+            desactivado: rule.status === 0,
+          }"
           @click="selectRule(index)"
-        >{{rule.name}}</button>
+        >
+          {{ rule.name }}
+        </button>
       </li>
     </ul>
     <button @click="editUserRules()">Guardar cambios</button>
@@ -48,7 +61,7 @@ export default {
       warning: false,
       rules: [],
       selectedRules: [],
-      selectedRulesNames: []
+      selectedRulesNames: [],
     };
   },
   methods: {
@@ -57,14 +70,12 @@ export default {
       axios
         .get("http://localhost:3001/user/" + self.id + "/personality", {
           headers: { authorization: localStorage.getItem("authorization") },
-          params: { id: self.id }
         })
         .then(function(response) {
           self.personalities = response.data.personalities;
           self.selectedPersonalities = self.personalities.filter(
-            personality => personality.status === 1
+            (personality) => personality.status === 1
           );
-          console.log(self.personalities);
           for (const personalityName of self.selectedPersonalities) {
             self.selectedPersonalitiesNames.push(personalityName.name);
           }
@@ -73,7 +84,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -86,7 +97,7 @@ export default {
       ) {
         this.personalities[index].status = 0;
         this.selectedPersonalities = this.selectedPersonalities.filter(
-          personality => personality.name !== this.personalities[index].name
+          (personality) => personality.name !== this.personalities[index].name
         );
         this.selectedPersonalitiesNames.splice(
           this.selectedPersonalitiesNames.indexOf(
@@ -99,7 +110,7 @@ export default {
           this.selectedPersonalities.push({
             description: "",
             name: this.personalities[index].name,
-            status: 1
+            status: 1,
           });
           this.personalities[index].status = 1;
           this.selectedPersonalitiesNames.push(this.personalities[index].name);
@@ -111,20 +122,25 @@ export default {
     editUserPersonalities() {
       let self = this;
       axios
-        .put("http://localhost:3001/user/" + self.id + "/personality", {
-          headers: { authorization: localStorage.getItem("authorization") },
-          personality1: self.selectedPersonalities[0].name,
-          personality2: self.selectedPersonalities[1].name,
-          personality3: self.selectedPersonalities[2].name,
-          personality4: self.selectedPersonalities[3].name,
-          personality5: self.selectedPersonalities[4].name
-        })
+        .put(
+          "http://localhost:3001/user/" + self.id + "/personality",
+          {
+            personality1: self.selectedPersonalities[0].name,
+            personality2: self.selectedPersonalities[1].name,
+            personality3: self.selectedPersonalities[2].name,
+            personality4: self.selectedPersonalities[3].name,
+            personality5: self.selectedPersonalities[4].name,
+          },
+          {
+            headers: { authorization: localStorage.getItem("authorization") },
+          }
+        )
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "Personalidad actualizada correctamente",
             text: "Completa tu perfil al máximo :)",
-            timer: 1500
+            timer: 1500,
           });
           self.getPersonality();
         })
@@ -132,7 +148,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -141,7 +157,6 @@ export default {
       axios
         .get("http://localhost:3001/user/" + self.id + "/rule", {
           headers: { authorization: localStorage.getItem("authorization") },
-          params: { id: self.id }
         })
         .then(function(response) {
           self.rules = response.data.rules;
@@ -156,7 +171,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
     },
@@ -168,35 +183,36 @@ export default {
           this.selectedRulesNames.indexOf(this.rules[index].name),
           1
         );
-        console.log(this.selectedRules);
-        console.log(this.selectedRulesNames);
       } else {
         this.rules[index].status = 1;
         this.selectedRules[index].status = 1;
         this.selectedRulesNames.push(this.rules[index].name);
-        console.log(this.selectedRules);
-        console.log(this.selectedRulesNames);
       }
     },
     editUserRules() {
       let self = this;
       axios
-        .put("http://localhost:3001/user/" + self.id + "/rule", {
-          headers: { authorization: localStorage.getItem("authorization") },
-          rule1: self.selectedRules[0].name,
-          status1: self.selectedRules[0].status,
-          rule2: self.selectedRules[1].name,
-          status2: self.selectedRules[1].status,
-          rule3: self.selectedRules[2].name,
-          status3: self.selectedRules[2].status,
-          rule4: self.selectedRules[3].name,
-          status4: self.selectedRules[3].status
-        })
+        .put(
+          "http://localhost:3001/user/" + self.id + "/rule",
+          {
+            rule1: self.selectedRules[0].name,
+            status1: self.selectedRules[0].status,
+            rule2: self.selectedRules[1].name,
+            status2: self.selectedRules[1].status,
+            rule3: self.selectedRules[2].name,
+            status3: self.selectedRules[2].status,
+            rule4: self.selectedRules[3].name,
+            status4: self.selectedRules[3].status,
+          },
+          {
+            headers: { authorization: localStorage.getItem("authorization") },
+          }
+        )
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "Reglas actualizadas correctamente",
-            text: "Completa tu perfil al máximo :)"
+            text: "Completa tu perfil al máximo :)",
           });
           self.getUserRule();
         })
@@ -204,15 +220,15 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message
+            text: error.response.data.message,
           });
         });
-    }
+    },
   },
   created() {
     this.getPersonality();
     this.getUserRule();
-  }
+  },
 };
 </script>
 

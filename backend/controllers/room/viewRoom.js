@@ -10,13 +10,13 @@ const {
 async function viewRoom(request, response, next) {
   let connection;
   try {
-    const { iduser, idroom } = request.params;
+    const { id } = request.params;
 
     connection = await getConnection();
 
     const [room] = await connection.query(
       `SELECT * FROM room WHERE id_user=?`,
-      [iduser]
+      [id]
     );
 
     if (!room.length) {
@@ -34,19 +34,16 @@ async function viewRoom(request, response, next) {
       facility
     ] = await connection.query(
       `SELECT facility.name FROM facility_room JOIN facility ON facility_room.id_facility=facility.id_facility WHERE id_room=?`,
-      [idroom]
+      [room[0].id_room]
     );
 
     await connection.query('UPDATE room SET views=? WHERE id_room=?', [
       room[0].views + 1,
-      idroom
+      room[0].id_room
     ]);
 
     const fromDate = formatDateToFront(room[0].availability_from);
     const untilDate = formatDateToFront(room[0].availability_until);
-
-    console.log(fromDate);
-    console.log(untilDate);
 
     const payload = {
       title: room[0].title,
@@ -71,8 +68,15 @@ async function viewRoom(request, response, next) {
       availability_from: fromDate,
       availability_until: untilDate,
       min_stay: room[0].min_stay,
-      max_stay: room[0].max_stay
+      max_stay: room[0].max_stay,
+      image_1: room[0].image_1,
+      image_2: room[0].image_2,
+      image_3: room[0].image_3,
+      image_4: room[0].image_4,
+      image_5: room[0].image_5
     };
+
+    console.log(chalk.inverse.green(payload.title));
 
     response.send({
       status: 'ok',

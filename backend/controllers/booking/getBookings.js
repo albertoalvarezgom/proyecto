@@ -3,6 +3,7 @@ const {
   generateError,
   formatDateToFront
 } = require('../../helpers/helpers.js');
+const chalk = require('chalk');
 
 async function getBookings(request, response, next) {
   let connection;
@@ -68,7 +69,7 @@ async function getBookings(request, response, next) {
           creation_date: bookingDate,
           start_date: startDate,
           finish_date: finishDate,
-          user_image_1: bookings[i].user_image_1,
+          user_image_1: bookings[i].user_image1,
           name1: bookings[i].name1,
           id_user_sending: bookings[i].id_user_sending,
           id_match: bookings[i].id_match,
