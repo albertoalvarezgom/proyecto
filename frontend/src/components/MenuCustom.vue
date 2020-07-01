@@ -1,45 +1,40 @@
 <template>
   <div>
     <div id="nav">
-      <ul>
+      <router-link to="/">
+        <h1>roomie</h1>
+      </router-link>
+      <ul class="menu">
         <li>
-          <router-link to="/">Buscar</router-link>
+          <router-link :to="{name:'Home'}">Buscar</router-link>
         </li>
         <li>
-          <router-link to="/publicar">Publica tu habitación</router-link>
+          <router-link :to="{name:'NewRoom'}">Publica tu habitación</router-link>
         </li>
         <li>
-          <router-link to="/reservas" v-show="checkLogin()"
-            >Mis reservas</router-link
-          >
+          <router-link :to="{name:'Reservas'}" v-show="checkLogin()">Mis reservas</router-link>
         </li>
         <li>
-          <router-link to="/mensajes" v-show="checkLogin()"
-            >Mis mensajes</router-link
-          >
+          <router-link :to="{name:'Mensajes'}" v-show="checkLogin()">Mis mensajes</router-link>
         </li>
         <li>
           <div class="menudesplegable" v-show="checkLogin()">
             <button class="botonmenu">{{ name }}</button>
             <div class="desplegableenlaces">
-              <router-link to="/datos-personales">Mis datos</router-link>
-              <router-link to="/hobbies">Mis aficiones</router-link>
-              <router-link to="/personalidad">Mi personalidad</router-link>
-              <router-link to="/valoraciones">Mis valoraciones</router-link>
-              <router-link :to="{ name: 'Room' }" v-show="checkOwner()"
-                >Mi habitación</router-link
-              >
+              <router-link :to="{name:'UserProfile'}">Mis datos</router-link>
+              <router-link :to="{name:'UserHobby'}">Mis aficiones</router-link>
+              <router-link :to="{name:'UserPersonality'}">Mi personalidad</router-link>
+              <router-link :to="{name:'UserVotes'}">Mis valoraciones</router-link>
+              <router-link :to="{ name: 'Room' }" v-show="checkOwner()">Mi habitación</router-link>
               <button @click="logoutUser()" id="logout">Logout</button>
             </div>
           </div>
         </li>
         <li>
-          <router-link to="/login" v-show="!checkLogin()">Login</router-link>
+          <router-link :to="{name:'Login'}" v-show="!checkLogin()">Login</router-link>
         </li>
         <li>
-          <router-link to="/registro" v-show="!checkLogin()"
-            >Regístrate</router-link
-          >
+          <router-link :to="{name:'Register'}" v-show="!checkLogin()">Regístrate</router-link>
         </li>
       </ul>
     </div>
@@ -52,14 +47,14 @@ import {
   isLoggedIn,
   checkAdmin,
   getUserName,
-  getUserType,
+  getUserType
 } from "@/api/utils.js";
 
 export default {
   name: "MenuCustom",
   data() {
     return {
-      name: ` ${getUserName()}`,
+      name: ` ${getUserName()}`
     };
   },
   methods: {
@@ -83,8 +78,8 @@ export default {
       } else {
         return true;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -93,11 +88,10 @@ export default {
   background-color: white;
   color: lightcoral;
   padding: 6px 16px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   border: none;
   font-family: Raleway;
-  /* font-weight: 500; */
-  font-weight: bold;
+  font-weight: 700;
   border-left: 1px solid #2c3e50;
 }
 
@@ -152,13 +146,27 @@ export default {
   color: white;
 }
 
+#nav {
+  margin-bottom: 2rem;
+}
+
 #nav ul {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
 }
 
 #nav ul li {
-  margin: 1rem;
+  font-size: 0.9rem;
+  margin: 0 1rem;
+}
+
+h1 {
+  margin: 0;
+}
+
+.menu {
+  margin: 0 auto;
 }
 </style>

@@ -49,12 +49,13 @@ async function viewRoom(request, response, next) {
       title: room[0].title,
       description: room[0].description,
       address: room[0].address,
-      postal_code: room[0].postal_ode,
+      postal_code: room[0].postal_code,
       city: room[0].city,
       flatmates_masc: room[0].flatmates_masc,
       flatmates_fem: room[0].flatmates_fem,
-      flatSize: room[0].flat_size,
+      flat_size: room[0].flat_size,
       preference_gender: room[0].preference_gender,
+      views: room[0].views,
       status: room[0].status,
       min_age: room[0].min_age,
       max_age: room[0].max_age,
@@ -75,8 +76,6 @@ async function viewRoom(request, response, next) {
       image_4: room[0].image_4,
       image_5: room[0].image_5
     };
-
-    console.log(chalk.inverse.green(payload.title));
 
     response.send({
       status: 'ok',

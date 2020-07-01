@@ -24,14 +24,6 @@ const routes = [
     },
   },
   {
-    path: "/users",
-    name: "Users",
-    component: () => import("../views/Users.vue"),
-    meta: {
-      allowAnonymous: false,
-    },
-  },
-  {
     path: "/login",
     name: "Login",
     component: () => import("../views/Login.vue"),

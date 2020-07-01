@@ -12,18 +12,13 @@
             desactivado: hobby.status === 0,
           }"
           @click="selectHobby(index)"
-        >
-          {{ hobby.name }}
-        </button>
+        >{{ hobby.name }}</button>
       </li>
     </ul>
     <p v-show="many">Sólo puedes elegir 5 aficiones</p>
     <p v-if="selectedHobbiesNames.length < 5">Tienes que elegir 5 aficiones</p>
     <ul>
-      <li
-        v-for="selectedHobby in selectedHobbies"
-        :key="selectedHobby.id_hobby"
-      >
+      <li v-for="selectedHobby in selectedHobbies" :key="selectedHobby.id_hobby">
         <h3>{{ selectedHobby.name }}</h3>
         <textarea
           name
@@ -56,7 +51,7 @@ export default {
       hobbies: [],
       selectedHobbies: [],
       selectedHobbiesNames: [],
-      many: false,
+      many: false
     };
   },
   methods: {
@@ -65,12 +60,12 @@ export default {
       axios
         .get("http://localhost:3001/user/" + self.id + "/hobby", {
           headers: { authorization: localStorage.getItem("authorization") },
-          params: { id: self.id },
+          params: { id: self.id }
         })
         .then(function(response) {
           self.hobbies = response.data.hobbies;
           self.selectedHobbies = self.hobbies.filter(
-            (hobby) => hobby.status === 1
+            hobby => hobby.status === 1
           );
           for (const hobbyName of self.selectedHobbies) {
             self.selectedHobbiesNames.push(hobbyName.name);
@@ -80,7 +75,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
     },
@@ -91,7 +86,7 @@ export default {
       if (this.selectedHobbiesNames.includes(this.hobbies[index].name)) {
         this.hobbies[index].status = 0;
         this.selectedHobbies = this.selectedHobbies.filter(
-          (hobby) => hobby.name !== this.hobbies[index].name
+          hobby => hobby.name !== this.hobbies[index].name
         );
         this.selectedHobbiesNames.splice(
           this.selectedHobbiesNames.indexOf(this.hobbies[index].name),
@@ -102,7 +97,7 @@ export default {
           this.selectedHobbies.push({
             description: "",
             name: this.hobbies[index].name,
-            status: 1,
+            status: 1
           });
           this.hobbies[index].status = 1;
           this.selectedHobbiesNames.push(this.hobbies[index].name);
@@ -126,17 +121,17 @@ export default {
             hobby4: self.selectedHobbies[3].name,
             description4: self.selectedHobbies[3].description,
             hobby5: self.selectedHobbies[4].name,
-            description5: self.selectedHobbies[4].description,
+            description5: self.selectedHobbies[4].description
           },
           {
-            headers: { authorization: localStorage.getItem("authorization") },
+            headers: { authorization: localStorage.getItem("authorization") }
           }
         )
         .then(function(response) {
           Swal.fire({
             icon: "success",
             title: "Aficiones actualizadas correctamente",
-            text: "Completa tu perfil al máximo :)",
+            text: "Completa tu perfil al máximo :)"
           });
           self.getUserHobbies();
         })
@@ -144,14 +139,14 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
-    },
+    }
   },
   created() {
     this.getUserHobbies();
-  },
+  }
 };
 </script>
 

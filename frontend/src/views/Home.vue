@@ -5,7 +5,7 @@
     <div id="searchContainer" v-show="!search">
       <form v-show="!search">
         <div id="userSearch">
-          <p>¿Qué roomie buscas?</p>
+          <h2>¿Qué roomie buscas?</h2>
           <div id="userInfo">
             <div id="userGender">
               <label for="gender">¿Chico o chica?</label>
@@ -28,11 +28,7 @@
             <div id="userStatus">
               <label for="occupationStatus">¿Trabajando?</label>
               <fieldset>
-                <select
-                  name="occupationStatus"
-                  id="occupationStatus"
-                  v-model="occupationStauts"
-                >
+                <select name="occupationStatus" id="occupationStatus" v-model="occupationStauts">
                   <option value="trabajando">trabajando</option>
                   <option value="estudiando">estudiando</option>
                   <option value="estudiando y trabajando">ambas</option>
@@ -76,9 +72,7 @@
                 <option value="paciente">paciente</option>
                 <option value="party animal">party animal</option>
                 <option value="comprador">comprador</option>
-                <option value="amante de los animales"
-                  >amante de los animales</option
-                >
+                <option value="amante de los animales">amante de los animales</option>
                 <option value="solitario">solitario</option>
                 <option value="nocturno">nocturno</option>
                 <option value="practico">práctico</option>
@@ -135,45 +129,23 @@
         </div>
       </form>
       <div id="buttonSearch">
-        <button @click="getUsers()" type="submit" v-show="!search">
-          Buscar
-        </button>
+        <button @click="getUsers()" type="submit" v-show="!search">Buscar</button>
       </div>
     </div>
-    <titlecustom id="title"></titlecustom>
+    <!-- <titlecustom id="title"></titlecustom> -->
     <button @click="deleteSearch()" v-show="search">Borrar búsqueda</button>
-    <div
-      class="users"
-      v-for="user in users"
-      :key="user.id_user"
+    <usercomponent
+      :users="users"
+      :userInfo="userInfo"
+      :roomInfo="roomInfo"
+      :userModal="userModal"
+      :roomModal="roomModal"
       v-show="search"
-    >
-      <h1>{{ user.perfil[0].first_name }}, {{ user.perfil[0].age }}</h1>
-      <h3>{{ user.perfil[0].rating }}</h3>
-      <img :src="user.perfil[0].image_1" alt />
-      <h3>Personalidad</h3>
-      <ul
-        v-for="personalidad in user.personalidad"
-        :key="personalidad.id_personality"
-      >
-        <li>{{ personalidad.name }}</li>
-      </ul>
-      <h3>Hobbies</h3>
-      <ul v-for="hobby in user.hobbies" :key="hobby.id_hobby">
-        <li>{{ hobby.name }}</li>
-        <!-- <li>{{ hobby.description }}</li> -->
-      </ul>
-      <ul v-for="rule in user.rules" :key="rule.id_rule">
-        <li>{{ rule.name }}</li>
-      </ul>
-      <ul v-for="room in user.room" :key="room.id_room">
-        <li>{{ room.title }}</li>
-        <li>{{ room.price }}</li>
-        <li>{{ room.address }}</li>
-      </ul>
-      <button>Siguiente</button>
-      <button @click="likeUser(user.perfil[0].id_user)">Like</button>
-    </div>
+      v-on:like="likeUser"
+      v-on:view="getUserInfo"
+      v-on:close="closeModal"
+      v-on:room="getRoomInfo"
+    ></usercomponent>
   </div>
 </template>
 
@@ -181,7 +153,8 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import menucustom from "@/components/MenuCustom.vue";
-import titlecustom from "@/components/TitleCustom.vue";
+// import titlecustom from "@/components/TitleCustom.vue";
+import usercomponent from "@/components/UserComponent.vue";
 
 export default {
   name: "Home",
@@ -189,6 +162,8 @@ export default {
     return {
       search: false,
       users: [],
+      userInfo: {},
+      roomInfo: {},
       gender: "",
       couple: "",
       sort: "",
@@ -196,9 +171,15 @@ export default {
       personality: "",
       hobby: "",
       rule: "",
+      userModal: false,
+      roomModal: false
     };
   },
-  components: { menucustom, titlecustom },
+  components: {
+    menucustom,
+    // titlecustom,
+    usercomponent
+  },
   methods: {
     getUsers() {
       let self = this;
@@ -213,53 +194,233 @@ export default {
             occupationStauts: self.occupationStauts,
             personality: self.personality,
             hobby: self.hobby,
-            rule: self.rule,
-          },
+            rule: self.rule
+          }
         })
         .then(function(response) {
-          self.users = response.data.data.map((user) => {
-            user.perfil[0].image_1 =
-              "http://localhost:3001/uploads/" + user.perfil[0].image_1;
-            user.perfil[0].image_2 =
-              "http://localhost:3001/uploads/" + user.perfil[0].image_2;
-            user.perfil[0].image_3 =
-              "http://localhost:3001/uploads/" + user.perfil[0].image_3;
-            user.perfil[0].image_4 =
-              "http://localhost:3001/uploads/" + user.perfil[0].image_4;
-            user.perfil[0].image_5 =
-              "http://localhost:3001/uploads/" + user.perfil[0].image_5;
+          self.users = response.data.data;
+
+          self.users = response.data.data.map(user => {
+            const imagesArray = [
+              user.perfil[0].image_1,
+              user.perfil[0].image_2,
+              user.perfil[0].image_3,
+              user.perfil[0].image_4,
+              user.perfil[0].image_5
+            ];
+
+            if (user.room.length > 0) {
+              imagesArray.push(
+                user.room[0].image_1,
+                user.room[0].image_2,
+                user.room[0].image_3,
+                user.room[0].image_4,
+                user.room[0].image_5
+              );
+            }
+
+            const imagesToFront = [];
+
+            for (const image of imagesArray) {
+              if (image) {
+                imagesToFront.push("http://localhost:3001/uploads/" + image);
+              } else {
+                imagesToFront.push(null);
+              }
+            }
+            user.perfil[0].image_1 = imagesToFront[0];
+            user.perfil[0].image_2 = imagesToFront[1];
+            user.perfil[0].image_3 = imagesToFront[2];
+            user.perfil[0].image_4 = imagesToFront[3];
+            user.perfil[0].image_5 = imagesToFront[4];
+
+            if (user.room.length > 0) {
+              user.room[0].image_1 = imagesToFront[5];
+              user.room[0].image_2 = imagesToFront[6];
+              user.room[0].image_3 = imagesToFront[7];
+              user.room[0].image_4 = imagesToFront[8];
+              user.room[0].image_5 = imagesToFront[9];
+            }
             return user;
           });
         })
         .catch(function(error) {
           Swal.fire({
             icon: "error",
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
     },
     deleteSearch() {
       this.search = false;
     },
-    likeUser(index) {
+    getUserInfo(user) {
+      let self = this;
+
+      axios
+        .get("http://localhost:3001/user/" + user.perfil[0].id_user, {
+          headers: { authorization: localStorage.getItem("authorization") }
+        })
+        .then(function(response) {
+          self.userInfo = response.data.data;
+
+          const userImage_1 = response.data.data.profile.image1;
+          const userImage_2 = response.data.data.profile.image2;
+          const userImage_3 = response.data.data.profile.image3;
+          const userImage_4 = response.data.data.profile.image4;
+          const userImage_5 = response.data.data.profile.image5;
+
+          const imagesArray = [
+            userImage_1,
+            userImage_2,
+            userImage_3,
+            userImage_4,
+            userImage_5
+          ];
+
+          if (self.userInfo.room.length) {
+            const roomImage_1 = response.data.data.room[0].image_1;
+            const roomImage_2 = response.data.data.room[0].image_2;
+            const roomImage_3 = response.data.data.room[0].image_3;
+            const roomImage_4 = response.data.data.room[0].image_4;
+            const roomImage_5 = response.data.data.room[0].image_5;
+            imagesArray.push(
+              roomImage_1,
+              roomImage_2,
+              roomImage_3,
+              roomImage_4,
+              roomImage_5
+            );
+          }
+
+          const imagesToFront = [];
+
+          for (const image of imagesArray) {
+            if (image) {
+              imagesToFront.push("http://localhost:3001/uploads/" + image);
+            } else {
+              imagesToFront.push(null);
+            }
+          }
+          if (!response.data.data.profile.image1) {
+            self.userInfo.image_1 =
+              "http://localhost:3001/uploads/roomie-profile.jpg";
+          } else {
+            self.userInfo.profile.image_1 = imagesToFront[0];
+            self.userInfo.profile.image_2 = imagesToFront[1];
+            self.userInfo.profile.image_3 = imagesToFront[2];
+            self.userInfo.profile.image_4 = imagesToFront[3];
+            self.userInfo.profile.image_5 = imagesToFront[4];
+            if (self.userInfo.room.length > 0) {
+              if (!self.userInfo.room[0].image_1) {
+              } else {
+                self.userInfo.room[0].image_1 = imagesToFront[5];
+                self.userInfo.room[0].image_2 = imagesToFront[6];
+                self.userInfo.room[0].image_3 = imagesToFront[7];
+                self.userInfo.room[0].image_4 = imagesToFront[8];
+                self.userInfo.room[0].image_5 = imagesToFront[9];
+              }
+            }
+          }
+          // console.log(self.userInfo);
+          self.openUserModal();
+        })
+        .catch(function(error) {
+          Swal.fire({
+            icon: "error",
+            title: error.response.status,
+            text: error.response.data.message
+          });
+        });
+    },
+    getRoomInfo(user) {
       let self = this;
       axios
-        .put("http://localhost:3001/user/" + index + "/like", {
-          headers: { authorization: localStorage.getItem("authorization") },
+        .get("http://localhost:3001/user/" + user.perfil[0].id_user + "/room", {
+          headers: { authorization: localStorage.getItem("authorization") }
         })
+        .then(function(response) {
+          self.roomInfo = response.data.data;
+          // console.log(self.roomInfo);
+
+          const roomImage_1 = response.data.data.room.image_1;
+          const roomImage_2 = response.data.data.room.image_2;
+          const roomImage_3 = response.data.data.room.image_3;
+          const roomImage_4 = response.data.data.room.image_4;
+          const roomImage_5 = response.data.data.room.image_5;
+
+          const imagesArray = [
+            roomImage_1,
+            roomImage_2,
+            roomImage_3,
+            roomImage_4,
+            roomImage_5
+          ];
+
+          const imagesToFront = [];
+
+          for (const image of imagesArray) {
+            if (image) {
+              imagesToFront.push("http://localhost:3001/uploads/" + image);
+            } else {
+              imagesToFront.push(null);
+            }
+          }
+
+          self.roomInfo.room.image_1 = imagesToFront[0];
+          self.roomInfo.room.image_2 = imagesToFront[1];
+          self.roomInfo.room.image_3 = imagesToFront[2];
+          self.roomInfo.room.image_4 = imagesToFront[3];
+          self.roomInfo.room.image_5 = imagesToFront[4];
+
+          self.openRoomModal();
+        })
+        .catch(function(error) {
+          Swal.fire({
+            icon: "error",
+            title: error.response.status,
+            text: error.response.data.message
+          });
+        });
+    },
+    likeUser(user) {
+      let self = this;
+      axios
+        .put(
+          "http://localhost:3001/user/" + user.perfil[0].id_user + "/like",
+          {},
+          {
+            headers: { authorization: localStorage.getItem("authorization") }
+          }
+        )
         .then(function(response) {
           self.getUsers();
         })
         .catch(function(error) {
           Swal.fire({
             icon: "error",
-            title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
+          self.getUsers();
         });
-      self.getUsers();
     },
+    openUserModal() {
+      this.userModal = true;
+    },
+    openRoomModal() {
+      this.roomModal = true;
+      // console.log(this.roomInfo);
+    },
+    closeModal() {
+      this.roomModal = false;
+      this.userModal = false;
+      // this.userInfo = {};
+    }
   },
+  created() {
+    this.getUsers();
+    this.search = false;
+  }
 };
 </script>
 
@@ -268,11 +429,9 @@ export default {
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   width: 350px;
   padding: 1rem 2rem;
-  position: absolute;
-  left: 65vh;
-  top: 12rem;
-  z-index: 12;
+  margin: 0 auto;
   background-color: white;
+  margin-top: 4rem;
 }
 
 #userInfo {
@@ -311,5 +470,28 @@ label {
 title {
   position: absolute;
   z-index: -12;
+}
+
+h2 {
+  font-family: "Dm Serif Display";
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  width: 100%;
+}
+
+.modalBox {
+  overflow-y: auto;
+  background: #fefefe;
+  margin: 2rem auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 60%;
+  height: 500px;
 }
 </style>

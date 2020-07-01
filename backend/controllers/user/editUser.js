@@ -26,11 +26,8 @@ async function editUser(request, response, next) {
       couple,
       gender,
       ig_profile,
-      type,
-      hidden
+      type
     } = request.body;
-
-    console.log(chalk.inverse.green(gender));
 
     connection = await getConnection();
 
@@ -54,12 +51,6 @@ async function editUser(request, response, next) {
         401
       );
     }
-
-    // if ((current[0].email = email)) {
-    //   throw generateError(
-    //     `El email ${email} ya está registrado en nuestra BBDD. Por favor inténtelo con otra dirección de correo diferente.`
-    //   );
-    // }
 
     const [user] = current;
 
@@ -118,21 +109,9 @@ async function editUser(request, response, next) {
       formatCouple = 1;
     }
 
-    let formatHidden;
-    if (hidden === 'No') {
-      formatHidden = 0;
-    } else {
-      formatHidden = 1;
-    }
-
-    let formatGender;
-    if (gender === 'null') {
-      formatGender = null;
-    }
-
     await connection.query(
       `UPDATE user SET first_name=?, birthday=?, city=?, email=?, occupation_field=?, occupation_status=?, couple=?,
-      image_1=?, image_2=?, image_3=?, image_4=?, image_5=?, gender=?, type=?, ig_profile=?, phone=?, hidden=? WHERE id_user=?`,
+      image_1=?, image_2=?, image_3=?, image_4=?, image_5=?, gender=?, type=?, ig_profile=?, phone=? WHERE id_user=?`,
       [
         name,
         birthday,
@@ -146,11 +125,10 @@ async function editUser(request, response, next) {
         imagestoDB[2],
         imagestoDB[3],
         imagestoDB[4],
-        formatGender,
+        gender,
         type,
         ig_profile,
         phone,
-        formatHidden,
         id
       ]
     );

@@ -22,7 +22,10 @@ async function deletePhoto(imagePath) {
 
 //Formatear fecha a SQL
 function formatDateToDB(date) {
-  return format(date, 'yyyy-MM-dd HH:mm:ss');
+  console.log(chalk.inverse.green(date));
+  // if (date) {
+  return format(date, 'dd-MM-yyyy');
+  // }
 }
 
 //Formatear fecha a Vue
@@ -49,8 +52,8 @@ async function processAndSavePhoto(uploadedImage) {
 
   const imageInfo = await finalImage.metadata();
 
-  if (imageInfo.width > 500) {
-    finalImage.resize(500);
+  if (imageInfo.width > 1000) {
+    finalImage.resize(1000);
   }
 
   await finalImage.toFile(path.join(imageUploadPath, savedFileName));

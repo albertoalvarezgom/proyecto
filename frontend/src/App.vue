@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "App",
+  name: "App"
 };
 </script>
 
@@ -19,6 +19,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 #nav {
@@ -34,11 +37,10 @@ a {
   color: #2c3e50;
 }
 
-img {
-  max-width: 300px;
-}
 ul {
   list-style: none;
+
+  padding: 0;
 }
 h1 {
   text-decoration: none;

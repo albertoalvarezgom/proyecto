@@ -59,6 +59,22 @@ async function newRoom(request, response, next) {
 
     ////
 
+    console.log(chalk.inverse.green(billsIncluded));
+
+    let formatBills;
+    if (billsIncluded === false) {
+      formatBills = 0;
+    } else {
+      formatBills = 1;
+    }
+
+    let formatDeposit;
+    if (deposit === false) {
+      formatDeposit = 0;
+    } else {
+      formatDeposit = 1;
+    }
+
     let room;
 
     if (request.files) {
@@ -113,8 +129,8 @@ async function newRoom(request, response, next) {
           roomSize,
           bedType,
           price,
-          billsIncluded,
-          deposit,
+          formatBills,
+          formatDeposit,
           depositAmmount,
           availabilityFrom,
           availabilityUntil,
@@ -127,71 +143,7 @@ async function newRoom(request, response, next) {
           imagestoDB[4]
         ]
       );
-    }
-    ////
-    // let room;
-
-    // if (request.files) {
-    //   const newImages = [
-    //     request.files.image_1,
-    //     request.files.image_2,
-    //     request.files.image_3,
-    //     request.files.image_4,
-    //     request.files.image_5
-    //   ];
-
-    //   const imagestoDB = [];
-
-    //   if (request.files) {
-    //     let savedFileName;
-
-    //     for (let i = 0; i < newImages.length; i++) {
-    //       savedFileName = await processAndSavePhoto(newImages[i]);
-
-    //       imagestoDB.push(savedFileName);
-    //     }
-    //   }
-    //   [room] = await connection.query(
-    //     `
-    //   INSERT INTO room (id_user, title, description, address, postal_code, city, flatmates_masc, flatmates_fem, flat_size, preference_gender, status, min_age, max_age,
-    //     room_type, room_size, bed_type, price, bills_included, deposit, deposit_ammount, availability_from, availability_until, min_stay, max_stay, image_1, image_2, image_3, image_4, image_5)
-    //     VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-    //     `,
-
-    //     [
-    //       request.auth.id,
-    //       title,
-    //       description,
-    //       address,
-    //       postalCode,
-    //       city,
-    //       flatmatesMasc,
-    //       flatmatesFem,
-    //       flatSize,
-    //       preferenceGender,
-    //       status,
-    //       minAge,
-    //       maxAge,
-    //       roomType,
-    //       roomSize,
-    //       bedType,
-    //       price,
-    //       billsIncluded,
-    //       deposit,
-    //       depositAmmount,
-    //       availabilityFrom,
-    //       availabilityUntil,
-    //       minStay,
-    //       maxStay,
-    //       imagestoDB[0],
-    //       imagestoDB[1],
-    //       imagestoDB[2],
-    //       imagestoDB[3],
-    //       imagestoDB[4]
-    //     ]
-    //   );
-    // }
-    else {
+    } else {
       [room] = await connection.query(
         `
       INSERT INTO room (id_user, title, description, address, postal_code, city, flatmates_masc, flatmates_fem, flat_size, preference_gender, status, min_age, max_age, 
@@ -216,8 +168,8 @@ async function newRoom(request, response, next) {
           roomSize,
           bedType,
           price,
-          billsIncluded,
-          deposit,
+          formatBills,
+          formatDeposit,
           depositAmmount,
           availabilityFrom,
           availabilityUntil,

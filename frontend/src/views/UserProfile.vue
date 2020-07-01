@@ -1,9 +1,6 @@
 <template>
   <div>
-    <vue-headful
-      title="Mis datos personales"
-      description="Mis datos personales"
-    />
+    <vue-headful title="Mis datos personales" description="Mis datos personales" />
     <menucustom></menucustom>
     <div>
       <div class="inputEdit" v-show="!editInput">
@@ -40,7 +37,7 @@
         <p>Pareja:</p>
         <h2>{{ user.couple }}</h2>
         <br />
-        <p>Perfil de instagram</p>
+        <p v-show="ig">Perfil de instagram</p>
         <h2>{{ user.ig_profile }}</h2>
         <br />
         <p>Tu perfil está {{ user.hidden }}</p>
@@ -51,19 +48,11 @@
       <div v-show="editInput">
         <fieldset>
           <label for="name">Nombre</label>
-          <input
-            type="text"
-            :placeholder="[[user.name]]"
-            v-model="newUser.name"
-          />
+          <input type="text" :placeholder="[[user.name]]" v-model="newUser.name" />
         </fieldset>
         <fieldset>
           <label for="birthday">Fecha de nacimiento</label>
           <input type="date" v-model="newUser.birthday" />
-        </fieldset>
-        <fieldset>
-          <label for="city">Ciudad</label>
-          <input type="text" v-model="newUser.city" />
         </fieldset>
         <fieldset>
           <label for="city">Ciudad</label>
@@ -107,53 +96,24 @@
         </fieldset>
         <fieldset>
           <label for="name">Perfil de instagram</label>
-          <input
-            type="text"
-            :placeholder="[[user.ig_profile]]"
-            v-model="newUser.ig_profile"
-          />
+          <input type="text" :placeholder="[[user.ig_profile]]" v-model="newUser.ig_profile" />
         </fieldset>
         <fieldset>
           <img :src="user.image_1" />
           <label for="image_1">Imagen 1</label>
-          <input
-            type="file"
-            id="image_1"
-            ref="image_1"
-            @change="handleImage()"
-          />
+          <input type="file" id="image_1" ref="image_1" @change="handleImage()" />
           <img :src="user.image_2" />
           <label for="image_2">Imagen 2</label>
-          <input
-            type="file"
-            id="image_2"
-            ref="image_2"
-            @change="handleImage()"
-          />
+          <input type="file" id="image_2" ref="image_2" @change="handleImage()" />
           <img :src="user.image_3" />
           <label for="image_3">Imagen 3</label>
-          <input
-            type="file"
-            id="image_3"
-            ref="image_3"
-            @change="handleImage()"
-          />
+          <input type="file" id="image_3" ref="image_3" @change="handleImage()" />
           <img :src="user.image_4" />
           <label for="image_4">Imagen 4</label>
-          <input
-            type="file"
-            id="image_4"
-            ref="image_4"
-            @change="handleImage()"
-          />
+          <input type="file" id="image_4" ref="image_4" @change="handleImage()" />
           <img :src="user.userImage_5" />
           <label for="image_5">Imagen 5</label>
-          <input
-            type="file"
-            id="image_5"
-            ref="image_5"
-            @change="handleImage()"
-          />
+          <input type="file" id="image_5" ref="image_5" @change="handleImage()" />
         </fieldset>
         <fieldset>
           <label for="name">¿Qué estás buscando en roomie?</label>
@@ -176,12 +136,8 @@
       <button @click="editPassword()">Cambiar</button>
     </div>
     <div>
-      <button @click="hideUser()" v-if="user.hidden === 'visible'">
-        Ocultar tu perfil
-      </button>
-      <button @click="showUser()" v-if="user.hidden === 'oculto'">
-        Mostrar tu perfil
-      </button>
+      <button @click="hideUser()" v-if="user.hidden === 'visible'">Ocultar tu perfil</button>
+      <button @click="showUser()" v-if="user.hidden === 'oculto'">Mostrar tu perfil</button>
     </div>
   </div>
 </template>
@@ -211,6 +167,7 @@ export default {
       image_3: "",
       image_4: "",
       image_5: "",
+      ig: true
     };
   },
   methods: {
@@ -218,11 +175,15 @@ export default {
       let self = this;
       axios
         .get("http://localhost:3001/user/" + self.id, {
-          headers: { authorization: localStorage.getItem("authorization") },
+          headers: { authorization: localStorage.getItem("authorization") }
         })
         .then(function(response) {
           self.user = response.data.data.profile;
           self.newUser = response.data.data.profile;
+
+          if (!self.user.ig_profile) {
+            self.ig = false;
+          }
           const userImage_1 = response.data.data.profile.image1;
           const userImage_2 = response.data.data.profile.image2;
           const userImage_3 = response.data.data.profile.image3;
@@ -234,7 +195,7 @@ export default {
             userImage_2,
             userImage_3,
             userImage_4,
-            userImage_5,
+            userImage_5
           ];
 
           const imagesToFront = [];
@@ -269,7 +230,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
     },
@@ -297,7 +258,6 @@ export default {
       //Si los datos son correctos...
       if (this.correctData === true) {
         let self = this;
-
         let formData = new FormData();
         formData.append("name", self.newUser.name);
         formData.append("birthday", self.newUser.birthday);
@@ -305,24 +265,23 @@ export default {
         formData.append("email", self.newUser.email);
         formData.append("phone", self.newUser.phone);
         formData.append("occupationField", self.newUser.occupation_field);
-        formData.append("occupationstatus", self.newUser.occupation_status);
-        formData.append("couple", self.newUser.occupation_couple);
+        formData.append("occupationStatus", self.newUser.occupation_status);
+        formData.append("couple", self.newUser.couple);
         formData.append("gender", self.newUser.gender);
         formData.append("ig_profile", self.newUser.ig_profile);
         formData.append("type", self.newUser.type);
-        formData.append("hidden", self.newUser.hidden);
         formData.append("image_1", self.image_1);
         formData.append("image_2", self.image_2);
         formData.append("image_3", self.image_3);
         formData.append("image_4", self.image_4);
         formData.append("image_5", self.image_5);
-        console.log(self.newUser.gender);
+
         axios
           .put("http://localhost:3001/user/" + self.id, formData, {
             headers: {
-              "Content-Type": "multipart/form-data",
               authorization: localStorage.getItem("authorization"),
-            },
+              "Content-Type": "multipart/form-data"
+            }
           })
           .then(function(response) {
             self.user = self.newUser;
@@ -331,7 +290,7 @@ export default {
               icon: "success",
               title: "Usuario actualizado con éxito :)",
               showConfirmButton: false,
-              timer: 1500,
+              timer: 1500
             });
             self.$router.go();
           })
@@ -339,7 +298,7 @@ export default {
             Swal.fire({
               icon: "error",
               title: error.response.status,
-              text: error.response.data.message,
+              text: error.response.data.message
             });
           });
       } //Si los datos no son correctos lanzamos un alert
@@ -350,7 +309,7 @@ export default {
           icon: "error",
           title: "Debes rellenar todos los campos del formulario :(",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1500
         });
       }
     },
@@ -369,7 +328,7 @@ export default {
           "http://localhost:3001/user/" + self.id + "/password",
           { oldPassword: self.oldPassword, newPassword: self.newPassword },
           {
-            headers: { authorization: localStorage.getItem("authorization") },
+            headers: { authorization: localStorage.getItem("authorization") }
           }
         )
         .then(function(response) {
@@ -378,7 +337,7 @@ export default {
             icon: "success",
             title: "Contraseña actualizada con éxito :)",
             showConfirmButton: false,
-            timer: 1500,
+            timer: 1500
           });
           self.$router.push("/login");
         })
@@ -386,7 +345,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
     },
@@ -400,7 +359,7 @@ export default {
           "http://localhost:3001/user/" + self.id + "/hide",
           {},
           {
-            headers: { authorization: localStorage.getItem("authorization") },
+            headers: { authorization: localStorage.getItem("authorization") }
           }
         )
         .then(function(response) {
@@ -410,7 +369,7 @@ export default {
             title: "Tu perfil ha sido ocultado con éxito",
             text:
               "No olvides mostrarlo si quieres realizar búsquedas de usuarios",
-            showConfirmButton: true,
+            showConfirmButton: true
           });
           self.getUserInfo();
           // self.$router.go();
@@ -419,7 +378,7 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
     },
@@ -430,7 +389,7 @@ export default {
           "http://localhost:3001/user/" + self.id + "/show",
           {},
           {
-            headers: { authorization: localStorage.getItem("authorization") },
+            headers: { authorization: localStorage.getItem("authorization") }
           }
         )
         .then(function(response) {
@@ -439,7 +398,7 @@ export default {
             icon: "success",
             title: "Tu perfil ha sido mostrado de nuevo",
             text: "Ya puedes empezar a buscar roomies",
-            showConfirmButton: true,
+            showConfirmButton: true
           });
           self.getUserInfo();
           // self.$router.go();
@@ -448,29 +407,19 @@ export default {
           Swal.fire({
             icon: "error",
             title: error.response.status,
-            text: error.response.data.message,
+            text: error.response.data.message
           });
         });
-    },
+    }
   },
   created() {
     this.getUserInfo();
-  },
+  }
 };
 </script>
 
-<style>
-.editButton {
-  width: 10px;
-  height: 13px;
-  border-radius: 20px;
-  border: 1px solid red;
-  margin-left: 1rem;
+<style scoped>
+img {
+  margin: 0 auto;
 }
-
-/* .inputEdit {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-} */
 </style>

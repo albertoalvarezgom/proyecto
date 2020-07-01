@@ -16,8 +16,6 @@ async function loginUser(request, res, next) {
 
     connection = await getConnection();
 
-    console.log(chalk.inverse.green(email));
-
     const [
       dbUser
     ] = await connection.query(

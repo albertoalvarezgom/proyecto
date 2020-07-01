@@ -42,6 +42,21 @@ async function likeUser(request, response, next) {
       );
     }
 
+    // const [
+    //   likedUser
+    // ] = await connection.query(
+    //   `SELECT id_like FROM user_liked WHERE id_user_sends=? AND id_user_gets=?`,
+    //   [request.auth.id, id]
+    // );
+
+    // if (!likedUser) {
+    //   await connection.query(
+    //     `
+    // INSERT INTO user_liked(id_user_sends, id_user_gets) VALUES(?,?)`,
+    //     [request.auth.id, id]
+    //   );
+    // }
+
     //Comprobamos que no exista un match activo entre estos dos usuarios
     const [
       existingMatchA

@@ -6,8 +6,7 @@ const { getConnection } = require('../../db/db.js');
 const {
   generateError,
   processAndSavePhoto,
-  deletePhoto,
-  formatDateToDB
+  deletePhoto
 } = require('../../helpers/helpers.js');
 
 const { roomSchema } = require('../../validations/roomValidation');
@@ -43,8 +42,6 @@ async function editRoom(request, response, next) {
       minStay,
       maxStay
     } = request.body;
-
-    console.log(availabilityFrom);
 
     connection = await getConnection();
 
@@ -92,6 +89,8 @@ async function editRoom(request, response, next) {
 
     const imagestoDB = [];
 
+    console.log(chalk.inverse.green(request.files.image_1));
+
     if (request.files) {
       const newImages = [
         request.files.image_1,
@@ -116,29 +115,15 @@ async function editRoom(request, response, next) {
 
         if (currentImages[i]) {
           await deletePhoto(checkCurrentImages[i]);
-
-          imagestoDB.push(savedFileName);
         }
+        imagestoDB.push(savedFileName);
       }
     }
 
-    let dateFrom;
-    if (availabilityFrom) {
-      dateFrom = formatDateToDB(new Date(availabilityFrom));
-    } else {
-      dateFrom = null;
-    }
-
-    let dateUntil;
-    if (availabilityUntil) {
-      dateUntil = formatDateToDB(new Date(availabilityUntil));
-    } else {
-      dateUntil = null;
-    }
-
     await connection.query(
-      `UPDATE room SET title=?, description=?, address=?, postal_code=?, city=?, flatmates_masc=?, flatmates_fem=?, flat_size=?, preference_gender=?, status=?, min_age=?, max_age=?,
-      room_type=?, room_size=?, bed_type=?, price=?, bills_included=?, deposit=?, deposit_ammount=?, availability_from=?, availability_until=?, min_stay=?, max_stay=?,
+      `UPDATE room SET title=?, description=?, address=?, postal_code=?, city=?, flatmates_masc=?, flatmates_fem=?, 
+      flat_size=?, preference_gender=?, status=?, min_age=?, max_age=?, room_type=?, room_size=?, bed_type=?, 
+      price=?, bills_included=?, deposit=?, deposit_ammount=?, availability_from=?, availability_until=?, min_stay=?, max_stay=?,
       image_1=?, image_2=?, image_3=?, image_4=?, image_5=? WHERE id_room=?`,
       [
         title,
@@ -160,8 +145,8 @@ async function editRoom(request, response, next) {
         billsIncluded,
         deposit,
         depositAmmount,
-        dateFrom,
-        dateUntil,
+        availabilityFrom,
+        availabilityUntil,
         minStay,
         maxStay,
         imagestoDB[0],

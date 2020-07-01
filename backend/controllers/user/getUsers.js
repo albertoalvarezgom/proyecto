@@ -59,8 +59,8 @@ async function getUsers(request, response, next) {
     LEFT JOIN hobby ON hobby.id_hobby = hobby_user.id_hobby
     LEFT JOIN rule_user ON user.id_user = rule_user.id_user
     LEFT JOIN rule ON rule.id_rule = rule_user.id_rule
-    WHERE user.id_user NOT IN(SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2 =?)
-    AND user.id_user NOT IN(SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1 =?)
+    WHERE user.id_user NOT IN(SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=? AND user_match.status!='enviado')
+    AND user.id_user NOT IN(SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?)
     AND user.hidden = 0 AND user.type =? AND user.city =?`;
 
     const queryValues = [
@@ -292,7 +292,7 @@ async function getUsers(request, response, next) {
       LEFT JOIN rule_user ON user.id_user = rule_user.id_user
       LEFT JOIN rule ON rule.id_rule = rule_user.id_rule 
       WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=? AND user_match.status!='enviado') 
-      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=? AND user_match.status!='enviado') 
+      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?) 
       AND user.hidden=0 AND user.type=? AND user.city=? GROUP BY user.id_user`;
     }
 

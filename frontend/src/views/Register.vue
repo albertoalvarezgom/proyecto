@@ -1,10 +1,9 @@
 <template>
   <div>
+    <menucustom></menucustom>
     <vue-headful title="Registro" description="Página de registro" />
     <!-- PÁRRAFO DE AVISO -->
-    <p v-show="required">
-      Todos los campos de este formulario son obligatorios : /
-    </p>
+    <p v-show="required">Todos los campos de este formulario son obligatorios : /</p>
     <!-- /PÁRRAFO DE AVISO -->
     <!-- FORMULARIO -->
     <div class="login">
@@ -17,11 +16,12 @@
             name="name"
             placeholder="Escribe tu nombre"
             v-model="name"
+            autocomplete="off"
           />
         </fieldset>
         <fieldset>
           <label for="nbirthday">Fecha de nacimiento:</label>
-          <input type="date" name="birthday" v-model="birthday" />
+          <input type="date" name="birthday" v-model="birthday" autocomplete="off" />
         </fieldset>
         <fieldset>
           <label for="email">Email:</label>
@@ -30,6 +30,7 @@
             name="email"
             placeholder="Escribe tu email"
             v-model="email"
+            autocomplete="off"
           />
         </fieldset>
         <fieldset>
@@ -39,6 +40,7 @@
             name="password"
             placeholder="Escribe tu contraseña"
             v-model="password"
+            autocomplete="off"
           />
         </fieldset>
         <fieldset>
@@ -48,6 +50,7 @@
             name="city"
             placeholder="Escribe tu ciudad"
             v-model="city"
+            autocomplete="off"
           />
         </fieldset>
         <fieldset>
@@ -57,6 +60,7 @@
             name="phone"
             v-model="phone"
             placeholder="Escribe tu teléfono"
+            autocomplete="off"
           />
         </fieldset>
       </form>
@@ -74,9 +78,11 @@
 <script>
 import axios from "axios";
 import Swal from "sweetalert2";
+import menucustom from "@/components/MenuCustom.vue";
 
 export default {
   name: "Register",
+  components: { menucustom },
   data() {
     return {
       name: "",
@@ -87,7 +93,7 @@ export default {
       city: "",
       correctData: false,
       required: false,
-      sent: false,
+      sent: false
     };
   },
   methods: {
@@ -123,7 +129,7 @@ export default {
             email: self.email,
             password: self.password,
             city: self.city,
-            phone: self.phone,
+            phone: self.phone
           })
           //y a continuación vaciamos los inputs
           .then(function(response) {
@@ -135,7 +141,7 @@ export default {
             Swal.fire({
               icon: "error",
               title: error.response.status,
-              text: error.response.data.message,
+              text: error.response.data.message
             });
           });
         //Lanzamos cuadro de diálogo de éxito :)
@@ -144,7 +150,7 @@ export default {
           icon: "success",
           title: "Usuario registrado con éxito :)",
           text: "Revisa tu email, valida tu registo y manos a la obra!",
-          showConfirmButton: true,
+          showConfirmButton: true
         });
         this.$router.push("/login");
       }
@@ -156,7 +162,7 @@ export default {
           icon: "error",
           title: "Algo falló en el registro :(",
           showConfirmButton: false,
-          timer: 1500,
+          timer: 1500
         });
       }
     },
@@ -167,8 +173,8 @@ export default {
       this.email = "";
       this.password = "";
       this.city = "";
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -117,7 +117,7 @@ async function viewUser(request, response, next) {
       age: dbUser.age,
       birthday: date,
       city: dbUser.city,
-      gender: formatGender,
+      gender: dbUser.gender,
       occupation_field: dbUser.occupation_field,
       occupation_status: dbUser.occupation_status,
       couple: formatCouple,

@@ -112,7 +112,7 @@ app.put('/user/:id/show', userAuthenticated, showUser); //Hecho
 // RUTAS DE HABITACIONES
 app.post('/user/:id/room', userAuthenticated, newRoom); //HECHO EN FRONT
 app.put('/user/:id/room', userAuthenticated, editRoom); //HECHO EN FRONT
-app.put('/user/:id/room/facilities', userAuthenticated, editRoomFacilities); //Hecho
+app.put('/user/:id/room/facilities', userAuthenticated, editRoomFacilities); //HECHO EN FRONT
 // app.get('/room', getRooms); //Hecho
 app.get('/user/:id/room/', userAuthenticated, viewRoom); //HECHO EN FRONT
 app.get('/user/:id/room/facilities', userAuthenticated, getRoomFacilities); //HECHO EN FRONT

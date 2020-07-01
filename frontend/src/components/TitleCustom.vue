@@ -1,12 +1,14 @@
 <template>
   <div>
-    <router-link to="/"><h1>roomie</h1> </router-link>
+    <router-link to="/">
+      <h1>roomie</h1>
+    </router-link>
   </div>
 </template>
 
 <script>
 export default {
-  name: "TitleCustom",
+  name: "TitleCustom"
 };
 </script>
 
