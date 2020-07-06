@@ -2,16 +2,17 @@
   <div>
     <vue-headful title="Mis datos personales" description="Mis datos personales" />
     <menucustom></menucustom>
+    <img src="../assets/Jarrón.png" alt="Imagen de perfil" id="flores" />
     <div>
-      <div class="inputEdit" v-show="!editInput">
-        <p>Nombre:</p>
-        <h2>{{ user.name }}</h2>
-        <br />
-        <img :src="user.image_1" />
-        <img :src="user.image_2" />
+      <div v-show="!editInput">
+        <img :src="user.image_1" id="profileImage" />
+        <!-- <img :src="user.image_2" />
         <img :src="user.image_3" />
         <img :src="user.image_4" />
-        <img :src="user.image_5" />
+        <img :src="user.image_5" />-->
+        <br />
+        <p>Nombre:</p>
+        <h2>{{ user.name }}</h2>
         <br />
         <p>Fecha de nacimiento:</p>
         <h2>{{ user.birthday }}</h2>
@@ -40,12 +41,49 @@
         <p v-show="ig">Perfil de instagram</p>
         <h2>{{ user.ig_profile }}</h2>
         <br />
-        <p>Tu perfil está {{ user.hidden }}</p>
-        <br />
         <p>Tipo de usuario:</p>
         <h2>{{ user.type }}</h2>
+        <br />
+        <h2 id="userStatus">Tu perfil está {{ user.hidden }}</h2>
       </div>
-      <div v-show="editInput">
+      <div v-show="editInput" class="userForm">
+        <div class="formFlex">
+          <fieldset>
+            <img :src="user.image_1" class="thumb" />
+            <label for="image_1" class="inputFile">
+              Imagen 1
+              <input type="file" id="image_1" ref="image_1" @change="handleImage()" />
+            </label>
+          </fieldset>
+          <!-- <fieldset>
+            <img :src="user.image_2" />
+            <label for="image_2" class="inputFile">
+              Imagen 2
+              <input type="file" id="image_2" ref="image_2" @change="handleImage()" />
+            </label>
+          </fieldset>
+          <fieldset>
+            <img :src="user.image_3" />
+            <label for="image_3" class="inputFile">
+              Imagen 3
+              <input type="file" id="image_3" ref="image_3" @change="handleImage()" />
+            </label>
+          </fieldset>
+          <fieldset>
+            <img :src="user.image_4" />
+            <label for="image_4" class="inputFile">
+              Imagen 4
+              <input type="file" id="image_4" ref="image_4" @change="handleImage()" />
+            </label>
+          </fieldset>
+          <fieldset>
+            <img :src="user.userImage_5" />
+            <label for="image_5" class="inputFile">
+              Imagen 5
+              <input type="file" id="image_5" ref="image_5" @change="handleImage()" />
+            </label>
+          </fieldset>-->
+        </div>
         <fieldset>
           <label for="name">Nombre</label>
           <input type="text" :placeholder="[[user.name]]" v-model="newUser.name" />
@@ -81,10 +119,10 @@
         <fieldset>
           <label for="name">Estado laboral</label>
           <select name="occupationStatus" v-model="newUser.occupation_status">
-            <option value="Trabajando">Trabajando</option>
-            <option value="Estudiando">Estudiando</option>
-            <option value="Estudiando y trabajando">Ambas</option>
-            <option value="Nada">Nada</option>
+            <option value="trabajando">trabajando</option>
+            <option value="estudiando">estudiando</option>
+            <option value="estudiando y trabajando">ambas</option>
+            <option value="nada">nada</option>
           </select>
         </fieldset>
         <fieldset>
@@ -99,23 +137,6 @@
           <input type="text" :placeholder="[[user.ig_profile]]" v-model="newUser.ig_profile" />
         </fieldset>
         <fieldset>
-          <img :src="user.image_1" />
-          <label for="image_1">Imagen 1</label>
-          <input type="file" id="image_1" ref="image_1" @change="handleImage()" />
-          <img :src="user.image_2" />
-          <label for="image_2">Imagen 2</label>
-          <input type="file" id="image_2" ref="image_2" @change="handleImage()" />
-          <img :src="user.image_3" />
-          <label for="image_3">Imagen 3</label>
-          <input type="file" id="image_3" ref="image_3" @change="handleImage()" />
-          <img :src="user.image_4" />
-          <label for="image_4">Imagen 4</label>
-          <input type="file" id="image_4" ref="image_4" @change="handleImage()" />
-          <img :src="user.userImage_5" />
-          <label for="image_5">Imagen 5</label>
-          <input type="file" id="image_5" ref="image_5" @change="handleImage()" />
-        </fieldset>
-        <fieldset>
           <label for="name">¿Qué estás buscando en roomie?</label>
           <select name="type" v-model="newUser.type">
             <option value="buscando inquilino">Buscando inquilino</option>
@@ -124,21 +145,38 @@
         </fieldset>
       </div>
     </div>
-    <button v-show="!editInput" @click="showInput()">Editar info</button>
-    <button v-show="editInput" @click="hideInput()">Cancelar</button>
-    <button v-show="editInput" @click="updateUser()">Guardar cambios</button>
     <div>
-      <p>Cambiar contraseña</p>
-      <label for="old">Contraseña actual</label>
-      <input type="password" name="old" v-model="oldPassword" />
-      <label for="old">Contraseña nueva</label>
-      <input type="password" name="old" v-model="newPassword" />
-      <button @click="editPassword()">Cambiar</button>
+      <div>
+        <button
+          @click="hideUser()"
+          v-if="user.hidden === 'visible' && !editInput"
+          class="profileButton"
+        >Ocultar tu perfil</button>
+        <button
+          @click="showUser()"
+          v-if="user.hidden === 'oculto' && !editInput"
+          class="profileButton"
+        >Mostrar tu perfil</button>
+      </div>
+      <br />
+      <button v-show="!editInput" @click="showInput()" class="publishButton">Editar info</button>
+      <button v-show="editInput" @click="hideInput()" class="publishButton">Cancelar</button>
+      <button v-show="editInput" @click="updateUser()" class="publishButton">Guardar cambios</button>
     </div>
-    <div>
-      <button @click="hideUser()" v-if="user.hidden === 'visible'">Ocultar tu perfil</button>
-      <button @click="showUser()" v-if="user.hidden === 'oculto'">Mostrar tu perfil</button>
+    <h2>Cambiar contraseña</h2>
+    <br />
+    <div class="formFlex">
+      <fieldset>
+        <label for="old">Contraseña actual</label>
+        <input type="password" name="old" v-model="oldPassword" />
+      </fieldset>
+      <fieldset>
+        <label for="old">Contraseña nueva</label>
+        <input type="password" name="old" v-model="newPassword" />
+      </fieldset>
     </div>
+    <button @click="editPassword()" class="profileButton">Cambiar</button>
+    <footercustom></footercustom>
   </div>
 </template>
 
@@ -146,11 +184,12 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import menucustom from "@/components/MenuCustom.vue";
+import footercustom from "@/components/FooterCustom.vue";
 import { getUserName } from "../api/utils.js";
 
 export default {
   name: "UserProfile",
-  components: { menucustom },
+  components: { menucustom, footercustom },
   data() {
     return {
       id: localStorage.getItem("id"),
@@ -181,6 +220,12 @@ export default {
           self.user = response.data.data.profile;
           self.newUser = response.data.data.profile;
 
+          // if (self.newUser.occupation_status === "trabajando") {
+          //   self.newUser.occupation_status = "Trabajando";
+          // }
+
+          // console.log(self.newUser.occupation_status);
+
           if (!self.user.ig_profile) {
             self.ig = false;
           }
@@ -207,7 +252,6 @@ export default {
               imagesToFront.push(null);
             }
           }
-
           if (!self.user) {
             self.user.image_1 =
               "http://localhost:3001/uploads/roomie-profile.jpg";
@@ -292,7 +336,9 @@ export default {
               showConfirmButton: false,
               timer: 1500
             });
-            self.$router.go();
+            self.getUserInfo();
+            self.editInput = false;
+            // self.$router.go();
           })
           .catch(function(error) {
             Swal.fire({
@@ -372,7 +418,7 @@ export default {
             showConfirmButton: true
           });
           self.getUserInfo();
-          // self.$router.go();
+          self.editInput = false;
         })
         .catch(function(error) {
           Swal.fire({
@@ -401,7 +447,7 @@ export default {
             showConfirmButton: true
           });
           self.getUserInfo();
-          // self.$router.go();
+          self.editInput = false;
         })
         .catch(function(error) {
           Swal.fire({
@@ -413,13 +459,144 @@ export default {
     }
   },
   created() {
+    this.user = [];
+    this.newUser = [];
     this.getUserInfo();
   }
 };
 </script>
 
 <style scoped>
+#profileImage {
+  width: 500px;
+  margin: 3rem auto;
+}
+
 img {
   margin: 0 auto;
+}
+
+.userInfo {
+  margin-bottom: 2rem;
+}
+
+.userForm {
+  margin-bottom: 2rem;
+}
+
+#userStatus {
+  color: lightcoral;
+}
+
+h2 {
+  margin: 0;
+}
+
+h3 {
+  margin: 1rem;
+}
+fieldset {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+fieldset label {
+  font-family: raleway;
+  font-weight: 800;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+fieldset input {
+  margin: 0 auto;
+  border: none;
+  border-bottom: 1px solid lightcoral;
+  font-family: raleway;
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 200px;
+}
+
+fieldset textarea {
+  margin: 0 auto;
+  border: none;
+  border: 1px solid lightcoral;
+  font-family: raleway;
+  margin-bottom: 1rem;
+  width: 400px;
+}
+
+input[type="number"] {
+  width: 30px;
+  margin: 1rem;
+}
+
+fieldset select {
+  margin: 0 auto;
+  border: 1px solid lightcoral;
+  font-family: raleway;
+  margin-bottom: 1rem;
+}
+fieldset checkbox {
+  border: none;
+  border: 1px solid lightcoral;
+}
+
+.publishButton {
+  font-family: "Dm Serif Display";
+  border: none;
+  background-color: white;
+  border-bottom: 2px solid lightcoral;
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 3rem;
+  margin-top: 0rem;
+}
+
+.publishButton:hover {
+  color: lightcoral;
+}
+
+label input[type="file"] {
+  display: none;
+  margin: 0;
+}
+
+.inputFile {
+  display: flex;
+  background-color: white;
+  border: none;
+  border: 1px solid lightcoral;
+  padding: 1rem 0.4rem;
+  /* padding-bottom: 12px;
+  padding-top: 6px; */
+  height: 10px;
+  width: 80px;
+  margin: 0 auto;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputFile:hover {
+  background-color: lightcoral;
+  color: white;
+}
+.formFlex {
+  /* display: flex; */
+  justify-content: center;
+}
+
+.thumb {
+  width: 300px;
+  margin-bottom: 1rem;
+}
+
+#flores {
+  position: fixed;
+  left: -10px;
+  bottom: -90px;
+  z-index: 0;
+  width: 500px;
 }
 </style>

@@ -1,12 +1,12 @@
 require('dotenv').config();
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-const {
-  editRoomFacilitiesSchema
-} = require('../../validations/roomValidation');
+// const {
+//   editRoomFacilitiesSchema
+// } = require('../../validations/roomValidation');
 
 async function editRoomFacilities(request, response, next) {
   let connection;
@@ -64,8 +64,6 @@ async function editRoomFacilities(request, response, next) {
       throw generateError(`La habitación no existe en la BBDD`, 404);
     }
 
-    console.log(chalk.inverse.green(id));
-    console.log(chalk.inverse.green(request.auth.id));
     if (Number(id) !== request.auth.id && request.auth.role !== 'admin') {
       throw generateError(
         'No tienes permiso para editar este perfil de usuario',

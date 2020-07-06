@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
+// const chalk = require('chalk');
 
 async function deleteRoom(request, response, next) {
   let connection;
@@ -12,22 +13,27 @@ async function deleteRoom(request, response, next) {
 
     const [
       idUserRoom
-    ] = await connection.query(`SELECT id_user FROM room WHERE id_room=?`, [
+    ] = await connection.query(`SELECT id_user FROM room WHERE id_user=?`, [
       id
     ]);
 
     if (idUserRoom[0].id_user !== request.auth.id) {
       throw generateError(
-        'No tienes permiso para realizar esta acción: Sólo el propietario puede eliminar una habitación.',
+        `No tienes permiso para realizar esta acción: Sólo el propietario puede eliminar una habitación.`,
         401
       );
     }
 
-    await connection.query('delete from room where id_room=?', [id]);
+    await connection.query(
+      `UPDATE user SET type='buscando piso', hidden=0 WHERE id_user=?`,
+      [id]
+    );
+
+    await connection.query(`DELETE FROM room WHERE id_user=?`, [id]);
 
     response.send({
       status: 'ok',
-      message: `La habitación con id ${id} fue eliminada por el titular de la entrada`
+      message: `La habitación del usuario con id ${id} fue eliminada con éxito.`
     });
   } catch (error) {
     next(error);

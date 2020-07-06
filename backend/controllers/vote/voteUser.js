@@ -1,7 +1,7 @@
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
-const { voteSchema } = require('../../validations/voteValidation.js');
-const chalk = require('chalk');
+// const { voteSchema } = require('../../validations/voteValidation.js');
+// const chalk = require('chalk');
 
 async function voteUser(request, response, next) {
   let connection;

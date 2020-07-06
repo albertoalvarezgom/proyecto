@@ -1,10 +1,10 @@
 require('dotenv').config();
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-const { editUserHobbySchema } = require('../../validations/userValidation');
+// const { editUserHobbySchema } = require('../../validations/userValidation');
 
 async function editUserHobby(request, response, next) {
   let connection;

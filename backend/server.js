@@ -74,7 +74,7 @@ const { requestBooking } = require('./controllers/booking/requestBooking.js');
 const { acceptBooking } = require('./controllers/booking/acceptBooking.js');
 const { cancelBooking } = require('./controllers/booking/cancelBooking.js');
 // const { editBooking } = require('./controllers/booking/editBooking.js');
-const { viewBooking } = require('./controllers/booking/viewBooking.js');
+// const { viewBooking } = require('./controllers/booking/viewBooking.js');
 const { deleteBooking } = require('./controllers/booking/deleteBooking.js');
 const { getBookings } = require('./controllers/booking/getBookings.js');
 const { finishBooking } = require('./controllers/booking/finishBooking.js');
@@ -84,10 +84,15 @@ const port = process.env.PORT;
 
 // MIDDLEWARES
 app.use(morgan('dev'));
-app.use(cors());
+app.use(
+  cors({
+    optionsSuccessStatus: 200
+  })
+);
 app.use(bodyParser.json());
 app.use(fileUpload());
 app.use(express.static(path.join(__dirname, 'static')));
+app.disable('etag');
 
 // RUTAS DE USUARIOS
 app.post('/user', newUser); //HECHO EN FRONT
@@ -116,7 +121,7 @@ app.put('/user/:id/room/facilities', userAuthenticated, editRoomFacilities); //H
 // app.get('/room', getRooms); //Hecho
 app.get('/user/:id/room/', userAuthenticated, viewRoom); //HECHO EN FRONT
 app.get('/user/:id/room/facilities', userAuthenticated, getRoomFacilities); //HECHO EN FRONT
-app.delete('/room/:id', userAuthenticated, deleteRoom); //Hecho
+app.delete('/user/:id/room', userAuthenticated, deleteRoom); //Hecho
 
 // RUTAS DE VOTO
 //Al terminar una reserva, por mail mandamos a esta ruta

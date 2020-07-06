@@ -2,8 +2,13 @@
   <div>
     <menucustom></menucustom>
     <vue-headful title="Publica tu habitación" description="Publica tu habitación" />
+    <img src="../assets/planta4.jpg" alt="Imagen de formulario" id="planta4" />
     <h2>Completa el formulario para publicar tu habitación</h2>
-    <h4>¡No te olvides que todos los campos son obligatorios!</h4>
+    <br />
+    <br />
+    <!-- PÁRRAFO DE AVISO -->
+    <h4 v-show="required">¡No te olvides que todos los campos son obligatorios!</h4>
+    <!-- /PÁRRAFO DE AVISO -->
     <form>
       <fieldset>
         <label for="title">Título de tu anuncio</label>
@@ -174,38 +179,38 @@
           />
         </div>
       </fieldset>
-      <h2>Sube tus imágenes</h2>
+      <h2>Sube tu imagen</h2>
       <div class="formFlex">
         <fieldset>
           <label for="image_1" class="inputFile">
-            Imagen 1
+            <p>Subir archivo</p>
             <input type="file" id="image_1" ref="image_1" @change="handleImage()" />
           </label>
         </fieldset>
-        <fieldset>
+        <!-- <fieldset>
           <label for="image_2" class="inputFile">
-            Imagen 2
+            <p>Imagen 2</p>
             <input type="file" id="image_2" ref="image_2" @change="handleImage()" />
           </label>
         </fieldset>
         <fieldset>
           <label for="image_3" class="inputFile">
-            Imagen 3
+            <p>Imagen 3</p>
             <input type="file" id="image_3" ref="image_3" @change="handleImage()" />
           </label>
         </fieldset>
         <fieldset>
           <label for="image_4" class="inputFile">
-            Imagen 4
+            <p>Imagen 4</p>
             <input type="file" id="image_4" ref="image_4" @change="handleImage()" />
           </label>
         </fieldset>
         <fieldset>
           <label for="image_5" class="inputFile">
-            Imagen 5
+            <p>Imagen 5</p>
             <input type="file" id="image_5" ref="image_5" @change="handleImage()" />
           </label>
-        </fieldset>
+        </fieldset>-->
       </div>
     </form>
     <button @click="newRoom()" class="publishButton">Publicar habitación</button>
@@ -252,73 +257,119 @@ export default {
       image_2: "",
       image_3: "",
       image_4: "",
-      image_5: ""
+      image_5: "",
+      correctData: true,
+      required: false
     };
   },
   components: { menucustom },
   methods: {
+    //Función para comprobar que los inputs no van vacíos
+    validatingData() {
+      //Si algún campo va vacío...
+      if (
+        this.title === "" ||
+        this.description === "" ||
+        this.address === "" ||
+        this.postalCode === "" ||
+        this.city === "" ||
+        this.flatmatesMasc === "" ||
+        this.flatmatesFem === "" ||
+        this.flatSize === "" ||
+        this.preferenceGender === "" ||
+        this.status === "" ||
+        this.minAge === "" ||
+        this.maxAge === "" ||
+        this.roomType === "" ||
+        this.roomSize === "" ||
+        this.bedType === "" ||
+        this.price === "" ||
+        this.availabilityFrom === "" ||
+        this.availabilityUntil === "" ||
+        this.minStay === "" ||
+        this.maxStay === ""
+      ) {
+        this.correctData = false; //...datos incorrectos
+        this.required = true; // y campos requeridos faltan
+      } else {
+        //Si están todos llenos...
+        this.correctData = true; //...datos correctos
+        this.required = false; // y ningún campo falta
+      }
+    },
     newRoom() {
-      let self = this;
-      let formData = new FormData();
-      formData.append("title", self.title);
-      formData.append("description", self.description);
-      formData.append("address", self.address);
-      formData.append("postalCode", self.postalCode);
-      formData.append("city", self.city);
-      formData.append("flatmatesMasc", self.flatmatesMasc);
-      formData.append("flatmatesFem", self.flatmatesFem);
-      formData.append("flatSize", self.flatSize);
-      formData.append("preferenceGender", self.preferenceGender);
-      formData.append("status", self.status);
-      formData.append("minAge", self.minAge);
-      formData.append("maxAge", self.maxAge);
-      formData.append("roomType", self.roomType);
-      formData.append("roomSize", self.roomSize);
-      formData.append("bedType", self.bedType);
-      formData.append("price", self.price);
-      formData.append("billsIncluded", self.billsIncluded);
-      formData.append("deposit", self.deposit);
-      formData.append("depositAmmount", self.depositAmmount);
-      formData.append("availabilityFrom", self.availabilityFrom);
-      formData.append("availabilityUntil", self.availabilityUntil);
-      formData.append("minStay", self.minStay);
-      formData.append("maxStay", self.maxStay);
-      formData.append("image_1", self.image_1);
-      formData.append("image_2", self.image_2);
-      formData.append("image_3", self.image_3);
-      formData.append("image_4", self.image_4);
-      formData.append("image_5", self.image_5);
+      this.validatingData();
+      if (this.correctData === true) {
+        let self = this;
 
-      axios
-        .post("http://localhost:3001/user/" + self.id + "/room", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            authorization: localStorage.getItem("authorization")
-          }
-        })
-        .then(function(response) {
-          Swal.fire({
-            position: "center",
-            icon: "success",
-            title: "Habitación publicada con éxito :)"
+        let formData = new FormData();
+        formData.append("title", self.title);
+        formData.append("description", self.description);
+        formData.append("address", self.address);
+        formData.append("postalCode", self.postalCode);
+        formData.append("city", self.city);
+        formData.append("flatmatesMasc", self.flatmatesMasc);
+        formData.append("flatmatesFem", self.flatmatesFem);
+        formData.append("flatSize", self.flatSize);
+        formData.append("preferenceGender", self.preferenceGender);
+        formData.append("status", self.status);
+        formData.append("minAge", self.minAge);
+        formData.append("maxAge", self.maxAge);
+        formData.append("roomType", self.roomType);
+        formData.append("roomSize", self.roomSize);
+        formData.append("bedType", self.bedType);
+        formData.append("price", self.price);
+        formData.append("billsIncluded", self.billsIncluded);
+        formData.append("deposit", self.deposit);
+        formData.append("depositAmmount", self.depositAmmount);
+        formData.append("availabilityFrom", self.availabilityFrom);
+        formData.append("availabilityUntil", self.availabilityUntil);
+        formData.append("minStay", self.minStay);
+        formData.append("maxStay", self.maxStay);
+        formData.append("image_1", self.image_1);
+        console.log(self.image_1, typeof self.image_1);
+        // formData.append("image_2", self.image_2);
+        // formData.append("image_3", self.image_3);
+        // formData.append("image_4", self.image_4);
+        // formData.append("image_5", self.image_5);
+
+        axios
+          .post("http://localhost:3001/user/" + self.id + "/room", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              authorization: localStorage.getItem("authorization")
+            }
+          })
+          .then(function(response) {
+            Swal.fire({
+              position: "center",
+              icon: "success",
+              title: "Habitación publicada con éxito :)"
+            });
+            self.$router.push("/");
+            localStorage.setItem("type", "buscando inquilino");
+          })
+          .catch(function(error) {
+            Swal.fire({
+              icon: "error",
+              title: error.response.status,
+              text: error.response.data.message
+            });
           });
-          self.$router.push("/");
-          localStorage.setItem("type", "buscando inquilino");
-        })
-        .catch(function(error) {
-          Swal.fire({
-            icon: "error",
-            title: error.response.status,
-            text: error.response.data.message
-          });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Algo falló durante el registro...",
+          text: "Recuerda que debes completar todos los campos del formulario."
         });
+      }
     },
     handleImage() {
       this.image_1 = this.$refs.image_1.files[0];
-      this.image_2 = this.$refs.image_2.files[0];
-      this.image_3 = this.$refs.image_3.files[0];
-      this.image_4 = this.$refs.image_4.files[0];
-      this.image_5 = this.$refs.image_5.files[0];
+      // this.image_2 = this.$refs.image_2.files[0];
+      // this.image_3 = this.$refs.image_3.files[0];
+      // this.image_4 = this.$refs.image_4.files[0];
+      // this.image_5 = this.$refs.image_5.files[0];
     }
   }
 };
@@ -339,6 +390,11 @@ fieldset label {
   margin: 0;
   margin-bottom: 0.5rem;
 }
+
+fieldset label p {
+  font-size: 0.8rem;
+}
+
 fieldset input {
   margin: 0 auto;
   border: none;
@@ -356,11 +412,14 @@ fieldset textarea {
   font-family: raleway;
   margin-bottom: 1rem;
   width: 400px;
+  background-color: white;
+  text-align: center;
 }
 
 input[type="number"] {
-  width: 20px;
+  width: 40px;
   margin: 1rem;
+  text-align: center;
 }
 
 fieldset select {
@@ -369,6 +428,7 @@ fieldset select {
   font-family: raleway;
   margin-bottom: 1rem;
 }
+
 fieldset checkbox {
   border: none;
   border: 1px solid lightcoral;
@@ -390,19 +450,22 @@ fieldset checkbox {
 
 label input[type="file"] {
   display: none;
-  margin: 0;
 }
 
 .inputFile {
+  display: flex;
+  background-color: white;
   border: none;
   border: 1px solid lightcoral;
-  display: inline-block;
-  cursor: pointer;
-  padding-bottom: 12px;
-  padding-top: 6px;
+  padding: 1rem 0.4rem;
+  /* padding-bottom: 12px;
+  padding-top: 6px; */
   height: 10px;
   width: 80px;
   margin: 0 auto;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .inputFile:hover {
@@ -413,5 +476,13 @@ label input[type="file"] {
 .formFlex {
   display: flex;
   justify-content: center;
+}
+
+#planta4 {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  width: 300px;
 }
 </style>

@@ -2,16 +2,22 @@
   <div>
     <menucustom></menucustom>
     <vue-headful title="Mi habitación" description="Página de tu habitación" />
+    <img src="../assets/flor.jpg" alt="Imagen de habitación" id="flor" />
     <p v-show="!room">Todavía no tienes una habitación publicada</p>
     <div class="room">
-      <img :src="room.image_1" />
-      <img :src="room.image_2" />
-      <img :src="room.image_3" />
-      <img :src="room.image_4" />
-      <img :src="room.image_5" />
-      <h3>{{ room.title }}</h3>
-      <p>{{ room.description }}</p>
-      <p>{{ room.address }}, {{ room.postal_code }} {{ room.city }}</p>
+      <h2>{{ room.title }}</h2>
+      <h2 class="type">{{ room.price }} €/mes</h2>
+      <br />
+      <img :src="room.image_1" id="roomImage" />
+
+      <p id="description">{{ room.description }}</p>
+      <br />
+      <h2 class="type">Dirección</h2>
+      <p>{{ room.address }}</p>
+      <p>{{ room.postal_code }}</p>
+      <p>{{ room.city }}</p>
+      <br />
+      <h2 class="type">El piso</h2>
       <p>El piso tiene {{ room.flat_size }} m2</p>
       <div v-show="sharing">
         <p>Comparto piso con</p>
@@ -19,6 +25,8 @@
         <p>{{ room.flatmates_fem }} chicas</p>
       </div>
       <p v-show="!sharing">No comparto piso con nadie ahora mismo</p>
+      <br />
+      <h2 class="type">Busco...</h2>
       <p v-show="gender">Prefiero que mi roomie sea {{ room.preference_gender }}</p>
       <p v-show="status">Prefiero que mi roomie esté {{ room.status }}</p>
       <p v-show="age">
@@ -27,23 +35,25 @@
       </p>
       <p v-show="minAge">Busco alguien que tenga más de {{ room.min_age }}</p>
       <p v-show="maxAge">Busco alguien que tenga menos de {{ room.max_age }}</p>
+      <br />
+      <h2 class="type">La habitación</h2>
       <p>La habitación es {{ room.room_type }}</p>
       <p>La habitación tiene {{ room.room_size }} m2</p>
       <p v-show="bed">La cama es {{ room.bed_type }}</p>
       <p v-show="!bed">La habitacón no tiene cama</p>
-      <p>El precio es {{ room.price }} €/mes</p>
       <p v-show="bills">Las facturas están incluidas en el precio</p>
       <p v-show="deposit">Se pide un depósito de {{ room.deposit_ammount }} €</p>
-      <p v-show="from">La habitación está disponible desde el {{ room.availability_from }}</p>
-      <p v-show="until">La habitación está disponible hasta el {{ room.availability_until }}</p>
-      <p v-show="minStay">La estancia mínima es de {{ room.min_stay }} meses</p>
-      <p v-show="maxStay">La estancia máxima es de {{ room.max_stay }} meses</p>
+      <p>La habitación está disponible desde el {{ room.availability_from }} hasta el {{ room.availability_until }}</p>
+      <p>La estancia mínima es de {{ room.min_stay }} meses y la máxima de {{ room.max_stay }}</p>
+      <br />
       <p>Habitación vista {{ room.views }} veces</p>
-      <button @click="openModal()">Editar habitación</button>
+      <br />
+      <button @click="openModal()" class="profileButton">Editar habitación</button>
+      <button @click="deleteRoom()" class="profileButton">Eliminar habitación</button>
     </div>
     <div class="modal" v-show="modal">
       <div class="modalBox">
-        <form>
+        <form id="updateRoom">
           <fieldset>
             <label for="title">Título de tu anuncio</label>
             <input type="text" name="title" v-model="newRoom.title" />
@@ -66,20 +76,28 @@
           </fieldset>
           <fieldset>
             <label for="flatMates">Compartes piso con...</label>
-            <input type="number" name="flatMates" min="0" max="5" v-model="newRoom.flatmates_masc" />
-            chicos
-            <input
-              type="number"
-              name="flatMates"
-              min="0"
-              max="5"
-              v-model="newRoom.flatmates_fem"
-            />
-            chicas
+            <div>
+              <input
+                type="number"
+                name="flatMates"
+                min="0"
+                max="5"
+                v-model="newRoom.flatmates_masc"
+              />
+              chicos
+              <input
+                type="number"
+                name="flatMates"
+                min="0"
+                max="5"
+                v-model="newRoom.flatmates_fem"
+              />
+              chicas
+            </div>
           </fieldset>
           <fieldset>
             <label for="flatSize">Tamaño del piso</label>
-            <input type="text" name="flatSize" v-model="newRoom.flat_size" /> m2
+            <input type="text" name="flatSize" v-model="newRoom.flat_size" />
           </fieldset>
           <fieldset>
             <label for="gender">Prefiero compartir con...</label>
@@ -99,8 +117,10 @@
           </fieldset>
           <fieldset>
             <label for="age">Edad</label>
-            <input type="number" name="age" min="18" max="50" v-model="newRoom.min_age" />
-            <input type="number" name="age" min="18" max="50" v-model="newRoom.max_age" />
+            <div>
+              <input type="number" name="age" min="18" max="50" v-model="newRoom.min_age" />
+              <input type="number" name="age" min="18" max="50" v-model="newRoom.max_age" />
+            </div>
           </fieldset>
           <fieldset>
             <label for="roomType">Tipo de habitación</label>
@@ -111,7 +131,7 @@
           </fieldset>
           <fieldset>
             <label for="roomSize">Tamaño de la habitación</label>
-            <input type="text" name="roomSize" v-model="newRoom.room_size" /> m2
+            <input type="text" name="roomSize" v-model="newRoom.room_size" />
           </fieldset>
           <fieldset>
             <label for="bedType">Tipo de cama</label>
@@ -124,7 +144,7 @@
           </fieldset>
           <fieldset>
             <label for="price">Precio</label>
-            <input type="text" name="price" v-model="newRoom.price" /> €
+            <input type="text" name="price" v-model="newRoom.price" />
           </fieldset>
           <fieldset>
             <label for="billsInlcuded">Facturas incluidas</label>
@@ -136,7 +156,7 @@
           </fieldset>
           <fieldset>
             <label for="depositAmmount">Cantidad de depósito</label>
-            <input type="text" v-model="newRoom.deposit_ammount" /> €
+            <input type="text" v-model="newRoom.deposit_ammount" />
           </fieldset>
           <fieldset>
             <label for="availabilityFrom">Disponible desde...</label>
@@ -146,42 +166,35 @@
           </fieldset>
           <fieldset>
             <label for="stay">Duración de la estancia (en meses)</label>
-            Mínima
-            <input
-              type="number"
-              name="stay"
-              min="1"
-              max="24"
-              v-model="newRoom.min_stay"
-            />
-            Máxima
-            <input
-              type="number"
-              name="stay"
-              min="1"
-              max="24"
-              v-model="newRoom.max_stay"
-            />
+            <div>
+              Mínima
+              <input type="number" name="stay" min="1" max="24" v-model="newRoom.min_stay" />
+              Máxima
+              <input
+                type="number"
+                name="stay"
+                min="1"
+                max="24"
+                v-model="newRoom.max_stay"
+              />
+            </div>
           </fieldset>
+          <h2>Sube las mejores imágenes de tu piso</h2>
           <fieldset>
-            <label>Sube las mejores imágenes de tu piso</label>
             <img :src="room.image_1" />
-            <img :src="room.image_2" />
-            <img :src="room.image_3" />
-            <img :src="room.image_4" />
-            <img :src="room.image_5" />
-            <input type="file" id="image_1" ref="image_1" @change="handleImage()" />
-            <input type="file" id="image_2" ref="image_2" @change="handleImage()" />
-            <input type="file" id="image_3" ref="image_3" @change="handleImage()" />
-            <input type="file" id="image_4" ref="image_4" @change="handleImage()" />
-            <input type="file" id="image_5" ref="image_5" @change="handleImage()" />
+            <label for="image_1" class="inputFile">
+              <p>Imagen</p>
+              <input type="file" id="image_1" ref="image_1" @change="handleImage()" />
+            </label>
           </fieldset>
         </form>
-        <button @click="updateRoom()">Guardar cambios</button>
-        <button @click="closeModal()">Cerrar</button>
+        <button @click="updateRoom()" class="publishButton">Guardar cambios</button>
+        <br />
+        <button @click="closeModal()" class="profileButton">Cerrar</button>
       </div>
     </div>
-    <div>
+    <div id="prestaciones">
+      <h2>Prestaciones</h2>
       <ul class="facilityContainer">
         <li v-for="(facility, index) in facilities" :key="facility.id_facility">
           <button
@@ -194,18 +207,20 @@
           >{{ facility.name }}</button>
         </li>
       </ul>
-      <button @click="editRoomFacilities()">Guardar cambios</button>
+      <button @click="editRoomFacilities()" class="publishButton">Guardar cambios</button>
     </div>
+    <footercustom></footercustom>
   </div>
 </template>
 
 <script>
 import menucustom from "@/components/MenuCustom.vue";
+import footercustom from "@/components/FooterCustom.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 export default {
   name: "Room",
-  components: { menucustom },
+  components: { menucustom, footercustom },
   data() {
     return {
       id: localStorage.getItem("id"),
@@ -352,11 +367,31 @@ export default {
           });
         });
     },
+    deleteRoom() {
+      let self = this;
+      axios
+        .delete("http://localhost:3001/user/" + self.id + "/room", {
+          headers: { authorization: localStorage.getItem("authorization") }
+        })
+        .then(function(response) {
+          Swal.fire({
+            icon: "success",
+            title: "La habitación ha sido borrada"
+          });
+          localStorage.setItem("type", "buscando piso");
+          self.$router.push("/datos-personales");
+        })
+        .catch(function(error) {
+          Swal.fire({
+            icon: "error",
+            title: error.response.status,
+            text: error.response.data.message
+          });
+        });
+    },
     updateRoom() {
       let self = this;
-
       let formData = new FormData();
-
       formData.append("title", self.newRoom.title);
       formData.append("description", self.newRoom.description);
       formData.append("address", self.newRoom.address);
@@ -537,6 +572,64 @@ export default {
 </script>
 
 <style>
+h3 {
+  margin: 1rem;
+}
+fieldset {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+fieldset label {
+  font-family: raleway;
+  font-weight: 800;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+fieldset input {
+  margin: 0 auto;
+  border: none;
+  border-bottom: 1px solid lightcoral;
+  font-family: raleway;
+  margin-bottom: 2rem;
+  text-align: center;
+  width: 200px;
+}
+
+fieldset textarea {
+  margin: 0 auto;
+  border: none;
+  border: 1px solid lightcoral;
+  font-family: raleway;
+  margin-bottom: 1rem;
+  width: 400px;
+  background-color: white;
+  text-align: center;
+}
+
+input[type="number"] {
+  width: 40px;
+  margin: 1rem;
+  text-align: center;
+}
+
+fieldset select {
+  margin: 0 auto;
+  border: 1px solid lightcoral;
+  font-family: raleway;
+  margin-bottom: 1rem;
+}
+
+fieldset checkbox {
+  border: none;
+  border: 1px solid lightcoral;
+}
+
+fieldset img {
+  margin: 1rem auto;
+}
+
 ul {
   display: flex;
   list-style: none;
@@ -566,15 +659,6 @@ ul li {
   height: 500px;
 }
 
-.activado {
-  background-color: lightgreen;
-  border: none;
-}
-.desactivado {
-  background-color: lightgrey;
-  border: none;
-}
-
 .facilityContainer {
   list-style: none;
   display: flex;
@@ -582,5 +666,77 @@ ul li {
   flex-direction: row;
   flex-wrap: wrap;
   margin: 0.5rem;
+}
+
+.publishButton {
+  font-family: "Dm Serif Display";
+  border: none;
+  background-color: white;
+  border-bottom: 2px solid lightcoral;
+  font-size: 2rem;
+  color: #2c3e50;
+  margin: 3rem;
+  margin-top: 0rem;
+}
+
+.publishButton:hover {
+  color: lightcoral;
+}
+
+#flor {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: -2;
+  width: 400px;
+}
+
+#prestaciones {
+  width: 70%;
+  margin: 3rem auto;
+}
+
+label input[type="file"] {
+  display: none;
+}
+
+.inputFile {
+  display: flex;
+  background-color: white;
+  border: none;
+  border: 1px solid lightcoral;
+  padding: 1rem 0.4rem;
+  /* padding-bottom: 12px;
+  padding-top: 6px; */
+  height: 10px;
+  width: 80px;
+  margin: 0 auto;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+}
+
+.inputFile:hover {
+  background-color: lightcoral;
+  color: white;
+}
+
+.formFlex {
+  display: flex;
+  justify-content: center;
+}
+
+#updateRoom {
+  margin-bottom: 2rem;
+}
+
+#description {
+  width: 60%;
+  margin: 0 auto;
+}
+
+#roomImage {
+  width: 500px;
+  margin-bottom: 2rem;
 }
 </style>

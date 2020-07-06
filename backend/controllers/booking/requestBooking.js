@@ -1,4 +1,4 @@
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const { getConnection } = require('../../db/db.js');
 const {
   generateError,
@@ -6,7 +6,7 @@ const {
   sendEmail
 } = require('../../helpers/helpers.js');
 
-const { bookingSchema } = require('../../validations/bookingValidation');
+// const { bookingSchema } = require('../../validations/bookingValidation');
 
 async function requestBooking(request, response, next) {
   let connection;
@@ -149,7 +149,9 @@ async function requestBooking(request, response, next) {
   } catch (error) {
     next(error);
   } finally {
-    connection.release();
+    if (connection) {
+      connection.release();
+    }
   }
 }
 

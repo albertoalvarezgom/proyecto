@@ -1,10 +1,10 @@
 require('dotenv').config();
 // const jwt = require('jsonwebtoken');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
-const { generateError } = require('../../helpers/helpers.js');
-const { getUsersSchema } = require('../../validations/userValidation');
+// const { generateError } = require('../../helpers/helpers.js');
+// const { getUsersSchema } = require('../../validations/userValidation');
 
 async function getRooms(request, response, next) {
   let connection;

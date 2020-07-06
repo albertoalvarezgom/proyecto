@@ -1,7 +1,7 @@
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 async function getMatches(request, response, next) {
   let connection;
@@ -39,7 +39,7 @@ async function getMatches(request, response, next) {
       let [
         userData
       ] = await connection.query(
-        `SELECT first_name, image_1 FROM user WHERE id_user=?`,
+        `SELECT id_user, first_name, image_1 FROM user WHERE id_user=?`,
         [matchesId[i]]
       );
       let [

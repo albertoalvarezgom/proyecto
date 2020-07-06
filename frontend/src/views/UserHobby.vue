@@ -2,6 +2,7 @@
   <div>
     <vue-headful title="Mis hobbies" description="Mis hobbies" />
     <menucustom></menucustom>
+    <img src="../assets/planta6.jpg" alt="Imagen de aficiones" id="planta6" />
     <h2>Selecciona tus 5 hobbies y cuenta por qué te gustan:</h2>
     <ul class="hobbyContainer">
       <li v-for="(hobby, index) in hobbies" :key="hobby.id_hobby">
@@ -17,34 +18,41 @@
     </ul>
     <p v-show="many">Sólo puedes elegir 5 aficiones</p>
     <p v-if="selectedHobbiesNames.length < 5">Tienes que elegir 5 aficiones</p>
-    <ul>
-      <li v-for="selectedHobby in selectedHobbies" :key="selectedHobby.id_hobby">
-        <h3>{{ selectedHobby.name }}</h3>
-        <textarea
-          name
-          id
-          cols="30"
-          rows="10"
-          :placeholder="selectedHobby.description"
-          v-model="selectedHobby.description"
-        ></textarea>
-      </li>
-    </ul>
-    <button @click="editUserHobbies()">Guardar cambios</button>
-    <button>
+    <div id="userHobbies">
+      <ul class="hobbyContainer">
+        <li v-for="selectedHobby in selectedHobbies" :key="selectedHobby.id_hobby">
+          <h2>{{ selectedHobby.name }}</h2>
+          <div class="hobbyContainer">
+            <textarea
+              name
+              id
+              cols="30"
+              rows="10"
+              :placeholder="selectedHobby.description"
+              v-model="selectedHobby.description"
+            ></textarea>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <button @click="editUserHobbies()" class="updateButton">Guardar cambios</button>
+    <br />
+    <button class="homeButton">
       <router-link to="/">Volver a la home</router-link>
     </button>
+    <footercustom></footercustom>
   </div>
 </template>
 
 <script>
 import menucustom from "@/components/MenuCustom.vue";
+import footercustom from "@/components/FooterCustom.vue";
 import axios from "axios";
 import Swal from "sweetalert2";
 
 export default {
   name: "UserHobby",
-  components: { menucustom },
+  components: { menucustom, footercustom },
   data() {
     return {
       id: localStorage.getItem("id"),
@@ -145,40 +153,101 @@ export default {
     }
   },
   created() {
+    this.hobbies = [];
+    this.selectedHobbies = [];
+    this.selectedHobbiesNames = [];
     this.getUserHobbies();
   }
 };
 </script>
 
 <style>
-.activado {
-  background-color: lightgreen;
-  border: none;
-}
-.desactivado {
-  background-color: lightgrey;
-  border: none;
-}
-
 .hobbyContainer {
+  width: 500px;
   list-style: none;
   display: flex;
   justify-content: center;
   flex-direction: row;
   flex-wrap: wrap;
+  margin: 0 auto;
+  margin-top: 1rem;
 }
 
 .hobbyContainer li {
   margin: 0.5rem;
 }
 
-ul {
+/* .activado {
+  background-color: lightcoral;
+  border: 1px solid lightcoral;
+  padding: 0.4rem 1.2rem;
+  color: white;
+  border-radius: 14px;
+  font-weight: 700;
+}
+.desactivado {
+  background-color: white;
+  border: 1px solid lightcoral;
+  font-family: "Raleway";
+  color: #2c3e50;
+  padding: 0.4rem 1.2rem;
+  border-radius: 14px;
+  font-weight: 700;
+} */
+
+.hobbyContainer ul {
   display: flex;
   list-style: none;
   flex-wrap: wrap;
   justify-content: center;
 }
+
 ul li {
   margin: 0.5rem;
+}
+
+textarea {
+  margin: 0 auto;
+  border: none;
+  border: 1px solid lightcoral;
+  font-family: raleway;
+  margin: 1rem 0;
+  width: 300px;
+  height: 60px;
+  text-align: center;
+  background-color: white;
+}
+
+.updateButton {
+  font-family: "Dm Serif Display";
+  border: none;
+  background-color: white;
+  border-bottom: 2px solid lightcoral;
+  font-size: 2rem;
+  color: #2c3e50;
+}
+
+.updateButton:hover {
+  color: lightcoral;
+}
+
+.homeButton {
+  border: none;
+  margin: 1rem 0;
+  background-color: white;
+  font-size: 0.8rem;
+  color: #2c3e50;
+}
+
+.homeButton a:hover {
+  color: lightcoral;
+}
+
+#planta6 {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  width: 300px;
 }
 </style>

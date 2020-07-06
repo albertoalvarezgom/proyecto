@@ -1,7 +1,7 @@
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 async function sendMessage(request, response, next) {
   let connection;

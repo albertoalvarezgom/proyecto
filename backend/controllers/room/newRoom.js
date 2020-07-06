@@ -1,5 +1,5 @@
 require('dotenv').config();
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 
@@ -13,7 +13,7 @@ const { roomSchema } = require('../../validations/roomValidation');
 async function newRoom(request, response, next) {
   let connection;
   try {
-    // await roomSchema.validateAsync(request.body);
+    await roomSchema.validateAsync(request.body);
     connection = await getConnection();
 
     const {
@@ -59,8 +59,6 @@ async function newRoom(request, response, next) {
 
     ////
 
-    console.log(chalk.inverse.green(billsIncluded));
-
     let formatBills;
     if (billsIncluded === false) {
       formatBills = 0;
@@ -74,8 +72,6 @@ async function newRoom(request, response, next) {
     } else {
       formatDeposit = 1;
     }
-
-    let room;
 
     if (request.files) {
       const newImages = [
@@ -104,7 +100,7 @@ async function newRoom(request, response, next) {
         imagestoDB.push(savedFileName);
       }
 
-      [room] = await connection.query(
+      await connection.query(
         `
       INSERT INTO room (id_user, title, description, address, postal_code, city, flatmates_masc, flatmates_fem, flat_size, preference_gender, status, min_age, max_age, 
         room_type, room_size, bed_type, price, bills_included, deposit, deposit_ammount, availability_from, availability_until, min_stay, max_stay, image_1, image_2, image_3, image_4, image_5)
@@ -144,7 +140,7 @@ async function newRoom(request, response, next) {
         ]
       );
     } else {
-      [room] = await connection.query(
+      await connection.query(
         `
       INSERT INTO room (id_user, title, description, address, postal_code, city, flatmates_masc, flatmates_fem, flat_size, preference_gender, status, min_age, max_age, 
         room_type, room_size, bed_type, price, bills_included, deposit, deposit_ammount, availability_from, availability_until, min_stay, max_stay)

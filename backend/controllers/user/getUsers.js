@@ -1,10 +1,10 @@
 require('dotenv').config();
 
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
-const { getUsersSchema } = require('../../validations/userValidation');
+// const { getUsersSchema } = require('../../validations/userValidation');
 
 async function getUsers(request, response, next) {
   let connection;
@@ -52,16 +52,17 @@ async function getUsers(request, response, next) {
     }
 
     let q = `SELECT user.id_user
-    FROM user
-    LEFT JOIN personality_user ON user.id_user = personality_user.id_user
-    LEFT JOIN personality ON personality.id_personality = personality_user.id_personality
-    LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
-    LEFT JOIN hobby ON hobby.id_hobby = hobby_user.id_hobby
-    LEFT JOIN rule_user ON user.id_user = rule_user.id_user
-    LEFT JOIN rule ON rule.id_rule = rule_user.id_rule
-    WHERE user.id_user NOT IN(SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=? AND user_match.status!='enviado')
-    AND user.id_user NOT IN(SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?)
-    AND user.hidden = 0 AND user.type =? AND user.city =?`;
+      FROM user
+      LEFT JOIN room ON room.id_user=user.id_user
+      LEFT JOIN personality_user ON user.id_user = personality_user.id_user
+      LEFT JOIN personality ON personality.id_personality=personality_user.id_personality
+      LEFT JOIN hobby_user ON user.id_user = hobby_user.id_user
+      LEFT JOIN hobby ON hobby.id_hobby= hobby_user.id_hobby
+      LEFT JOIN rule_user ON user.id_user = rule_user.id_user
+      LEFT JOIN rule ON rule.id_rule = rule_user.id_rule 
+      WHERE user.id_user NOT IN (SELECT user_match.id_user1 FROM user_match WHERE user_match.id_user2=? AND user_match.status!='enviado') 
+      AND user.id_user NOT IN (SELECT user_match.id_user2 FROM user_match WHERE user_match.id_user1=?) 
+      AND user.hidden=0 AND user.type=? AND user.city=?`;
 
     const queryValues = [
       request.auth.id,

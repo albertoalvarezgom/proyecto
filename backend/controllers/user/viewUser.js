@@ -1,5 +1,5 @@
 require('dotenv').config();
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const {
@@ -95,14 +95,14 @@ async function viewUser(request, response, next) {
     //   formatHidden = 'Sí';
     // }
 
-    let formatGender;
-    if (dbUser.gender === 'chico') {
-      formatGender = 'Masculino';
-    } else if (dbUser.gender === 'chica') {
-      formatGender = 'Femenino';
-    } else {
-      formatGender = 'Otro';
-    }
+    // let formatGender;
+    // if (dbUser.gender === 'chico') {
+    //   formatGender = 'Masculino';
+    // } else if (dbUser.gender === 'chica') {
+    //   formatGender = 'Femenino';
+    // } else {
+    //   formatGender = 'Otro';
+    // }
 
     let formatHidden;
     if (dbUser.hidden === 0) {

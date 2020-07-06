@@ -3,7 +3,7 @@ const {
   generateError,
   formatDateToFront
 } = require('../../helpers/helpers.js');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 async function getBookings(request, response, next) {
   let connection;

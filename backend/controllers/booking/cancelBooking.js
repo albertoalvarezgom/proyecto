@@ -1,8 +1,8 @@
 require('dotenv').config();
 
 const { getConnection } = require('../../db/db.js');
-const { generateError, sendEmail } = require('../../helpers/helpers.js');
-const chalk = require('chalk');
+const { generateError } = require('../../helpers/helpers.js');
+// const chalk = require('chalk');
 
 async function cancelBooking(request, response, next) {
   let connection;

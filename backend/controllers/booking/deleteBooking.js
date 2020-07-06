@@ -51,7 +51,9 @@ async function deleteBooking(request, response, next) {
   } catch (error) {
     next(error);
   } finally {
-    connection.release();
+    if (connection) {
+      connection.release();
+    }
   }
 }
 

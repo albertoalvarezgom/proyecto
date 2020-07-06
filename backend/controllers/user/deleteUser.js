@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const chalk = require('chalk');
+// const chalk = require('chalk');
 const { getConnection } = require('../../db/db.js');
 const { generateError, deletePhoto } = require('../../helpers/helpers.js');
 

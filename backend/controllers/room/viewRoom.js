@@ -1,5 +1,5 @@
 require('dotenv').config();
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const {
@@ -33,7 +33,7 @@ async function viewRoom(request, response, next) {
     const [
       facility
     ] = await connection.query(
-      `SELECT facility.name FROM facility_room JOIN facility ON facility_room.id_facility=facility.id_facility WHERE id_room=?`,
+      `SELECT facility.name, facility_room.status FROM facility_room JOIN facility ON facility_room.id_facility=facility.id_facility WHERE id_room=?`,
       [room[0].id_room]
     );
 

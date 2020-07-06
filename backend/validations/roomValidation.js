@@ -11,6 +11,8 @@ const string = joi
     )
   );
 
+const image = joi.object().error(generateError('La imagen no es válida', 400));
+
 const postalCode = joi
   .number()
   .min(10000)
@@ -24,30 +26,30 @@ const postalCode = joi
 
 const gender = joi
   .string()
-  .valid('masculine', 'femenine', 'any')
+  .valid('chico', 'chica', 'indiferente')
   .error(
     generateError(
-      'La opciones de género son "masculine", "femenine" o "any"',
+      'La opciones de género son "chico", "chica" o "indiferente"',
       400
     )
   );
 
 const room = joi
   .string()
-  .valid('private', 'shared')
+  .valid('privada', 'compartida')
   .error(
     generateError(
-      'La opciones de tipo de habitación son "private" o "shared"',
+      'La opciones de tipo de habitación son "privada" o "compartida"',
       400
     )
   );
 
 const bed = joi
   .string()
-  .valid('single', 'double', 'coach')
+  .valid('doble', 'individual', 'sofa-cama', 'sin cama')
   .error(
     generateError(
-      'La opciones de tipo de cama son "single", "double" o "coach"',
+      'La opciones de tipo de cama son "individual", "doble", "sofá-cama" o "sin cama',
       400
     )
   );
@@ -61,7 +63,7 @@ const smallNumber = joi
 const mediumNumber = joi
   .number()
   .min(30)
-  .max(200)
+  .max(400)
   .error(generateError('El valor debe estar comprendido entre 30 y 400', 400));
 
 const age = joi

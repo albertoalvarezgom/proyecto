@@ -2,14 +2,20 @@
   <div>
     <div id="nav">
       <router-link to="/">
-        <h1>roomie</h1>
+        <h1>roomie.</h1>
       </router-link>
       <ul class="menu">
         <li>
-          <router-link :to="{name:'Home'}">Buscar</router-link>
+          <router-link :to="{name:'Home'}">Home</router-link>
         </li>
         <li>
-          <router-link :to="{name:'NewRoom'}">Publica tu habitación</router-link>
+          <router-link :to="{name:'About'}">About</router-link>
+        </li>
+        <li>
+          <router-link
+            :to="{name:'NewRoom'}"
+            v-show="!checkOwner() && checkLogin()"
+          >Publica tu habitación</router-link>
         </li>
         <li>
           <router-link :to="{name:'Reservas'}" v-show="checkLogin()">Mis reservas</router-link>
@@ -59,11 +65,7 @@ export default {
   },
   methods: {
     logoutUser() {
-      if (this.$router.currentRoute.name === "Home") {
-        this.$router.go();
-      } else {
-        this.$router.push("/");
-      }
+      this.$router.push("/login");
       return clearLogin();
     },
     checkLogin() {

@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { generateError } = require('../helpers/helpers.js');
 const { getConnection } = require('../db/db.js');
@@ -10,8 +10,6 @@ async function userAuthenticated(request, response, next) {
 
   try {
     const { authorization } = request.headers;
-
-    // console.log(chalk.inverse.yellow(authorization));
 
     if (!authorization) {
       throw generateError(
@@ -80,6 +78,10 @@ async function userAuthenticated(request, response, next) {
     const authError = new Error('El token de autenticación no es válido');
     authError.httpCode = 401;
     next(authError);
+  } finally {
+    if (connection) {
+      connection.release();
+    }
   }
 }
 

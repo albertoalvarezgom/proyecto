@@ -9,7 +9,7 @@ const {
   sendEmail
 } = require('../../helpers/helpers.js');
 
-const { newUserSchema } = require('../../validations/userValidation');
+// const { newUserSchema } = require('../../validations/userValidation');
 
 async function newUser(request, response, next) {
   let connection;

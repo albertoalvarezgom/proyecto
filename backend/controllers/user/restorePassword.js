@@ -1,6 +1,6 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const {
@@ -27,8 +27,6 @@ async function restorePassword(req, res, next) {
       'SELECT id_user, email, password FROM user WHERE email=? AND active=1',
       [email]
     );
-
-    console.log(chalk.inverse.yellow(email));
 
     if (!user.length) {
       throw generateError(

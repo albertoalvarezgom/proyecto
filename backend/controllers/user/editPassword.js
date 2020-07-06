@@ -4,7 +4,7 @@ const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
-const { changePasswordSchema } = require('../../validations/userValidation');
+// const { changePasswordSchema } = require('../../validations/userValidation');
 
 async function editPassword(request, response, next) {
   let connection;

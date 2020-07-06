@@ -1,8 +1,6 @@
-require('dotenv').config();
-
 const { getConnection } = require('../../db/db.js');
 const { generateError, sendEmail } = require('../../helpers/helpers.js');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 async function acceptBooking(request, response, next) {
   let connection;

@@ -1,5 +1,5 @@
 require('dotenv').config();
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 
@@ -9,7 +9,7 @@ const {
   deletePhoto
 } = require('../../helpers/helpers.js');
 
-const { roomSchema } = require('../../validations/roomValidation');
+// const { roomSchema } = require('../../validations/roomValidation');
 
 async function editRoom(request, response, next) {
   let connection;
@@ -89,8 +89,6 @@ async function editRoom(request, response, next) {
 
     const imagestoDB = [];
 
-    console.log(chalk.inverse.green(request.files.image_1));
-
     if (request.files) {
       const newImages = [
         request.files.image_1,
@@ -120,6 +118,13 @@ async function editRoom(request, response, next) {
       }
     }
 
+    let formatBills;
+    if (billsIncluded === true) {
+      formatBills = 1;
+    } else {
+      formatBills = 0;
+    }
+
     await connection.query(
       `UPDATE room SET title=?, description=?, address=?, postal_code=?, city=?, flatmates_masc=?, flatmates_fem=?, 
       flat_size=?, preference_gender=?, status=?, min_age=?, max_age=?, room_type=?, room_size=?, bed_type=?, 
@@ -142,7 +147,7 @@ async function editRoom(request, response, next) {
         roomSize,
         bedType,
         price,
-        billsIncluded,
+        formatBills,
         deposit,
         depositAmmount,
         availabilityFrom,
