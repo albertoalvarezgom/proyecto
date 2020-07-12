@@ -1,6 +1,6 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-// const chalk = require('chalk');
+const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const {
@@ -20,7 +20,7 @@ async function restorePassword(req, res, next) {
     const { email } = req.body;
 
     connection = await getConnection();
-
+    console.log(chalk.inverse.green(email));
     const [
       user
     ] = await connection.query(

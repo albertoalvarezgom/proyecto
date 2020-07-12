@@ -4,9 +4,9 @@
     <vue-headful title="Mis reservas" description="Mis reservas" />
     <img src="../assets/planta5.jpg" alt="Imagen de reserva" id="planta5" />
     <h2>Tus reservas</h2>
-    <div>
+    <div class="body">
       <p v-if="bookings.length===0">Todavía no tienes ninguna reserva</p>
-      <ul class="bookingContainer">
+      <ul class="bookingContainer" v-if="bookings.length">
         <li
           v-for="(booking, index) in bookings"
           :key="booking.booking.confirmation_code"
@@ -14,10 +14,11 @@
         >
           <div>
             <h2>{{ booking.booking.title }}</h2>
-            <p>Código de reserva: {{booking.booking.confirmation_code}}</p>
-            <h5>Estado: {{ booking.booking.status }}</h5>
+            <h5>Código de reserva: {{booking.booking.confirmation_code}}</h5>
+            <br />
+            <p id="bookingStatus">Estado: {{ booking.booking.status }}</p>
             <p
-              v-show="booking.booking.start_date"
+              v-show="booking.booking.status === 'aceptada'"
             >La reserva empieza: {{ booking.booking.start_date }}</p>
             <p
               v-show="booking.booking.finish_date"
@@ -103,6 +104,12 @@
           </div>
         </li>
       </ul>
+      <div v-if="bookings.length">
+        <button class="homeButton">
+          <router-link to="/">Volver a la home</router-link>
+        </button>
+        <footercustom></footercustom>
+      </div>
     </div>
     <div class="modal" v-if="userModal">
       <div class="modalBoxUser">
@@ -210,10 +217,12 @@
         <button @click="closeModal()" class="profileButton">Cerrar</button>
       </div>
     </div>
-    <button class="homeButton">
-      <router-link to="/">Volver a la home</router-link>
-    </button>
-    <footercustom></footercustom>
+    <div v-if="!bookings.length">
+      <button class="homeButton">
+        <router-link to="/">Volver a la home</router-link>
+      </button>
+      <footercustom></footercustom>
+    </div>
   </div>
 </template>
 
@@ -246,22 +255,24 @@ export default {
       axios
         .get("http://localhost:3001/user/" + self.id + "/booking", {
           headers: {
-            authorization: localStorage.getItem("authorization"),
-            "Cache-Control": "no-cache"
+            authorization: localStorage.getItem("authorization")
           }
         })
         .then(function(response) {
-          self.bookings = response.data.bookings.map(booking => {
-            booking.booking.user_image_1 =
-              "http://localhost:3001/uploads/" + booking.booking.user_image_1;
-
-            booking.otherUser[0].image_1 =
-              "http://localhost:3001/uploads/" + booking.otherUser[0].image_1;
-
-            booking.booking.image_1 =
-              "http://localhost:3001/uploads/" + booking.booking.image_1;
-            return booking;
-          });
+          self.bookings = response.data.bookings;
+          if (!response.data.bookings) {
+            self.empty = true;
+          } else {
+            self.bookings = response.data.bookings.map(booking => {
+              booking.booking.user_image_1 =
+                "http://localhost:3001/uploads/" + booking.booking.user_image_1;
+              booking.otherUser[0].image_1 =
+                "http://localhost:3001/uploads/" + booking.otherUser[0].image_1;
+              booking.booking.image_1 =
+                "http://localhost:3001/uploads/" + booking.booking.image_1;
+              return booking;
+            });
+          }
         })
         .catch(function(error) {
           Swal.fire({
@@ -555,5 +566,13 @@ h5 {
 .bookingContainer {
   display: flex;
   flex-direction: column;
+}
+
+#bookingStatus {
+  color: lightcoral;
+}
+
+.body {
+  height: 100vh;
 }
 </style>

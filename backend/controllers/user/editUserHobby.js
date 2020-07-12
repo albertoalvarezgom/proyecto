@@ -4,12 +4,12 @@ require('dotenv').config();
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-// const { editUserHobbySchema } = require('../../validations/userValidation');
+const { editUserHobbySchema } = require('../../validations/userValidation');
 
 async function editUserHobby(request, response, next) {
   let connection;
   try {
-    // await editUserHobbySchema.validateAsync(request.body);
+    await editUserHobbySchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       hobby1,

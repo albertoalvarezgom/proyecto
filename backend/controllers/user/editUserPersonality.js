@@ -4,14 +4,14 @@ require('dotenv').config();
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-// const {
-//   editUserPersonalitySchema
-// } = require('../../validations/userValidation');
+const {
+  editUserPersonalitySchema
+} = require('../../validations/userValidation');
 
 async function editUserPersonality(request, response, next) {
   let connection;
   try {
-    // await editUserPersonalitySchema.validateAsync(request.body);
+    await editUserPersonalitySchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       personality1,

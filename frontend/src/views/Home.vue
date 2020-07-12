@@ -1,10 +1,10 @@
 <template>
   <div class="home">
     <vue-headful title="Home" description="Página de inicio" />
+    <img src="../assets/planta8.jpg" alt="Imagen de introducción" id="planta8" />
     <menucustom></menucustom>
     <div class="content">
       <img src="../assets/planta1.jpg" alt="Imagen de introducción" id="planta1" />
-      <img src="../assets/planta8.jpg" alt="Imagen de introducción" id="planta8" />
       <!-- CONTENIDO EN LA HOME PARA ANÓNIMOS -->
       <div id="intro" v-show="!checkLogin()">
         <!-- <h1 id="titulo">¡Bienvenido/a a roomie!</h1> -->
@@ -39,143 +39,149 @@
       <!-- /CONTENIDO EN LA HOME PARA ANÓNIMOS -->
       <!-- BUSCADOR DE USUARIOS -->
       <div id="search" v-show="checkLogin()">
-        <h1 class="type">Busca. Habla. Comparte</h1>
-        <br />
-        <div id="searchContainer" v-show="!search">
-          <form v-show="!search">
-            <div id="userSearch">
-              <div id="userInfo">
-                <div id="userGender">
-                  <label for="gender">¿Chico o chica?</label>
-                  <fieldset>
-                    <select name="gender" id="gender" v-model="gender">
-                      <option value="chico">chico</option>
-                      <option value="chica">chica</option>
-                    </select>
-                  </fieldset>
-                </div>
-                <div id="userCouple">
-                  <label for="couple">¿Con pareja?</label>
-                  <fieldset>
-                    <select name="couple" id="couple" v-model="couple">
-                      <option value="1">con pareja</option>
-                      <option value="0">sin pareja</option>
-                    </select>
-                  </fieldset>
-                </div>
-                <div id="userStatus">
-                  <label for="occupationStatus">¿Trabajando?</label>
-                  <fieldset>
-                    <select
-                      name="occupationStatus"
-                      id="occupationStatus"
-                      v-model="occupationStauts"
-                    >
-                      <option value="trabajando">trabajando</option>
-                      <option value="estudiando">estudiando</option>
-                      <option value="estudiando y trabajando">ambas</option>
-                    </select>
-                  </fieldset>
+        <div class="homeContainer">
+          <div id="searchContainer" v-show="!search">
+            <form v-show="!search">
+              <div id="userSearch">
+                <div id="userInfo">
+                  <div id="userGender">
+                    <label for="gender">¿Chico o chica?</label>
+                    <fieldset>
+                      <select name="gender" id="gender" v-model="gender">
+                        <option value="chico">chico</option>
+                        <option value="chica">chica</option>
+                      </select>
+                    </fieldset>
+                  </div>
+                  <div id="userCouple">
+                    <label for="couple">¿Con pareja?</label>
+                    <fieldset>
+                      <select name="couple" id="couple" v-model="couple">
+                        <option value="1">con pareja</option>
+                        <option value="0">sin pareja</option>
+                      </select>
+                    </fieldset>
+                  </div>
+                  <div id="userStatus">
+                    <label for="occupationStatus">¿Trabajando?</label>
+                    <fieldset>
+                      <select
+                        name="occupationStatus"
+                        id="occupationStatus"
+                        v-model="occupationStatus"
+                      >
+                        <option value="trabajando">trabajando</option>
+                        <option value="estudiando">estudiando</option>
+                        <option value="estudiando y trabajando">ambas</option>
+                      </select>
+                    </fieldset>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div id="personalityHobbies">
-              <div id="ruleSearch">
-                <label for="rule">Normas:</label>
-                <fieldset>
-                  <select name="rule" id="rule" v-model="rule">
-                    <option value="mascotas">mascotas</option>
-                    <option value="fumador">fumador</option>
-                    <option value="vegetariano">vegetariano</option>
-                    <option value="alergias">alergias</option>
-                  </select>
-                </fieldset>
-                <!-- <fieldset>
+              <div id="personalityHobbies">
+                <div id="ruleSearch">
+                  <label for="rule">Normas:</label>
+                  <fieldset>
+                    <select name="rule" id="rule" v-model="rule">
+                      <option value="mascotas">mascotas</option>
+                      <option value="fumador">fumador</option>
+                      <option value="vegetariano">vegetariano</option>
+                      <option value="alergias">alergias</option>
+                    </select>
+                  </fieldset>
+                  <!-- <fieldset>
                 <p>Ordenar por:</p>
                 <select name="sort" id="sort" v-model="sort">
                   <option value="views">vistas</option>
                   <option value="age">edad</option>
                   <option value="rating">rating</option>
                 </select>
-                </fieldset>-->
+                  </fieldset>-->
+                </div>
+                <div id="hobbySearch">
+                  <label for="hobby">Hobbies:</label>
+                  <fieldset>
+                    <select name="hobby" id="hobby" v-model="hobby">
+                      <option value="cine">cine</option>
+                      <option value="musica">musica</option>
+                      <option value="fotografia">fotografia</option>
+                      <option value="naturaleza">naturaleza</option>
+                      <option value="deportes">deportes</option>
+                      <option value="literatura">literatura</option>
+                      <option value="cocina">cocina</option>
+                      <option value="series">series</option>
+                      <option value="videojuegos">videojuegos</option>
+                      <option value="moda">moda</option>
+                      <option value="arte">arte</option>
+                      <option value="tecnologia">tecnología</option>
+                      <option value="aventura">aventura</option>
+                      <option value="viajar">viajar</option>
+                      <option value="manualidades">manualidades</option>
+                    </select>
+                  </fieldset>
+                </div>
               </div>
-              <div id="hobbySearch">
-                <label for="hobby">Hobbies:</label>
+              <div id="personalitySearch">
+                <label for="personality">Personalidad:</label>
                 <fieldset>
-                  <select name="hobby" id="hobby" v-model="hobby">
-                    <option value="cine">cine</option>
-                    <option value="musica">musica</option>
-                    <option value="fotografia">fotografia</option>
-                    <option value="naturaleza">naturaleza</option>
-                    <option value="deportes">deportes</option>
-                    <option value="literatura">literatura</option>
-                    <option value="cocina">cocina</option>
-                    <option value="series">series</option>
-                    <option value="videojuegos">videojuegos</option>
-                    <option value="moda">moda</option>
-                    <option value="arte">arte</option>
-                    <option value="tecnologia">tecnología</option>
-                    <option value="aventura">aventura</option>
-                    <option value="viajar">viajar</option>
-                    <option value="manualidades">manualidades</option>
+                  <select name="personality" v-model="personality">
+                    <option value="activo">activo</option>
+                    <option value="tranquilo">tranquilo</option>
+                    <option value="considerado">considerado</option>
+                    <option value="feliz">feliz</option>
+                    <option value="generoso">generoso</option>
+                    <option value="creativo">creativo</option>
+                    <option value="de trato facil">de trato fácil</option>
+                    <option value="empático">empático</option>
+                    <option value="entusiasta">entusiasta</option>
+                    <option value="divertido">amable</option>
+                    <option value="divertido">divertido</option>
+                    <option value="sincero">sincero</option>
+                    <option value="optimista">optimista</option>
+                    <option value="organizado">organizado</option>
+                    <option value="apasionado">apasionado</option>
+                    <option value="proactivo">proactivo</option>
+                    <option value="sensato">sensato</option>
+                    <option value="tolerante">tolerante</option>
+                    <option value="sociable">sociable</option>
+                    <option value="sensible">sensible</option>
+                    <option value="familiar">familiar</option>
+                    <option value="saludable">saludable</option>
+                    <option value="gamer">gamer</option>
+                    <option value="foodie">foodie</option>
+                    <option value="workaholic">workaholic</option>
+                    <option value="madrugador">madrugador</option>
+                    <option value="aventurero">aventurero</option>
+                    <option value="paciente">paciente</option>
+                    <option value="party animal">party animal</option>
+                    <option value="comprador">comprador</option>
+                    <option value="amante de los animales">amante de los animales</option>
+                    <option value="solitario">solitario</option>
+                    <option value="nocturno">nocturno</option>
+                    <option value="practico">práctico</option>
+                    <option value="improvisador">improvisador</option>
+                    <option value="casero">casero</option>
+                    <option value="amante de la moda">amante de la moda</option>
+                    <option value="friki">friki</option>
+                    <option value="hater">hater</option>
+                    <option value="emprendedor">emprendedor</option>
                   </select>
                 </fieldset>
               </div>
+            </form>
+            <div id="buttonSearch">
+              <button @click="getUsers()" type="submit" v-show="!search">Buscar</button>
             </div>
-            <div id="personalitySearch">
-              <label for="personality">Personalidad:</label>
-              <fieldset>
-                <select name="personality" v-model="personality">
-                  <option value="activo">activo</option>
-                  <option value="tranquilo">tranquilo</option>
-                  <option value="considerado">considerado</option>
-                  <option value="feliz">feliz</option>
-                  <option value="generoso">generoso</option>
-                  <option value="creativo">creativo</option>
-                  <option value="de trato facil">de trato fácil</option>
-                  <option value="empático">empático</option>
-                  <option value="entusiasta">entusiasta</option>
-                  <option value="divertido">amable</option>
-                  <option value="divertido">divertido</option>
-                  <option value="sincero">sincero</option>
-                  <option value="optimista">optimista</option>
-                  <option value="organizado">organizado</option>
-                  <option value="apasionado">apasionado</option>
-                  <option value="proactivo">proactivo</option>
-                  <option value="sensato">sensato</option>
-                  <option value="tolerante">tolerante</option>
-                  <option value="sociable">sociable</option>
-                  <option value="sensible">sensible</option>
-                  <option value="familiar">familiar</option>
-                  <option value="saludable">saludable</option>
-                  <option value="gamer">gamer</option>
-                  <option value="foodie">foodie</option>
-                  <option value="workaholic">workaholic</option>
-                  <option value="madrugador">madrugador</option>
-                  <option value="aventurero">aventurero</option>
-                  <option value="paciente">paciente</option>
-                  <option value="party animal">party animal</option>
-                  <option value="comprador">comprador</option>
-                  <option value="amante de los animales">amante de los animales</option>
-                  <option value="solitario">solitario</option>
-                  <option value="nocturno">nocturno</option>
-                  <option value="practico">práctico</option>
-                  <option value="improvisador">improvisador</option>
-                  <option value="casero">casero</option>
-                  <option value="amante de la moda">amante de la moda</option>
-                  <option value="friki">friki</option>
-                  <option value="hater">hater</option>
-                  <option value="emprendedor">emprendedor</option>
-                </select>
-              </fieldset>
-            </div>
-          </form>
-          <div id="buttonSearch">
-            <button @click="getUsers()" type="submit" v-show="!search">Buscar</button>
+          </div>
+          <div class="claim" v-show="!search">
+            <h1>Busca.</h1>
+            <h1>Habla.</h1>
+            <h1>Comparte.</h1>
           </div>
         </div>
         <!-- /BUSCADOR DE USUARIOS -->
         <button @click="deleteSearch()" v-show="search" id="deleteSearch">Borrar búsqueda</button>
+        <noresults v-show="search && users.length===0"></noresults>
         <!-- COMPONENTE FICHAS DE USUSARIO -->
         <usercomponent
           :users="users"
@@ -191,7 +197,7 @@
         ></usercomponent>
         <!-- /COMPONENTE FICHAS DE USUSARIO -->
         <!-- COMPONENTE FOOTER -->
-        <footercustom v-show="search"></footercustom>
+        <footercustom v-show="search && !userModal && !roomModal"></footercustom>
         <!-- /COMPONENTE FOOTER -->
       </div>
     </div>
@@ -205,6 +211,7 @@ import Swal from "sweetalert2";
 import menucustom from "@/components/MenuCustom.vue";
 import footercustom from "@/components/FooterCustom.vue";
 import usercomponent from "@/components/UserComponent.vue";
+import noresults from "@/components/NoResults.vue";
 import { isLoggedIn } from "@/api/utils.js";
 
 export default {
@@ -218,7 +225,7 @@ export default {
       gender: "",
       couple: "",
       sort: "",
-      occupationStauts: "",
+      occupationStatus: "",
       personality: "",
       hobby: "",
       rule: "",
@@ -229,7 +236,8 @@ export default {
   components: {
     menucustom,
     usercomponent,
-    footercustom
+    footercustom,
+    noresults
   },
   methods: {
     checkLogin() {
@@ -245,7 +253,7 @@ export default {
             gender: self.gender,
             couple: self.couple,
             sort: self.sort,
-            occupationStauts: self.occupationStauts,
+            occupationStatus: self.occupationStatus,
             personality: self.personality,
             hobby: self.hobby,
             rule: self.rule
@@ -253,7 +261,6 @@ export default {
         })
         .then(function(response) {
           self.users = response.data.data;
-
           self.users = response.data.data.map(user => {
             const imagesArray = [
               user.perfil[0].image_1,
@@ -307,6 +314,13 @@ export default {
     },
     deleteSearch() {
       this.search = false;
+      this.gender = "";
+      this.couple = "";
+      this.sort = "";
+      this.occupationStatus = "";
+      this.personality = "";
+      this.hobby = "";
+      this.rule = "";
     },
     getUserInfo(user) {
       let self = this;
@@ -503,9 +517,10 @@ body {
   box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
   width: 400px;
   padding: 1rem 2rem;
-  margin: 0 auto;
+  /* margin: 0 auto; */
   background-color: white;
-  margin-top: 1rem;
+  margin-top: 3rem;
+  margin-right: 8rem;
 }
 
 #userSearch h2 {
@@ -530,10 +545,6 @@ label {
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-}
-
-#search {
-  height: 100vh;
 }
 
 #searchContainer button {
@@ -627,8 +638,27 @@ h2 {
 #planta8 {
   position: fixed;
   left: 0;
-  bottom: -12rem;
+  top: -6rem;
   z-index: -2;
-  width: 400px;
+  width: 300px;
+  transform: rotate(90deg);
+}
+
+.homeContainer {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.claim {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.claim h1 {
+  color: lightcoral;
+  font-size: 4rem;
 }
 </style>

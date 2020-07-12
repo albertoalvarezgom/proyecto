@@ -2,7 +2,8 @@
   <div>
     <menucustom></menucustom>
     <vue-headful title="Mi habitación" description="Página de tu habitación" />
-    <img src="../assets/flor.jpg" alt="Imagen de habitación" id="flor" />
+    <!-- <img src="../assets/flor.jpg" alt="Imagen de habitación" id="flor" /> -->
+    <img src="../assets/fento.png" alt="Imagen de habitación" id="fento" />
     <p v-show="!room">Todavía no tienes una habitación publicada</p>
     <div class="room">
       <h2>{{ room.title }}</h2>
@@ -230,7 +231,7 @@ export default {
       gender: true,
       sharing: true,
       status: true,
-      age: true,
+      age: false,
       minAge: false,
       maxAge: false,
       bed: true,
@@ -244,11 +245,11 @@ export default {
       facilities: [],
       selectedFacilities: [],
       selectedFacilitiesNames: [],
-      image_1: "",
-      image_2: "",
-      image_3: "",
-      image_4: "",
-      image_5: ""
+      image_1: ""
+      // image_2: "",
+      // image_3: "",
+      // image_4: "",
+      // image_5: ""
     };
   },
   methods: {
@@ -262,6 +263,7 @@ export default {
           self.room = response.data.data.room;
           self.newRoom = self.room;
 
+          console.log(self.newRoom);
           const roomImage_1 = response.data.data.room.image_1;
           const roomImage_2 = response.data.data.room.image_2;
           const roomImage_3 = response.data.data.room.image_3;
@@ -324,19 +326,23 @@ export default {
             self.age = false;
             self.maxAge = true;
             self.minAge = false;
-          } else {
+          } else if (!self.newRoom.max_age) {
             self.age = false;
             self.minAge = true;
             self.maxAge = false;
+          } else {
+            self.age = true;
           }
 
           if (self.newRoom.bed_type === "sin cama") {
             self.bed = false;
           }
-          if (self.newRoom.bills_included === 1) {
+          if (!self.newRoom.bills_included) {
+            self.bills = false;
+          } else {
             self.bills = true;
           }
-          if (self.newRoom.deposit === 0) {
+          if (!self.newRoom.deposit) {
             self.deposit = false;
           } else {
             self.deposit = true;
@@ -391,6 +397,18 @@ export default {
     },
     updateRoom() {
       let self = this;
+
+      if (!self.newRoom.bills_included) {
+        self.newRoom.bills_included = false;
+      } else {
+        self.newRoom.bills_included = true;
+      }
+      if (!self.newRoom.deposit) {
+        self.newRoom.deposit = false;
+      } else {
+        self.newRoom.deposit = true;
+      }
+
       let formData = new FormData();
       formData.append("title", self.newRoom.title);
       formData.append("description", self.newRoom.description);
@@ -416,10 +434,10 @@ export default {
       formData.append("minStay", self.newRoom.min_stay);
       formData.append("maxStay", self.newRoom.max_stay);
       formData.append("image_1", self.image_1);
-      formData.append("image_2", self.image_2);
-      formData.append("image_3", self.image_3);
-      formData.append("image_4", self.image_4);
-      formData.append("image_5", self.image_5);
+      // formData.append("image_2", self.image_2);
+      // formData.append("image_3", self.image_3);
+      // formData.append("image_4", self.image_4);
+      // formData.append("image_5", self.image_5);
       axios
         .put("http://localhost:3001/user/" + self.id + "/room", formData, {
           "Content-Type": "multipart/form-data",
@@ -572,6 +590,13 @@ export default {
 </script>
 
 <style>
+.modalBox::-webkit-scrollbar {
+  width: 0.2em;
+}
+
+.modalBox::-webkit-scrollbar-thumb {
+  background-color: lightcoral;
+}
 h3 {
   margin: 1rem;
 }
@@ -683,14 +708,6 @@ ul li {
   color: lightcoral;
 }
 
-#flor {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  z-index: -2;
-  width: 400px;
-}
-
 #prestaciones {
   width: 70%;
   margin: 3rem auto;
@@ -738,5 +755,22 @@ label input[type="file"] {
 #roomImage {
   width: 500px;
   margin-bottom: 2rem;
+}
+
+#flor {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: -2;
+  width: 400px;
+}
+
+#fento {
+  position: fixed;
+  right: -12rem;
+  top: 0;
+  z-index: -2;
+  width: 400px;
+  transform: rotate(-180deg);
 }
 </style>

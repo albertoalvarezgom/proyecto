@@ -1,6 +1,19 @@
 const joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const { generateError } = require('../helpers/helpers.js');
 
+const booleanSQL = joi
+  .number()
+  .min(0)
+  .max(1)
+  .error(generateError('El campo solo permite "sí" o "no"', 400));
+
+const any = joi.any();
+
+const phone = joi
+  .number()
+  .required()
+  .error(generateError('Número de teléfono no válido', 400));
+
 const email = joi
   .string()
   .email()
@@ -47,7 +60,7 @@ const sortOrder = joi
 
 const occupationStatus = joi
   .string()
-  .valid('working', 'studying', 'both', 'none')
+  .valid('trabajando', 'estudiando', 'estudiando y trabajando', 'nada')
   .error(
     generateError(
       'La opción de estado de ocupación introducida no es válida',
@@ -73,16 +86,17 @@ const newUserSchema = joi.object().keys({
     .error(generateError('El formato de fecha introducido no es válido', 400)),
   email: email,
   password: password,
-  city: string
+  city: string,
+  phone: phone
 });
 
 const changePasswordSchema = joi.object().keys({
   oldPassword: password,
-  newPassword: password,
-  newPasswordRepeat: joi
-    .any()
-    .valid(joi.ref('newPassword'))
-    .error(generateError('Las nuevas passwords deben ser iguales', 400))
+  newPassword: password
+  // newPasswordRepeat: joi
+  //   .any()
+  //   .valid(joi.ref('newPassword'))
+  //   .error(generateError('Las nuevas passwords deben ser iguales', 400))
 });
 
 const loginSchema = joi.object().keys({ email: email, password: password });
@@ -111,9 +125,16 @@ const editUserSchema = joi.object().keys({
     .date()
     .required()
     .error(generateError('El formato de fecha introducido no es válido', 400)),
+  userCity: string,
   email: email,
+  phone: phone,
   occupationField: string,
-  occupationStatus: occupationStatus
+  occupationStatus: occupationStatus,
+  couple: string,
+  gender: string,
+  ig_profile: string,
+  type: string,
+  image_1: any
 });
 
 const emailSchema = joi.object().keys({ email: email });
@@ -141,13 +162,13 @@ const editUserHobbySchema = joi.object().keys({
 
 const editUserRuleSchema = joi.object().keys({
   rule1: string,
-  status1: boolean,
+  status1: booleanSQL,
   rule2: string,
-  status2: boolean,
+  status2: booleanSQL,
   rule3: string,
-  status3: boolean,
+  status3: booleanSQL,
   rule4: string,
-  status4: boolean
+  status4: booleanSQL
 });
 
 module.exports = {

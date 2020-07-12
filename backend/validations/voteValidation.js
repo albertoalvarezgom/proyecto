@@ -17,11 +17,11 @@ const voteSchema = joi.object().keys({
   comment: joi
     .string()
     .required()
-    .min(30)
+    .min(10)
     .max(1000)
     .error(
       generateError(
-        'El campo comentario es obligatorio y debe tener entre 30 y 1000 caracteres'
+        'El campo comentario es obligatorio y debe tener entre 10 y 1000 caracteres'
       )
     )
 });

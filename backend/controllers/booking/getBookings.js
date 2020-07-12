@@ -41,7 +41,7 @@ async function getBookings(request, response, next) {
       JOIN user_match ON booking.id_match=user_match.id_match
       JOIN room ON room.id_room = booking.id_room
       JOIN user ON user_match.id_user1 = user.id_user 
-      WHERE user_match.id_user1=? OR user_match.id_user2=?`,
+      WHERE (user_match.id_user1=? OR user_match.id_user2=?) AND booking.status!='cancelada'`,
       [id, id]
     );
 

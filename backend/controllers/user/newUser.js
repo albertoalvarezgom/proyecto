@@ -9,12 +9,12 @@ const {
   sendEmail
 } = require('../../helpers/helpers.js');
 
-// const { newUserSchema } = require('../../validations/userValidation');
+const { newUserSchema } = require('../../validations/userValidation');
 
 async function newUser(request, response, next) {
   let connection;
   try {
-    // await newUserSchema.validateAsync(request.body);
+    await newUserSchema.validateAsync(request.body);
     connection = await getConnection();
 
     const { name, birthday, email, password, city, phone } = request.body;

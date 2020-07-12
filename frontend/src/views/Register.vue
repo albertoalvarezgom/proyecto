@@ -7,7 +7,7 @@
     <!-- /PÁRRAFO DE AVISO -->
     <!-- FORMULARIO -->
     <div class="login">
-      <img src="../assets/planta3.jpg" alt="Imagen de registro" id="planta3" />
+      <img src="../assets/folla.png" alt="Imagen de registro" id="folla" />
       <h2>¡Bienvenido/a a roomie!</h2>
       <form>
         <div class="formFlex">
@@ -246,11 +246,11 @@ h4 {
   margin: 0.5rem;
 }
 
-#planta3 {
+#folla {
   position: fixed;
-  right: 0;
+  left: 4rem;
   bottom: 0;
   z-index: -2;
-  width: 400px;
+  width: 250px;
 }
 </style>

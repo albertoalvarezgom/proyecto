@@ -20,6 +20,42 @@
         >Linkedin</a>
       </div>
     </div>
+    <div></div>
+    <div>
+      <h2 class="type">Tecnologías</h2>
+      <ul>
+        <li>
+          <h3>Front</h3>
+          <ul class="aboutList">
+            <li>Javascript</li>
+            <li>Vue JS</li>
+            <li>HTML 5</li>
+            <li>CSS</li>
+            <li>Axios</li>
+            <li>vue-headful</li>
+            <li>sweetalert2</li>
+          </ul>
+          <br />
+          <br />
+          <h3>Back</h3>
+          <ul class="aboutList">
+            <li>Javascript</li>
+            <li>Node JS</li>
+            <li>Express</li>
+            <li>Nodemon</li>
+            <li>jsonwebtoken</li>
+            <li>sendgrid</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div>
+      <h2 class="type">Agradecimientos</h2>
+      <br />
+      <p>A mis compañeros Raúl, David, Brais, Isa, Víctor y Félix.</p>
+    </div>
+    <br />
+    <br />
     <footercustom></footercustom>
   </div>
 </template>
@@ -37,8 +73,7 @@ export default {
 #container {
   display: flex;
   justify-content: center;
-  margin-top: 4rem;
-  height: 100vh;
+  margin: 4rem 0;
 }
 
 #berto {
@@ -62,5 +97,13 @@ a:hover {
   width: 100%;
   right: 0;
   z-index: -2;
+}
+
+.aboutList {
+  display: flex;
+  justify-content: center;
+}
+.aboutList li {
+  margin: 1rem;
 }
 </style>

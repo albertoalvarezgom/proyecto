@@ -103,6 +103,14 @@ const routes = [
       allowAnonymous: false,
     },
   },
+  {
+    path: "*",
+    name: "Error",
+    component: () => import("../views/Error.vue"),
+    meta: {
+      allowAnonymous: true,
+    },
+  },
 ];
 
 const router = new VueRouter({

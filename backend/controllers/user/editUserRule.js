@@ -1,15 +1,15 @@
 require('dotenv').config();
-// const chalk = require('chalk');
+const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-// const { editUserRuleSchema } = require('../../validations/userValidation');
+const { editUserRuleSchema } = require('../../validations/userValidation');
 
 async function editUserRule(request, response, next) {
   let connection;
   try {
-    // await editUserRuleSchema.validateAsync(request.body);
+    await editUserRuleSchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       rule1,

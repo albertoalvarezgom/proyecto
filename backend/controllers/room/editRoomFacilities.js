@@ -4,14 +4,14 @@ require('dotenv').config();
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
 
-// const {
-//   editRoomFacilitiesSchema
-// } = require('../../validations/roomValidation');
+const {
+  editRoomFacilitiesSchema
+} = require('../../validations/roomValidation');
 
 async function editRoomFacilities(request, response, next) {
   let connection;
   try {
-    // await editRoomFacilitiesSchema.validateAsync(request.body);
+    await editRoomFacilitiesSchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       facility1,

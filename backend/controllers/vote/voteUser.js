@@ -1,6 +1,6 @@
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
-// const { voteSchema } = require('../../validations/voteValidation.js');
+const { voteSchema } = require('../../validations/voteValidation.js');
 // const chalk = require('chalk');
 
 async function voteUser(request, response, next) {
@@ -8,7 +8,7 @@ async function voteUser(request, response, next) {
   try {
     const { id } = request.params;
 
-    // await voteSchema.validateAsync(request.body);
+    await voteSchema.validateAsync(request.body);
 
     const { rating, comment } = request.body;
 

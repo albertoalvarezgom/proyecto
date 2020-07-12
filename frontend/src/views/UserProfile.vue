@@ -315,10 +315,10 @@ export default {
         formData.append("ig_profile", self.newUser.ig_profile);
         formData.append("type", self.newUser.type);
         formData.append("image_1", self.image_1);
-        formData.append("image_2", self.image_2);
-        formData.append("image_3", self.image_3);
-        formData.append("image_4", self.image_4);
-        formData.append("image_5", self.image_5);
+        // formData.append("image_2", self.image_2);
+        // formData.append("image_3", self.image_3);
+        // formData.append("image_4", self.image_4);
+        // formData.append("image_5", self.image_5);
 
         axios
           .put("http://localhost:3001/user/" + self.id, formData, {
@@ -347,9 +347,7 @@ export default {
               text: error.response.data.message
             });
           });
-      } //Si los datos no son correctos lanzamos un alert
-      else {
-        //Lanzamos cuadro de diálogo de éxito :)
+      } else {
         Swal.fire({
           position: "center",
           icon: "error",
@@ -385,6 +383,12 @@ export default {
             showConfirmButton: false,
             timer: 1500
           });
+          localStorage.removeItem("type");
+          localStorage.removeItem("city");
+          localStorage.removeItem("role");
+          localStorage.removeItem("name");
+          localStorage.removeItem("authorization");
+          localStorage.removeItem("id");
           self.$router.push("/login");
         })
         .catch(function(error) {

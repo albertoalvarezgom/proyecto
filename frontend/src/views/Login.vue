@@ -82,7 +82,7 @@ export default {
       let self = this;
       axios
         .put("http://localhost:3001/user/restore", {
-          email: email
+          email: self.newEmail
         })
         .then(function(response) {
           Swal.fire({
@@ -90,7 +90,7 @@ export default {
             title: "Hemos enviado tu nueva contraseña a tu email",
             text: "¡Revisa tu carpeta de spam por si acaso!"
           });
-          this.newPass = true;
+          self.newPass = true;
         })
         .catch(function(error) {
           Swal.fire({
@@ -151,7 +151,7 @@ fieldset input {
   left: 0;
   bottom: 0;
   z-index: -2;
-  width: 400px;
+  width: 600px;
 }
 
 #planta3 {

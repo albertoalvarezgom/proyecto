@@ -34,6 +34,14 @@ body {
   height: 100vh;
 }
 
+body::-webkit-scrollbar {
+  width: 0.2em;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: lightcoral;
+}
+
 #nav {
   padding: 0;
   margin: 0;

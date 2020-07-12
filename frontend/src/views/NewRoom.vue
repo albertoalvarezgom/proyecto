@@ -214,9 +214,11 @@
       </div>
     </form>
     <button @click="newRoom()" class="publishButton">Publicar habitación</button>
-    <!-- <button>
+    <br />
+    <button class="homeButton">
       <router-link to="/">Volver a la home</router-link>
-    </button>-->
+    </button>
+    <footercustom></footercustom>
   </div>
 </template>
 
@@ -224,6 +226,7 @@
 import axios from "axios";
 import Swal from "sweetalert2";
 import menucustom from "@/components/MenuCustom.vue";
+import footercustom from "@/components/FooterCustom.vue";
 
 export default {
   name: "NewRoom",
@@ -262,7 +265,7 @@ export default {
       required: false
     };
   },
-  components: { menucustom },
+  components: { menucustom, footercustom },
   methods: {
     //Función para comprobar que los inputs no van vacíos
     validatingData() {
@@ -327,7 +330,6 @@ export default {
         formData.append("minStay", self.minStay);
         formData.append("maxStay", self.maxStay);
         formData.append("image_1", self.image_1);
-        console.log(self.image_1, typeof self.image_1);
         // formData.append("image_2", self.image_2);
         // formData.append("image_3", self.image_3);
         // formData.append("image_4", self.image_4);

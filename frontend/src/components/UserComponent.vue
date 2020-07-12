@@ -3,9 +3,13 @@
     <div class="users" v-for="user in users" :key="user.id_user">
       <div class="container">
         <div class="name">
-          <button @click="viewEvent(user)" class="profileButton">Ver perfil</button>
+          <button
+            @click="viewEvent(user)"
+            class="profileButton"
+            v-if="user.personalidad.length && user.hobbies.length"
+          >Ver perfil</button>
           <h1>{{ user.perfil[0].first_name }}, {{ user.perfil[0].age }}</h1>
-          <h2>
+          <h2 v-if="user.perfil[0].rating">
             {{ user.perfil[0].rating }}
             <p>/ 5</p>
           </h2>
@@ -15,7 +19,7 @@
         </div>
         <div class="info">
           <div class="listsInfo">
-            <div>
+            <div v-if="user.personalidad.length">
               <h3>Personalidad</h3>
               <ul class="list">
                 <li v-for="personalidad in user.personalidad" :key="personalidad.id_personality">
@@ -23,7 +27,7 @@
                 </li>
               </ul>
             </div>
-            <div>
+            <div v-if="user.hobbies.length">
               <h3>Hobbies</h3>
               <ul class="list">
                 <li v-for="hobby in user.hobbies" :key="hobby.id_hobby">

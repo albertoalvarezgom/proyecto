@@ -1,10 +1,10 @@
 require('dotenv').config();
 const bcrypt = require('bcrypt');
-const chalk = require('chalk');
+// const chalk = require('chalk');
 
 const { getConnection } = require('../../db/db.js');
 const { generateError } = require('../../helpers/helpers.js');
-// const { changePasswordSchema } = require('../../validations/userValidation');
+const { changePasswordSchema } = require('../../validations/userValidation');
 
 async function editPassword(request, response, next) {
   let connection;
@@ -13,12 +13,9 @@ async function editPassword(request, response, next) {
 
     connection = await getConnection();
 
-    // await changePasswordSchema.validateAsync(request.body);
+    await changePasswordSchema.validateAsync(request.body);
 
     const { oldPassword, newPassword } = request.body;
-
-    console.log(chalk.inverse.yellow(oldPassword));
-    console.log(chalk.inverse.green(newPassword));
 
     if (Number(id) !== request.auth.id) {
       throw generateError(

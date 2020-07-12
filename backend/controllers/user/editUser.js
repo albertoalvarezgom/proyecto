@@ -8,12 +8,12 @@ const {
   deletePhoto
 } = require('../../helpers/helpers.js');
 
-// const { editUserSchema } = require('../../validations/userValidation');
+const { editUserSchema } = require('../../validations/userValidation');
 
 async function editUser(request, response, next) {
   let connection;
   try {
-    // await editUserSchema.validateAsync(request.body);
+    await editUserSchema.validateAsync(request.body);
     const { id } = request.params;
     const {
       name,

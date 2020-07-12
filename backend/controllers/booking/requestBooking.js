@@ -6,7 +6,7 @@ const {
   sendEmail
 } = require('../../helpers/helpers.js');
 
-// const { bookingSchema } = require('../../validations/bookingValidation');
+const { bookingSchema } = require('../../validations/bookingValidation');
 
 async function requestBooking(request, response, next) {
   let connection;
@@ -14,7 +14,7 @@ async function requestBooking(request, response, next) {
   try {
     const { idmatch } = request.params;
 
-    // await bookingSchema.validateAsync(request.body);
+    await bookingSchema.validateAsync(request.body);
     const { startDate, finishDate } = request.body;
 
     connection = await getConnection();

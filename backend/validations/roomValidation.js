@@ -1,6 +1,8 @@
 const joi = require('@hapi/joi').extend(require('@hapi/joi-date'));
 const { generateError } = require('../helpers/helpers.js');
 
+const any = joi.any();
+
 const string = joi
   .string()
   .max(400)
@@ -10,8 +12,6 @@ const string = joi
       400
     )
   );
-
-const image = joi.object().error(generateError('La imagen no es válida', 400));
 
 const postalCode = joi
   .number()
@@ -80,6 +80,12 @@ const boolean = joi
     generateError('Es un campo booleano. Opciones válidas true o false', 400)
   );
 
+const booleanSQL = joi
+  .number()
+  .min(0)
+  .max(1)
+  .error(generateError('El campo solo permite "sí" o "no"', 400));
+
 const date = joi
   .date()
   .format('YYYY-MM-DD')
@@ -109,47 +115,78 @@ const roomSchema = joi.object().keys({
   availabilityFrom: date,
   availabilityUntil: date,
   minStay: smallNumber,
-  maxStay: smallNumber
+  maxStay: smallNumber,
+  image_1: ''
+});
+
+const editRoomSchema = joi.object().keys({
+  title: string,
+  description: string,
+  address: string,
+  postalCode: postalCode,
+  city: string,
+  flatmatesMasc: smallNumber,
+  flatmatesFem: smallNumber,
+  flatSize: mediumNumber,
+  preferenceGender: gender,
+  status: string,
+  minAge: age,
+  maxAge: age,
+  roomType: room,
+  roomSize: smallNumber,
+  bedType: bed,
+  price: mediumNumber,
+  billsIncluded: boolean,
+  deposit: boolean,
+  depositAmmount: any,
+  availabilityFrom: date,
+  availabilityUntil: date,
+  minStay: smallNumber,
+  maxStay: smallNumber,
+  image_1: any
 });
 
 const editRoomFacilitiesSchema = joi.object().keys({
   facility1: string,
-  status1: boolean,
+  status1: booleanSQL,
   facility2: string,
-  status2: boolean,
+  status2: booleanSQL,
   facility3: string,
-  status3: boolean,
+  status3: booleanSQL,
   facility4: string,
-  status4: boolean,
+  status4: booleanSQL,
   facility5: string,
-  status5: boolean,
+  status5: booleanSQL,
   facility6: string,
-  status7: boolean,
+  status6: booleanSQL,
+  facility7: string,
+  status7: booleanSQL,
   facility8: string,
-  status8: boolean,
+  status8: booleanSQL,
   facility9: string,
-  status9: boolean,
+  status9: booleanSQL,
   facility10: string,
-  status10: boolean,
+  status10: booleanSQL,
   facility11: string,
-  status11: boolean,
+  status11: booleanSQL,
   facility12: string,
-  status12: boolean,
+  status12: booleanSQL,
   facility13: string,
-  status13: boolean,
+  status13: booleanSQL,
   facility14: string,
-  status14: boolean,
+  status14: booleanSQL,
   facility15: string,
-  status15: boolean,
+  status15: booleanSQL,
   facility16: string,
-  status16: boolean,
+  status16: booleanSQL,
   facility17: string,
-  status17: boolean,
+  status17: booleanSQL,
   facility18: string,
-  status18: boolean
+  status18: booleanSQL
 });
 
 module.exports = {
   roomSchema,
+  editRoomSchema,
   editRoomFacilitiesSchema
 };

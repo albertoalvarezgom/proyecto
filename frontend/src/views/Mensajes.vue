@@ -5,6 +5,7 @@
     <menucustom></menucustom>
     <!-- /MENU -->
     <img src="../assets/planta4.jpg" alt="Imagen de formulario" id="planta4" />
+    <img src="../assets/planta9.png" alt="Imagen de formulario" id="planta9" />
     <!-- MATCHES -->
     <div class="matchContainer">
       <div>
@@ -93,71 +94,72 @@
       <!-- /MODAL DE PERFIL DE USUARIO -->
       <!-- CHAT ABIERTO -->
       <div v-show="openedChat" id="chat">
-        <h1 @click="getUserInfo(userChat.id_user)" class="userMatchName">{{userChat.first_name}}</h1>
-        <br />
-        <br />
-      </div>
-      <div v-show="openedChat" class="messagesContainer">
-        <div id="messages">
-          <ul v-for="message in messages" :key="message.id_message">
-            <li :class="{ eu: id === message.id_user, outro: id !== message.id_user }">
-              <b>{{ message.comment }}</b>
-              <div>
-                <p>{{ message.first_name }}</p>
-                <i>{{ message.creation_date }}</i>
-              </div>
-            </li>
-          </ul>
+        <div class="chatHeader">
+          <h1 @click="getUserInfo(userChat.id_user)" class="userMatchName">{{userChat.first_name}}</h1>
+          <button @click="closeChat()" class="profileButton">Cerrar</button>
         </div>
-        <div class="chatOptions">
-          <div id="writeMessage">
-            <textarea
-              name="message"
-              id="messageText"
-              cols="60"
-              rows="5"
-              v-model="message"
-              placeholder="Escribe aquí tu mensaje..."
-            ></textarea>
-            <div id="messageControllers">
-              <button @click="closeChat()" class="profileButton">Cerrar</button>
-              <button @click="sendMessage(matchid)" class="profileButton">Enviar</button>
+        <div v-show="openedChat" class="messagesContainer">
+          <div id="messages">
+            <ul v-for="message in messages" :key="message.id_message">
+              <li :class="{ eu: id === message.id_user, outro: id !== message.id_user }">
+                <b>{{ message.comment }}</b>
+                <div>
+                  <p>{{ message.first_name }}</p>
+                  <i>{{ message.creation_date }}</i>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <div class="chatOptions">
+            <div id="writeMessage">
+              <textarea
+                name="message"
+                id="messageText"
+                cols="60"
+                rows="5"
+                v-model="message"
+                placeholder="Escribe aquí tu mensaje..."
+              ></textarea>
+              <div id="messageControllers">
+                <!-- <button @click="closeChat()" class="profileButton">Cerrar</button> -->
+                <button @click="sendMessage(matchid)" class="profileButton">Enviar</button>
+              </div>
+            </div>
+            <div>
+              <button
+                @click="request = true"
+                class="profileButton"
+                v-show="!request"
+              >Solicitar reserva</button>
+              <fieldset v-show="request">
+                <label for="startDate">Fecha de inicio de la reserva</label>
+                <br />
+                <input type="date" name="startDate" v-model="startDate" />
+              </fieldset>
+              <fieldset v-show="request">
+                <label for="finishDate">Fecha de fin de la reserva</label>
+                <br />
+                <input type="date" name="finishDate" v-model="finishDate" />
+              </fieldset>
+              <button
+                @click="requestBooking(matchid)"
+                v-show="request"
+                class="profileButton"
+              >Enviar solicitud</button>
+              <button @click="cancelBooking()" v-show="request" class="profileButton">Cancelar</button>
             </div>
           </div>
-          <div>
-            <button
-              @click="request = true"
-              class="profileButton"
-              v-show="!request"
-            >Solicitar reserva</button>
-            <fieldset v-show="request">
-              <label for="startDate">Fecha de inicio de la reserva</label>
-              <br />
-              <input type="date" name="startDate" v-model="startDate" />
-            </fieldset>
-            <fieldset v-show="request">
-              <label for="finishDate">Fecha de fin de la reserva</label>
-              <br />
-              <input type="date" name="finishDate" v-model="finishDate" />
-            </fieldset>
-            <button
-              @click="requestBooking(matchid)"
-              v-show="request"
-              class="profileButton"
-            >Enviar solicitud</button>
-            <button @click="cancelBooking()" v-show="request" class="profileButton">Cancelar</button>
-          </div>
         </div>
       </div>
+      <button class="homeButton">
+        <router-link to="/">Volver a la home</router-link>
+      </button>
+      <!-- FOOTER -->
       <footercustom v-show="openedChat"></footercustom>
+      <!-- /FOOTER -->
     </div>
     <!-- /CHAT ABIERTO -->
-    <button class="homeButton">
-      <router-link to="/">Volver a la home</router-link>
-    </button>
-    <!-- FOOTER -->
-    <footercustom v-if="!userModal && !openedChat"></footercustom>
-    <!-- /FOOTER -->
+    <footercustom v-show="!openedChat"></footercustom>
   </div>
 </template>
 
@@ -447,7 +449,7 @@ export default {
 
 <style>
 #matches {
-  height: 100vh;
+  height: 100%;
 }
 
 ul {
@@ -487,7 +489,8 @@ h2 {
   justify-content: center;
   align-content: center;
   align-items: center;
-  /* margin: 0 auto; */
+  margin: 1rem auto;
+  width: 600px;
 }
 
 .chat {
@@ -578,14 +581,6 @@ fieldset input {
   width: 200px;
 }
 
-#planta4 {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  z-index: -2;
-  width: 200px;
-}
-
 .userMatchName:hover {
   color: lightcoral;
 }
@@ -597,5 +592,29 @@ fieldset input {
 
 .matchContainer {
   height: 100vh;
+}
+
+.chatHeader {
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+  padding-right: 7rem;
+}
+
+#planta4 {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: -2;
+  width: 200px;
+}
+
+#planta9 {
+  position: fixed;
+  left: -16rem;
+  bottom: 0;
+  z-index: -2;
+  width: 400px;
+  transform: rotate(-12deg);
 }
 </style>

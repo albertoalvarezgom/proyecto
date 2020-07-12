@@ -188,12 +188,12 @@ ul {
   display: flex;
   justify-content: center;
   margin: 0 auto;
-  width: 600px;
+  width: 800px;
   flex-wrap: wrap;
 }
 
 .votes li {
-  margin: 1rem;
+  margin: 2rem;
 }
 
 .nameRate {
@@ -217,7 +217,9 @@ h2 {
 }
 
 .comment {
-  margin-top: 1rem;
+  margin: 1rem auto;
+  width: 300px;
+  font-size: 0.9rem;
 }
 
 #submitedVotes {
